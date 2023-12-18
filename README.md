@@ -21,7 +21,7 @@ A working demo of the app can be seen below:
 
 <div align="center">
   <video width="480" height="270" controls>
-    <source src="readmeAssets\video\overview.mp4" type="video/mp4">
+    <source src="https://github.com/cf6c2f9f-45f4-431f-b6c8-0b285f9b5920" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 </div>
