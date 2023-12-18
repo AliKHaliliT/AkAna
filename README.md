@@ -9,10 +9,12 @@ The App contains the following screens:
 <div style="display: flex; flex-direction: row; justify-content: center;">
   <img src="readmeAssets\img\login.png" alt="login" style="width: 200px; margin: 10px;">
   <img src="readmeAssets\img\signUp.png" alt="signUp" style="width: 200px; margin: 10px;">
-  <img src="readmeAssets\img\forgotPassword.png" alt="forgotPassword" style="width: 200px; margin: 10px;">
 </div>
 <div style="display: flex; flex-direction: row; justify-content: center;">
+  <img src="readmeAssets\img\forgotPassword.png" alt="forgotPassword" style="width: 200px; margin: 10px;">
   <img src="readmeAssets\img\homePage.png" alt="home" style="width: 200px; margin: 10px;">
+</div>
+<div style="display: flex; flex-direction: row; justify-content: center;">
   <img src="readmeAssets\img\userProfile.png" alt="profile" style="width: 200px; margin: 10px;">
   <img src="readmeAssets\img\about.png" alt="settings" style="width: 200px; margin: 10px;">
 </div>
@@ -30,7 +32,7 @@ A working demo of the app can be seen below:
 ## Usage
 1. Clone the repository
    ```
-   git clone 
+    git clone https://github.com/AliKHaliliT/AkAna
    ```
 2. Run `npm install` to install the dependencies
 3. Run `npx react-native run-android` to run the app on your device
