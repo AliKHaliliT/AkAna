@@ -6,12 +6,12 @@
 A simple App built using React Native for a part of my thesis. 
 
 The App contains the following screens:
-<div align="center" style="display: flex; flex-direction: row; justify-content: center;">
+<div align="center">
   <img src="readmeAssets\img\login.png" alt="login" style="width: 200px; margin: 10px;">
   <img src="readmeAssets\img\signUp.png" alt="signUp" style="width: 200px; margin: 10px;">
   <img src="readmeAssets\img\forgotPassword.png" alt="forgotPassword" style="width: 200px; margin: 10px;">
 </div>
-<div style="display: flex; flex-direction: row; justify-content: center;">
+<div align="center">
   <img src="readmeAssets\img\homePage.png" alt="home" style="width: 200px; margin: 10px;">
   <img src="readmeAssets\img\userProfile.png" alt="profile" style="width: 200px; margin: 10px;">
   <img src="readmeAssets\img\about.png" alt="settings" style="width: 200px; margin: 10px;">
