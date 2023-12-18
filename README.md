@@ -19,8 +19,9 @@ The App contains the following screens:
 
 A working demo of the app can be seen below:
 
-https://github.com/songweige/rich-text-to-image/assets/22885450/ccd186d1-f0fc-4e55-80c0-06afd6cb84c0
-
+<div align="center">
+  https://github.com/cf6c2f9f-45f4-431f-b6c8-0b285f9b5920
+</div>
 
 ## Usage
 1. Clone the repository
