@@ -19,9 +19,7 @@ The App contains the following screens:
 
 A working demo of the app can be seen below:
 
-<div align="center">
-  https://github.com/cf6c2f9f-45f4-431f-b6c8-0b285f9b5920
-</div>
+https://github.com/AliKHaliliT/AkAna/assets/30647838/17671cac-1eeb-40de-a9b4-abe0be61e872
 
 ## Usage
 1. Clone the repository
