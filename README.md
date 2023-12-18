@@ -20,7 +20,7 @@ The App contains the following screens:
 A working demo of the app can be seen below:
 
 <p align="center">
-  <video width="480" height="270" controls>
+  <video width="480" height="270">
     <source src="readmeAssets\video\overview.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
