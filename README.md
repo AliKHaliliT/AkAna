@@ -5,8 +5,7 @@
 
 A simple App built using React Native for a part of my thesis.
 
-
-The visuals, like the logo and icons, were created using [LeonardoAI](leonardo.ai). These were then polished and enhanced with [UpscaleMedia](upscale.media) and had their backgrounds removed through [RemoveBg](remove.bg). Additionally, the video on the splash screen was brought to life using [RunwayAI](runway.ml).
+The visuals, like the logo and icons, were created using [LeonardoAI](https://leonardo.ai). These were then polished and enhanced with [UpscaleMedia](https://upscale.media) and had their backgrounds removed through [RemoveBg](https://remove.bg). Additionally, the video on the splash screen was brought to life using [RunwayAI](https://runway.ml).
 
 The App contains the following screens:
 <div align="center">
