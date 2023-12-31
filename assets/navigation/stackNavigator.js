@@ -6,6 +6,7 @@ import SignUp from "../screens/signUp";
 import ForgotPassword from "../screens/forgotPassword";
 import DrawerNavigator from "./drawerNavigator";
 import UserProfile from "../screens/userProfile";
+import UserProfileEdit from "../screens/userProfileEdit";
 
 const Stack = createStackNavigator();
 
@@ -38,6 +39,10 @@ const StackNavigator = () => {
       <Stack.Screen
         name="UserProfile"
         component={UserProfile}
+      />
+      <Stack.Screen
+        name="UserProfileEdit"
+        component={UserProfileEdit}
       />
     </Stack.Navigator>
   );

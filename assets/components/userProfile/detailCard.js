@@ -13,10 +13,10 @@ const DetailCard = ({ iconName, title, description,
   return (
   <View style={containerStyle}>
     <View style={iconContainerStyle}>
-      <IconComponent name={iconName} size={responsiveSize / 22} color="white" style={iconStyle} />
+      <IconComponent name={iconName} size={responsiveSize / 22} color="#d6e4ff" style={iconStyle} />
       <Text style={{...commonTextBoldStyle}}>{title}</Text>
     </View>
-    <Text style={{...commonTextBoldStyle, fontFamily: "Montserrat-Medium"}}>{description}</Text>
+    <Text style={{...commonTextBoldStyle, fontFamily: "Montserrat-Medium", color: "#ffffff"}}>{description}</Text>
   </View>
   );
 }
@@ -34,8 +34,8 @@ const styles = StyleSheet.create({
     marginBottom: 5 
   },
   commonTextBold: {
-    fontSize: responsiveSize / 30,
-    color: '#ffffff',
+    fontSize: responsiveSize / 35,
+    color: '#d6e4ff',
     marginLeft: 10,
     fontFamily: 'Montserrat-Bold',
   },

@@ -13,11 +13,12 @@ const SplashScreen = () => {
   const [splashScreenVisible, setSplashScreenVisible] = useState(true);
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [animationCompleted, setAnimationCompleted] = useState(false);
-
-  let isLoggedIn = useRef(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    isLoggedIn.current = loadValue("isLoggedIn");
+    loadValue("isLoggedIn").then((value) => {
+      setIsLoggedIn(value);
+    });
   }, []);
 
   const navigation = useNavigation();
@@ -97,7 +98,7 @@ const SplashScreen = () => {
 
   useEffect(() => {
     if (!splashScreenVisible) {
-      if (isLoggedIn.current === true) {
+      if (isLoggedIn) {
         navigation.reset({
           index: 0,
           routes: [{ name: "DrawerNavigator" }],

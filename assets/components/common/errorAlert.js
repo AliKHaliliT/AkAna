@@ -4,7 +4,9 @@ import LinearGradient from "react-native-linear-gradient";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
-const ErrorAlert = ({ visible, close, alertTitle, alertText, animationType = "fade", containerStyle = styles.container, contentStyle = styles.content, titleStyle = styles.title, textStyle = styles.text, backgroundColors = ["#4cbb17", "#3fa23e"], buttonStyle = styles.button, buttonTextStyle = styles.buttonText, buttonText = "Ok" }) => {
+const ErrorAlert = ({ visible, close, alertTitle, alertText, animationType = "fade", containerStyle = styles.container, 
+                      contentStyle = styles.content, titleStyle = styles.title, textStyle = styles.text, backgroundColors = ["#4cbb17", "#3fa23e"], 
+                      buttonStyle = styles.button, buttonTextStyle = styles.buttonText, buttonText = "Ok" }) => {
   return (
     <Modal animationType={animationType} transparent={true} visible={visible} onRequestClose={() => close(false)}>
       <View style={containerStyle}>

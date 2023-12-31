@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Dimensions, View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { Dimensions, View, Text, StyleSheet } from "react-native";
 import loadValue from "../utils/loadValue";
 import deleteValue from "../utils/deleteValue";
 import { LinearGradient } from "react-native-linear-gradient";
@@ -7,6 +7,7 @@ import GoBack from "../components/common/goBackButtonWithText";
 import Icon from "react-native-vector-icons/FontAwesome6";
 import MCIIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import DetailCard from "../components/userProfile/detailCard";
+import GradientButton from "../components/common/gradientButton";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
@@ -35,6 +36,10 @@ const UserProfile = ({ navigation }) => {
     navigation.navigate("Home");
   };
 
+  const handleEditProfile = () => {
+    navigation.navigate("UserProfileEdit");
+  }
+
   const handleLogout = () => {
     deleteValue("isLoggedIn").then(() => {
       navigation.reset({
@@ -53,7 +58,8 @@ const UserProfile = ({ navigation }) => {
         <View style={styles.profileContainer}>
           <MCIIcon name="account-circle" size={responsiveSize / 5} color="#ffffff" />
           <View style={{ flexDirection: "column" }}>
-            <Text style={styles.commonTextBold}>{`${firstName} ${lastName}`}</Text>
+            <Text style={styles.commonTextBold} numberOfLines={1} ellipsizeMode="tail">{`${firstName}`}</Text>
+            <Text style={styles.commonTextBold} numberOfLines={1} ellipsizeMode="tail">{`${lastName}`}</Text>
             <Text style={{ ...styles.commonTextBold, fontSize: responsiveSize / 35, fontFamily: "Montserrat-Medium" }}>{`@${username}`}</Text>
           </View>
         </View>
@@ -62,17 +68,29 @@ const UserProfile = ({ navigation }) => {
           style={styles.cardBackground}
         >
           <DetailCard iconName="email" title="Email" description={email} />
-          <DetailCard iconName="money-check" title="Plan Type" description="Platinum" IconComponent={Icon} />
-          <DetailCard iconName="calendar" title="Subscription" description="Active Till 12/09/2023" IconComponent={Icon} containerStyle={{}}/>
+          <DetailCard iconName="money-check" title="Plan" description="Platinum" IconComponent={Icon} />
+          <DetailCard iconName="credit-card" title="Credit" description="50" IconComponent={Icon} containerStyle={{}}/>
         </LinearGradient>
-        <LinearGradient
-          colors={["#1f2f34", "#283E45"]}
-          style={styles.cardBackground}
-        >
-          <TouchableOpacity onPress={handleLogout}>
-            <Text style={{ ...styles.commonTextBold, fontSize: responsiveSize / 30, marginLeft: 10, fontFamily: "Montserrat-Medium", color: "#ff0000" }}>Logout</Text>
-          </TouchableOpacity>
-        </LinearGradient>
+        <View style={styles.logoutAndDeleteContainer}>
+        <GradientButton 
+            text={"Edit Profile"} 
+            onPress={handleEditProfile} 
+            colors={["#1f2f34", "#3e5158"]} 
+            textStyle={{fontSize: responsiveSize / 35,
+                         fontFamily: "Montserrat-Bold",
+                         color: "#FFA500"}}
+            buttonStyle={{flex: 1, marginLeft: 2, marginRight: 5}}
+          />
+          <GradientButton 
+            text={"Logout"} 
+            onPress={handleLogout} 
+            colors={["#1f2f34", "#3e5158"]} 
+            textStyle={{fontSize: responsiveSize / 35,
+                         fontFamily: "Montserrat-Bold",
+                         color: "#ff0000",}}
+            buttonStyle={{flex: 1, marginLeft: 5, marginRight: 2}}
+          />
+        </View>
       </View>
     </LinearGradient>
   );
@@ -100,15 +118,20 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   commonTextBold: {
-    fontSize: responsiveSize / 23,
+    fontSize: responsiveSize / 30,
     color: "#ffffff",
     fontFamily: "Montserrat-Bold",
     marginLeft: 20,
+    minWidth: "70%",
+    maxWidth: "70%",
   },
   cardBackground: {
     padding: 16,
     borderRadius: 20,
     marginBottom: 10,
+  },
+  logoutAndDeleteContainer: {
+    flexDirection: "row",
   },
 });
 
