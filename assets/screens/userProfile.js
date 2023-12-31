@@ -78,7 +78,7 @@ const UserProfile = ({ navigation }) => {
             colors={["#1f2f34", "#3e5158"]} 
             textStyle={{fontSize: responsiveSize / 35,
                          fontFamily: "Montserrat-Bold",
-                         color: "#FFA500"}}
+                         color: "#ffffff"}}
             buttonStyle={{flex: 1, marginLeft: 2, marginRight: 5}}
           />
           <GradientButton 
