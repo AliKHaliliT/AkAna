@@ -108,7 +108,7 @@ const UserProfileEdit = ({ navigation }) => {
             colors={["#1f2f34", "#3e5158"]} 
             textStyle={{fontSize: responsiveSize / 35,
                          fontFamily: "Montserrat-Bold",
-                         color: "#4cbb17"}}
+                         color: "#ffffff"}}
             buttonStyle={{marginBottom: 5}}
           />
         </LinearGradient>
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     fontSize: responsiveSize / 35,
     fontFamily: "Montserrat-Medium",
     borderBottomWidth: 1,
-    borderBottomColor: "#ffffff",
+    borderBottomColor: "#999999",
     paddingBottom: 10,
     marginBottom: 25,
   },
