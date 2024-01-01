@@ -60,9 +60,9 @@ const ForgotPassword = ({ navigation }) => {
     <LinearGradient colors={['#06181d', '#02223d']} style={styles.container}>
       {showBackToLogin && <GoBack text={"Go back to Login"} handleBackTo={handleBackTo} />}
       <View style={showBackToLogin ? styles.content : {...styles.content, height: "100%", bottom: 0}}>
-        <WelcomeText text={"Reset Password"} iconProps={['lock-reset', responsiveSize / 8, '#ffffff']} containerStyle={styles.welcomeText} IconObject={Icon}/>
+        <WelcomeText text={"Forgot Password"} iconProps={['lock-reset', responsiveSize / 8, '#ffffff']} containerStyle={styles.welcomeText} IconObject={Icon}/>
         <TextInput placeholder={"Email or Username"} placeholderTextColor={"#6a7477"} style={styles.input} onChangeText={setEmailOrUsername} value={emailOrUsername} />
-        <GradientButton text={"Reset Password"} onPress={handleForgotPassword} colors={['#4cbb17', '#3fa23e']} />
+        <GradientButton text={"Forgot Password"} onPress={handleForgotPassword} colors={['#4cbb17', '#3fa23e']} />
       </View>
       <ErrorAlert visible={showFieldsAlert} close={setShowFieldsAlert} alertTitle={"Error"} alertText={"Please fill all the fields."} />
       <ErrorAlert visible={noAccountAlert} close={setnoAccountAlert} alertTitle={"Error"} alertText={"No account found with that email or username."} />

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Dimensions, TextInput, View, Text, StyleSheet } from "react-native";
 import { LinearGradient } from "react-native-linear-gradient";
+import WelcomeText from "../components/common/welcomeText";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import GradientButton from "../components/common/gradientButton";
 import RenderLink from "../components/common/renderLink";
 import ErrorAlert from "../components/common/errorAlert";
@@ -40,11 +42,12 @@ const ResetPassword = ({ navigation }) => {
 
   return (
     <LinearGradient colors={["#06181d", "#02223d"]} style={styles.container}>
+      <WelcomeText text={"Reset Password"} iconProps={['lock-reset', responsiveSize / 8, '#ffffff']} containerStyle={styles.welcomeText} IconObject={Icon}/>
       <TextInput
         placeholder={"New Password"}
         placeholderTextColor={"#6a7477"}
         secureTextEntry={true}
-        style={styles.input}
+        style={styles.textInput}
         onChangeText={setPassword}
         value={password}
       />
@@ -52,13 +55,18 @@ const ResetPassword = ({ navigation }) => {
         placeholder={"Retype New Password"}
         placeholderTextColor={"#6a7477"}
         secureTextEntry={true}
-        style={styles.input}
+        style={styles.textInput}
         onChangeText={setRetypePassword}
         value={retypePassword}
       />
-      <GradientButton text={"Reset Password"} onPress={handleResetPassword} colors={["#4cbb17", "#3fa23e"]} />
-      <View style={styles.signupArea}>
-        <Text style={styles.noAccountText}>Remember your password?</Text>
+      <GradientButton 
+        text={"Reset Password"} 
+        onPress={handleResetPassword} 
+        colors={["#4cbb17", "#3fa23e"]} 
+        buttonStyle={{marginTop: 5}}
+      />
+      <View style={styles.rememberArea}>
+        <Text style={styles.rememberText}>Remember your password?</Text>
         <RenderLink text={"Login"} onPress={() => handleNavigation("Login")} />
       </View>
       <ErrorAlert
@@ -74,33 +82,33 @@ const ResetPassword = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 30,
     justifyContent: "center",
+    paddingHorizontal: 30,
   },
-  input: {
-    marginVertical: 10,
-    padding: 10,
+  welcomeText: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 10,
+  },
+  textInput: {
     backgroundColor: "#ffffff",
     borderRadius: 5,
-    fontSize: responsiveSize / 42,
-    fontFamily: "Montserrat-Medium",
     color: "#06181d",
+    fontFamily: "Montserrat-Medium",
+    fontSize: responsiveSize / 42,
+    marginBottom: 10,
+    padding: 10,
   },
-  signupArea: {
+  rememberArea: {
     flexDirection: "row",
     justifyContent: "center",
     marginTop: 10,
   },
-  noAccountText: {
+  rememberText: {
     color: "#ffffff",
+    fontFamily: "Montserrat-Medium",
+    fontSize: responsiveSize / 42,
     marginRight: 5,
-    fontFamily: "Montserrat-Medium",
-    fontSize: responsiveSize / 42,
-  },
-  signupLink: {
-    color: "#4cbb17",
-    fontFamily: "Montserrat-Medium",
-    fontSize: responsiveSize / 42,
   },
 });
 
