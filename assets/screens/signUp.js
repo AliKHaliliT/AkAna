@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dimensions, Keyboard, View, TextInput, Text, StyleSheet } from "react-native";
+import { Dimensions, ScrollView, KeyboardAvoidingView, View, TextInput, Text, StyleSheet } from "react-native";
 import isValidEmail from "../utils/validateEmail";
 import saveValue from "../utils/saveValue";
 import { LinearGradient } from "react-native-linear-gradient";
@@ -9,12 +9,12 @@ import CheckBox from "../components/common/checkbox";
 import RenderLink from "../components/common/renderLink";
 import GradientButton from "../components/common/gradientButton";
 import ErrorAlert from "../components/common/errorAlert";
+import { Picker } from "@react-native-picker/picker";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
 const SignUp = ({ navigation }) => {
 
-  const [showBackToLogin, setShowBackToLogin] = useState(true);
   const [termsAgreed, setTermsAgreed] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -26,14 +26,7 @@ const SignUp = ({ navigation }) => {
   const [showEmailAlert, setShowEmailAlert] = useState(false);
   const [showPasswordAlert, setShowPasswordAlert] = useState(false);
   const [showTermsAlert, setShowTermsAlert] = useState(false);
-
-  Keyboard.addListener("keyboardDidShow", () => {
-    setShowBackToLogin(false);
-  });
-
-  Keyboard.addListener("keyboardDidHide", () => {
-    setShowBackToLogin(true);
-  });
+  const [selectedPlan, setSelectedPlan] = useState(''); 
 
   const handleBackTo = () => {
     navigation.navigate("Login");
@@ -94,9 +87,10 @@ const SignUp = ({ navigation }) => {
 
   return (
     <LinearGradient colors={["#06181d", "#02223d"]} style={styles.container}>
-      {showBackToLogin && <GoBack text={"Go back to Login"} handleBackTo={handleBackTo} />}
-      <View style={showBackToLogin ? styles.content : {...styles.content, height: "100%", bottom: 0}}>
-        <WelcomeText text={"Sign Up"} iconProps={["form", responsiveSize / 15, "#ffffff"]} />
+    <ScrollView style={styles.content}>
+      <KeyboardAvoidingView behavior={"padding"}>
+        <GoBack text={"Go back to Login"} handleBackTo={handleBackTo} containerStyle={styles.goBack}/>
+        <WelcomeText text={"Sign Up"} iconProps={["form", responsiveSize / 15, "#ffffff"]} containerStyle={styles.welcomeText}/>
         <React.Fragment>
           <View style={styles.nameFields}>
             <TextInput placeholder={"First Name"} placeholderTextColor={"#6a7477"} style={[styles.input, styles.halfInput]} onChangeText={setFirstName} value={firstName}/>
@@ -106,6 +100,17 @@ const SignUp = ({ navigation }) => {
           <TextInput placeholder={"Email"} placeholderTextColor={"#6a7477"} style={styles.input} onChangeText={setEmail} value={email}/>
           <TextInput placeholder={"Password"} placeholderTextColor={"#6a7477"} secureTextEntry={true} style={styles.input} onChangeText={setPassword} value={password}/>
           <TextInput placeholder={"Retype Password"} placeholderTextColor={"#6a7477"} secureTextEntry={true} style={styles.input} onChangeText={setRetypePassword} value={retypePassword}/>
+          <View style={styles.input}>
+            <Picker
+              selectedValue={selectedPlan}
+              onValueChange={(itemValue, itemIndex) =>
+                setSelectedPlan(itemValue)
+              }>
+              <Picker.Item label="Basic" value="basic" />
+              <Picker.Item label="Standard" value="standard" />
+              <Picker.Item label="Premium" value="premium" />
+            </Picker>
+          </View>
           <View style={styles.checkboxArea}>
             <CheckBox onChange={handleTermsAgreed} checked={termsAgreed} />
             <Text style={styles.termsText}>I agree to the</Text>
@@ -113,12 +118,13 @@ const SignUp = ({ navigation }) => {
           </View>
           <GradientButton text={"Sign Up"} onPress={handleSignUp} colors={["#4cbb17", "#3fa23e"]} />
         </React.Fragment>
-      </View>
-      <ErrorAlert visible={showFieldsAlert} close={setShowFieldsAlert} alertTitle={"Error"} alertText={"Please fill all the fields."} />
-      <ErrorAlert visible={showEmailAlert} close={setShowEmailAlert} alertTitle={"Error"} alertText={"Please enter a valid email address."} />
-      <ErrorAlert visible={showPasswordAlert} close={setShowPasswordAlert} alertTitle={"Error"} alertText={"Passwords do not match."} />
-      <ErrorAlert visible={showTermsAlert} close={setShowTermsAlert} alertTitle={"Error"} alertText={"Please agree to the terms of service"} />
-    </LinearGradient>
+      </KeyboardAvoidingView>
+    </ScrollView>
+    <ErrorAlert visible={showFieldsAlert} close={setShowFieldsAlert} alertTitle={"Error"} alertText={"Please fill all the fields."} />
+    <ErrorAlert visible={showEmailAlert} close={setShowEmailAlert} alertTitle={"Error"} alertText={"Please enter a valid email address."} />
+    <ErrorAlert visible={showPasswordAlert} close={setShowPasswordAlert} alertTitle={"Error"} alertText={"Passwords do not match."} />
+    <ErrorAlert visible={showTermsAlert} close={setShowTermsAlert} alertTitle={"Error"} alertText={"Please agree to the terms of service"} />
+  </LinearGradient>
   );
 };
 
@@ -127,10 +133,20 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    height: "90%", 
-    justifyContent: "center", 
-    paddingHorizontal: 30,
-    bottom: "5%",
+    padding: 20,
+  },
+  goBack: {
+    flex: 1,
+    flexDirection: "row",
+    padding: 0,
+    marginBottom: 20,
+  },
+  welcomeText: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+    marginTop: 20,
   },
   nameFields: {
     flexDirection: "row",

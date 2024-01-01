@@ -11,12 +11,12 @@ import ErrorAlert from "../components/common/errorAlert";
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
 const UserProfileEdit = ({ navigation }) => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [retypePassword, setRetypePassword] = useState("");
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [retypePassword, setRetypePassword] = useState('');
   const [showPasswordAlert, setShowPasswordAlert] = useState(false);
 
   useEffect(() => {
@@ -53,6 +53,15 @@ const UserProfileEdit = ({ navigation }) => {
     navigation.navigate("UserProfile");
   };
 
+  const handleLogout = () => {
+    deleteValue("isLoggedIn").then(() => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Login" }],
+      });
+    });
+  }
+
   return (
     <LinearGradient colors={["#06181d", "#02223d"]} style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContainer}>
@@ -63,8 +72,17 @@ const UserProfileEdit = ({ navigation }) => {
           colors={["#1f2f34", "#283E45"]}
           style={styles.cardBackground}
         >
-          <View style={styles.profileContainer}>
-            <MCIIcon name="account-circle" size={responsiveSize / 5} color="#ffffff" style={styles.profileIcon} />
+          <View style={styles.content}>
+            <View style={styles.profileContainer}>
+              <MCIIcon name="account-circle" size={responsiveSize / 5} color="#ffffff" style={styles.profileIcon} />
+              <GradientButton 
+                text={"Delete Account"}
+                onPress={handleLogout}
+                colors={["#1f2f34", "#3e5158"]}
+                textStyle={styles.buttonTextStyle}
+                buttonStyle={{marginRight: 5}}
+              />
+            </View>
             <View>
               <Text style={styles.title}>First Name</Text>
               <TextInput
@@ -128,9 +146,7 @@ const UserProfileEdit = ({ navigation }) => {
             text={"Save Changes"} 
             onPress={handleSave} 
             colors={["#1f2f34", "#3e5158"]} 
-            textStyle={{fontSize: responsiveSize / 35,
-                         fontFamily: "Montserrat-Bold",
-                         color: "#ffffff"}}
+            textStyle={{...styles.buttonTextStyle, color: "#ffffff"}}
             buttonStyle={{marginBottom: 5}}
           />
         </LinearGradient>
@@ -152,19 +168,30 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   cardBackground: {
-    minWidth: "90%",
-    maxWidth: "90%",
+    minWidth: "92%",
+    maxWidth: "92%",
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 20,
     marginTop: 10,
     marginBottom: 10,
   },
+  content: {
+    marginBottom: 20,
+  },
   profileContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 20,
   },
   profileIcon: {
     alignSelf: "center",
+  },
+  buttonTextStyle: {
+    fontSize: responsiveSize / 35,
+    fontFamily: "Montserrat-Bold",
+    color: "#ff0000",
   },
   title: {
     fontSize: responsiveSize / 35,

@@ -55,41 +55,37 @@ const UserProfile = ({ navigation }) => {
         <GoBack text={"Go back to Login"} handleBackTo={handleBackTo} />
       </View>
       <View style={styles.content}>
-        <View style={styles.profileContainer}>
-          <MCIIcon name="account-circle" size={responsiveSize / 5} color="#ffffff" />
-          <View style={{ flexDirection: "column" }}>
-            <Text style={styles.commonTextBold} numberOfLines={1} ellipsizeMode="tail">{`${firstName}`}</Text>
-            <Text style={styles.commonTextBold} numberOfLines={1} ellipsizeMode="tail">{`${lastName}`}</Text>
-            <Text style={{ ...styles.commonTextBold, fontSize: responsiveSize / 35, fontFamily: "Montserrat-Medium" }}>{`@${username}`}</Text>
-          </View>
-        </View>
         <LinearGradient
           colors={["#1f2f34", "#283E45"]}
           style={styles.cardBackground}
         >
+          <View style={styles.profileContainer}>
+            <MCIIcon name="account-circle" size={responsiveSize / 5} color="#ffffff" />
+            <View style={{ flexDirection: "column" }}>
+              <Text style={styles.commonTextBold} numberOfLines={1} ellipsizeMode="tail">{`${firstName}`}</Text>
+              <Text style={styles.commonTextBold} numberOfLines={1} ellipsizeMode="tail">{`${lastName}`}</Text>
+              <Text style={{ ...styles.commonTextBold, fontSize: responsiveSize / 35, fontFamily: "Montserrat-Medium" }}>{`@${username}`}</Text>
+            </View>
+          </View>
           <DetailCard iconName="email" title="Email" description={email} />
           <DetailCard iconName="money-check" title="Plan" description="Platinum" IconComponent={Icon} />
           <DetailCard iconName="credit-card" title="Credit" description="50" IconComponent={Icon} containerStyle={{}}/>
         </LinearGradient>
-        <View style={styles.logoutAndDeleteContainer}>
-        <GradientButton 
-            text={"Edit Profile"} 
-            onPress={handleEditProfile} 
-            colors={["#1f2f34", "#3e5158"]} 
-            textStyle={{fontSize: responsiveSize / 35,
-                         fontFamily: "Montserrat-Bold",
-                         color: "#ffffff"}}
-            buttonStyle={{flex: 1, marginLeft: 2, marginRight: 5}}
-          />
+        <View style={styles.editAndLogoutContainer}>
           <GradientButton 
-            text={"Logout"} 
-            onPress={handleLogout} 
-            colors={["#1f2f34", "#3e5158"]} 
-            textStyle={{fontSize: responsiveSize / 35,
-                         fontFamily: "Montserrat-Bold",
-                         color: "#ff0000",}}
-            buttonStyle={{flex: 1, marginLeft: 5, marginRight: 2}}
-          />
+              text={"Edit Profile"} 
+              onPress={handleEditProfile} 
+              colors={["#1f2f34", "#3e5158"]} 
+              textStyle={styles.buttonTextStyle}
+              buttonStyle={{flex: 1, marginLeft: 5, marginRight: 5}}
+            />
+            <GradientButton 
+              text={"Logout"} 
+              onPress={handleLogout} 
+              colors={["#1f2f34", "#3e5158"]} 
+              textStyle={{...styles.buttonTextStyle, color: "#ff0000"}}
+              buttonStyle={{flex: 1, marginLeft: 5, marginRight: 5}}
+            />
         </View>
       </View>
     </LinearGradient>
@@ -128,10 +124,16 @@ const styles = StyleSheet.create({
   cardBackground: {
     padding: 16,
     borderRadius: 20,
-    marginBottom: 10,
+    marginVertical: 10,
+    marginHorizontal: 5,
   },
-  logoutAndDeleteContainer: {
+  editAndLogoutContainer: {
     flexDirection: "row",
+  },
+  buttonTextStyle: {
+    fontSize: responsiveSize / 35,
+    fontFamily: "Montserrat-Bold",
+    color: "#ffffff",
   },
 });
 
