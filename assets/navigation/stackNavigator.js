@@ -29,7 +29,7 @@ const StackNavigator = () => {
         }}
       />
       <Stack.Screen name="SignUp" component={SignUp} />
-      <Stack.Screen name="ForgotPassword" component={ResetPassword} />
+      <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
       <Stack.Screen name="ResetPassword" component={ResetPassword} />
       <Stack.Screen 
         name="DrawerNavigator" 
