@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Dimensions, TextInput, View, Text, StyleSheet } from "react-native";
 import { LinearGradient } from "react-native-linear-gradient";
 import GradientButton from "../components/common/gradientButton";
+import RenderLink from "../components/common/renderLink";
 import ErrorAlert from "../components/common/errorAlert";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
@@ -58,7 +59,7 @@ const ResetPassword = ({ navigation }) => {
       <GradientButton text={"Reset Password"} onPress={handleResetPassword} colors={["#4cbb17", "#3fa23e"]} />
       <View style={styles.signupArea}>
         <Text style={styles.noAccountText}>Remember your password?</Text>
-        <Text style={styles.signupLink} onPress={() => handleNavigation("Login")}>Login</Text>
+        <RenderLink text={"Login"} onPress={() => handleNavigation("Login")} />
       </View>
       <ErrorAlert
         visible={showErrorAlert}

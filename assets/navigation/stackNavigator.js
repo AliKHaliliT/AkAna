@@ -4,6 +4,7 @@ import SplashScreen from "../screens/splashScreen";
 import Login from "../screens/login";
 import SignUp from "../screens/signUp";
 import ForgotPassword from "../screens/forgotPassword";
+import ResetPassword from "../screens/resetPassword";
 import DrawerNavigator from "./drawerNavigator";
 import UserProfile from "../screens/userProfile";
 import UserProfileEdit from "../screens/userProfileEdit";
@@ -28,7 +29,8 @@ const StackNavigator = () => {
         }}
       />
       <Stack.Screen name="SignUp" component={SignUp} />
-      <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+      <Stack.Screen name="ForgotPassword" component={ResetPassword} />
+      <Stack.Screen name="ResetPassword" component={ResetPassword} />
       <Stack.Screen 
         name="DrawerNavigator" 
         component={DrawerNavigator} 

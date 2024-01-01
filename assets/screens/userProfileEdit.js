@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Dimensions, ScrollView, View, Text, TextInput, StyleSheet } from "react-native";
 import loadValue from "../utils/loadValue";
 import saveValue from "../utils/saveValue";
+import deleteValue from "../utils/deleteValue";
 import { LinearGradient } from "react-native-linear-gradient";
 import GoBack from "../components/common/goBackButtonWithText";
 import MCIIcon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -53,7 +54,7 @@ const UserProfileEdit = ({ navigation }) => {
     navigation.navigate("UserProfile");
   };
 
-  const handleLogout = () => {
+  const handleDelete = () => {
     deleteValue("isLoggedIn").then(() => {
       navigation.reset({
         index: 0,
@@ -77,7 +78,7 @@ const UserProfileEdit = ({ navigation }) => {
               <MCIIcon name="account-circle" size={responsiveSize / 5} color="#ffffff" style={styles.profileIcon} />
               <GradientButton 
                 text={"Delete Account"}
-                onPress={handleLogout}
+                onPress={handleDelete}
                 colors={["#1f2f34", "#3e5158"]}
                 textStyle={styles.buttonTextStyle}
                 buttonStyle={{marginRight: 5}}
