@@ -3,13 +3,12 @@ import { Dimensions, ScrollView, KeyboardAvoidingView, View, TextInput, Text, St
 import isValidEmail from "../utils/validateEmail";
 import saveValue from "../utils/saveValue";
 import { LinearGradient } from "react-native-linear-gradient";
-import GoBack from "../components/common/goBackButtonWithText";
 import WelcomeText from "../components/common/welcomeText";
+import { Picker } from "@react-native-picker/picker";
 import CheckBox from "../components/common/checkbox";
 import RenderLink from "../components/common/renderLink";
 import GradientButton from "../components/common/gradientButton";
 import ErrorAlert from "../components/common/errorAlert";
-import { Picker } from "@react-native-picker/picker";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
@@ -28,8 +27,8 @@ const SignUp = ({ navigation }) => {
   const [showTermsAlert, setShowTermsAlert] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(''); 
 
-  const handleBackTo = () => {
-    navigation.navigate("Login");
+  const handleNavigation = (screen) => {
+    navigation.navigate(screen);
   };
 
   const handleTermsAgreed = (agreed) => {
@@ -89,7 +88,6 @@ const SignUp = ({ navigation }) => {
     <LinearGradient colors={["#06181d", "#02223d"]} style={styles.container}>
     <ScrollView style={styles.content}>
       <KeyboardAvoidingView behavior={"padding"}>
-        <GoBack text={"Go back to Login"} handleBackTo={handleBackTo} containerStyle={styles.goBack}/>
         <WelcomeText text={"Sign Up"} iconProps={["form", responsiveSize / 15, "#ffffff"]} containerStyle={styles.welcomeText}/>
         <React.Fragment>
           <View style={styles.nameFields}>
@@ -117,6 +115,10 @@ const SignUp = ({ navigation }) => {
             <RenderLink text={"Terms of Service"} onPress={handleTermsPress}/>
           </View>
           <GradientButton text={"Sign Up"} onPress={handleSignUp} colors={["#4cbb17", "#3fa23e"]} />
+          <View style={styles.haveAccountArea}>
+            <Text style={styles.haveAccountText}>Already have an account?</Text>
+            <RenderLink text={"Login"} onPress={() => handleNavigation("Login")} />
+          </View>
         </React.Fragment>
       </KeyboardAvoidingView>
     </ScrollView>
@@ -133,20 +135,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    padding: 20,
-  },
-  goBack: {
-    flex: 1,
-    flexDirection: "row",
-    padding: 0,
-    marginBottom: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 30,
   },
   welcomeText: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     padding: 10,
-    marginTop: 20,
+    marginTop: 50,
   },
   nameFields: {
     flexDirection: "row",
@@ -177,11 +174,17 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 10,
   },
-  signUpButton: {
+  haveAccountArea: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 10,
+  },
+  haveAccountText: {
+    color: "#ffffff",
+    fontFamily: "Montserrat-Medium",
     fontSize: responsiveSize / 42,
-    fontFamily: "Montserrat-Bold",
-    color: "#06181d",
-  }
+    marginRight: 5,
+  },
 });
 
 export default SignUp;
