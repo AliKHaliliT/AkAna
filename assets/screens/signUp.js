@@ -100,8 +100,9 @@ const SignUp = ({ navigation }) => {
           <TextInput placeholder={"Retype Password"} placeholderTextColor={"#6a7477"} secureTextEntry={true} style={styles.input} onChangeText={setRetypePassword} value={retypePassword}/>
           <View style={{...styles.input, padding: 0, paddingVertical: 0}}>
             <Picker
+              style={{color: "#06181d"}}
               selectedValue={selectedPlan}
-              dropdownIconColor={"#6a7477"}
+              dropdownIconColor={"#06181d"}
               mode={"dropdown"}
               onValueChange={(itemValue, itemIndex) =>
                 setSelectedPlan(itemValue)
@@ -145,7 +146,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 10,
-    marginTop: 50,
   },
   nameFields: {
     flexDirection: "row",
