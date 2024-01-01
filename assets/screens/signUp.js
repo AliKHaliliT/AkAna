@@ -98,9 +98,11 @@ const SignUp = ({ navigation }) => {
           <TextInput placeholder={"Email"} placeholderTextColor={"#6a7477"} style={styles.input} onChangeText={setEmail} value={email}/>
           <TextInput placeholder={"Password"} placeholderTextColor={"#6a7477"} secureTextEntry={true} style={styles.input} onChangeText={setPassword} value={password}/>
           <TextInput placeholder={"Retype Password"} placeholderTextColor={"#6a7477"} secureTextEntry={true} style={styles.input} onChangeText={setRetypePassword} value={retypePassword}/>
-          <View style={styles.input}>
+          <View style={{...styles.input, padding: 0, paddingVertical: 0}}>
             <Picker
               selectedValue={selectedPlan}
+              dropdownIconColor={"#6a7477"}
+              mode={"dropdown"}
               onValueChange={(itemValue, itemIndex) =>
                 setSelectedPlan(itemValue)
               }>
