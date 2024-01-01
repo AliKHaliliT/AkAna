@@ -171,6 +171,7 @@ const styles = StyleSheet.create({
   },
   header: {
     width: "100%",
+    marginTop: 5,
   },
   cardBackground: {
     minWidth: "92%",
