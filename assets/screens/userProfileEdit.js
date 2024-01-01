@@ -6,6 +6,7 @@ import { LinearGradient } from "react-native-linear-gradient";
 import GoBack from "../components/common/goBackButtonWithText";
 import MCIIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import GradientButton from "../components/common/gradientButton";
+import ErrorAlert from "../components/common/errorAlert";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
@@ -15,6 +16,8 @@ const UserProfileEdit = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [retypePassword, setRetypePassword] = useState("");
+  const [showPasswordAlert, setShowPasswordAlert] = useState(false);
 
   useEffect(() => {
     loadValue("firstName").then((savedFirstName) => {
@@ -37,6 +40,10 @@ const UserProfileEdit = ({ navigation }) => {
     saveValue("userName", username);
     saveValue("email", email);
     if (password) {
+      if (password !== retypePassword) {
+        setShowPasswordAlert(true);
+        return;
+      }
       saveValue("password", password);
     }
     navigation.navigate("UserProfile");
@@ -91,15 +98,30 @@ const UserProfileEdit = ({ navigation }) => {
                 placeholder="Enter Email"
                 placeholderTextColor={"#6a7477"}
               />
-              <Text style={styles.title}>Password</Text>
-              <TextInput
-                style={{...styles.textInput, marginBottom: 10}}
-                value={password}
-                onChangeText={setPassword}
-                placeholder="************"
-                placeholderTextColor={"#ffffff"}
-                secureTextEntry={true}
-              />
+              <View style={styles.passwordContainer} >
+                <View style={styles.passwordContent}>
+                <Text style={styles.title}>Password</Text>
+                <TextInput
+                  style={{...styles.textInput, marginBottom: 10}}
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder="************"
+                  placeholderTextColor={"#ffffff"}
+                  secureTextEntry={true}
+                />
+                </View>
+                <View style={{...styles.passwordContent, width: "55%", marginLeft: 10}}>
+                <Text style={styles.title}>Retype Password</Text>
+                <TextInput
+                  style={{...styles.textInput, marginBottom: 10}}
+                  value={retypePassword}
+                  onChangeText={setRetypePassword}
+                  placeholder="************"
+                  placeholderTextColor={"#ffffff"}
+                  secureTextEntry={true}
+                />
+                </View>
+              </View>
             </View>
           </View>
           <GradientButton 
@@ -113,6 +135,7 @@ const UserProfileEdit = ({ navigation }) => {
           />
         </LinearGradient>
       </ScrollView>
+      <ErrorAlert visible={showPasswordAlert} close={setShowPasswordAlert} alertTitle={"Error"} alertText={"Passwords do not match."} />
     </LinearGradient>
   );
 };
@@ -156,6 +179,13 @@ const styles = StyleSheet.create({
     borderBottomColor: "#999999",
     paddingBottom: 10,
     marginBottom: 25,
+  },
+  passwordContainer: {
+    flexDirection: "row",
+  },
+  passwordContent: {
+    flexDirection: "column",
+    width: "45%",
   },
 });
 
