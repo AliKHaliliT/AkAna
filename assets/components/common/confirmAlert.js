@@ -4,25 +4,34 @@ import LinearGradient from "react-native-linear-gradient";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
-const ConfirmAlert = ({ visible, close, confirm, alertTitle, alertText, animationType = "fade", containerStyle = styles.container, 
-                      contentStyle = styles.content, titleStyle = styles.title, textStyle = styles.text, backgroundColors = ["#4cbb17", "#3fa23e"], 
-                      buttonStyle = styles.button, buttonTextStyle = styles.buttonText, buttonText0 = "Cancel", buttonText1 = "Yes" }) => {
+const ConfirmAlert = ({ visible, close, confirm, alertTitle, alertText, 
+                        animationType = "fade", containerStyle = styles.container, 
+                        contentStyle = styles.content, titleStyle = styles.title, 
+                        textStyle = styles.text, backgroundColors = ["#4cbb17", "#3fa23e"], 
+                        buttonContainerStyle = styles.buttonContainer, buttonStyle = styles.button, 
+                        buttonTextStyle = styles.buttonText, buttonText0 = "Cancel", buttonText1 = "Yes" }) => {
   return (
-    <Modal animationType={animationType} transparent={true} visible={visible} onRequestClose={() => close(false)}>
+    <Modal 
+      animationType={animationType} 
+      transparent={true} visible={visible} 
+      onRequestClose={() => close(false)}
+    >
       <View style={containerStyle}>
         <View style={contentStyle}>
           <Text style={titleStyle}>{alertTitle}</Text>
           <Text style={textStyle}>{alertText}</Text>
-          <TouchableOpacity onPress={() => close(false)}>
-            <LinearGradient colors={backgroundColors} style={buttonStyle}>
-              <Text style={buttonTextStyle}>{buttonText0}</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={confirm}>
-            <LinearGradient colors={backgroundColors} style={buttonStyle}>
-              <Text style={buttonTextStyle}>{buttonText1}</Text>
-            </LinearGradient>
-          </TouchableOpacity>
+          <View style={buttonContainerStyle}>
+            <TouchableOpacity onPress={() => close(false)}>
+              <LinearGradient colors={backgroundColors} style={buttonStyle}>
+                <Text style={buttonTextStyle}>{buttonText0}</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={confirm}>
+              <LinearGradient colors={backgroundColors} style={buttonStyle}>
+                <Text style={buttonTextStyle}>{buttonText1}</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Modal>
@@ -62,14 +71,17 @@ const styles = StyleSheet.create({
     textAlign: "justify",
     alignSelf: "flex-start",
   },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
   button: {
-    alignSelf: "center",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 8,
     marginTop: 20,
     padding: 10,
-    width: "30%",
+    minWidth: "30%",
   },
   buttonText: {
     color: "#06181d",

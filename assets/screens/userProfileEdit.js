@@ -8,6 +8,7 @@ import GoBack from "../components/common/goBackButtonWithText";
 import MCIIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import GradientButton from "../components/common/gradientButton";
 import ErrorAlert from "../components/common/errorAlert";
+import ConfirmAlert from "../components/common/confirmAlert";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
@@ -16,6 +17,7 @@ const UserProfileEdit = ({ navigation }) => {
   const [lastName, setLastName] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
+  const [showAccountAlert, setShowAccountAlert] = useState(false);
   const [password, setPassword] = useState('');
   const [retypePassword, setRetypePassword] = useState('');
   const [showPasswordAlert, setShowPasswordAlert] = useState(false);
@@ -35,6 +37,19 @@ const UserProfileEdit = ({ navigation }) => {
     });
   }, []);
 
+  const handleBackTo = () => {
+    navigation.navigate("UserProfile");
+  };
+
+  const handleDelete = () => {
+    deleteValue("isLoggedIn").then(() => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Login" }],
+      });
+    });
+  }
+
   const handleSave = () => {
     saveValue("firstName", firstName);
     saveValue("lastName", lastName);
@@ -49,19 +64,6 @@ const UserProfileEdit = ({ navigation }) => {
     }
     navigation.navigate("UserProfile");
   };
-
-  const handleBackTo = () => {
-    navigation.navigate("UserProfile");
-  };
-
-  const handleDelete = () => {
-    deleteValue("isLoggedIn").then(() => {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Login" }],
-      });
-    });
-  }
 
   return (
     <LinearGradient colors={["#06181d", "#02223d"]} style={styles.container}>
@@ -78,7 +80,7 @@ const UserProfileEdit = ({ navigation }) => {
               <MCIIcon name="account-circle" size={responsiveSize / 5} color="#ffffff" style={styles.profileIcon} />
               <GradientButton 
                 text={"Delete Account"}
-                onPress={handleDelete}
+                onPress={() => setShowAccountAlert(true)}
                 colors={["#1f2f34", "#3e5158"]}
                 textStyle={styles.buttonTextStyle}
                 buttonStyle={{marginRight: 5}}
@@ -153,6 +155,7 @@ const UserProfileEdit = ({ navigation }) => {
         </LinearGradient>
       </ScrollView>
       <ErrorAlert visible={showPasswordAlert} close={setShowPasswordAlert} alertTitle={"Error"} alertText={"Passwords do not match."} />
+      <ConfirmAlert visible={showAccountAlert} close={setShowAccountAlert} confirm={handleDelete} alertTitle={"Confirm"} alertText={"Are you sure you want to delete your account?"} />
     </LinearGradient>
   );
 };
