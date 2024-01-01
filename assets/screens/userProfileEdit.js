@@ -42,6 +42,7 @@ const UserProfileEdit = ({ navigation }) => {
   };
 
   const handleDelete = () => {
+    setShowAccountAlert(false);
     deleteValue("isLoggedIn").then(() => {
       navigation.reset({
         index: 0,
