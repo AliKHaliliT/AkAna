@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dimensions, View, TextInput, Text, StyleSheet } from 'react-native';
+import { Dimensions, ToastAndroid, View, TextInput, Text, StyleSheet } from 'react-native';
 import forgotPassword from '../api/forgotPassword';
 import { LinearGradient } from 'react-native-linear-gradient';
 import WelcomeText from '../components/common/welcomeText';
@@ -20,17 +20,15 @@ const ForgotPassword = ({ navigation }) => {
   };
 
   const handleForgotPassword = async () => {
-    try {
-      if (emailOrUsername.trim() !== "") {
-        const response = await forgotPassword({ username_or_email: emailOrUsername.trim() });
-        if (response) {
-          setShowConfirmationAlert(true);
-        }
+    if (emailOrUsername.trim() !== "") {
+      const response = await forgotPassword({ username_or_email: emailOrUsername.trim() });
+      if (response) {
+        setShowConfirmationAlert(true);
       } else {
-        setShowFieldsAlert(true);
+        ToastAndroid.show("Something went wrong. Please try again.", ToastAndroid.SHORT);
       }
-    } catch (error) {
-      console.log(error);
+    } else {
+      setShowFieldsAlert(true);
     }
   };
 

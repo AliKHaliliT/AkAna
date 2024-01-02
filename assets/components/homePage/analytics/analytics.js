@@ -11,8 +11,6 @@ const Analytics = ({ data, onTextInputPress, onTapCloseSuggestions }) => {
   const [userSessions, setUserSessions] = useState([]);
   const [chartData, setChartData] = useState([]);
 
-  console.log(data);
-
   useEffect(() => {
     setUserSessions(Object.keys(data));
     setChartData(Object.values(data));

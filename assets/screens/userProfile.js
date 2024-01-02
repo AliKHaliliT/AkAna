@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Dimensions, View, Text, StyleSheet } from "react-native";
-import loadValue from "../utils/loadValue";
+import { Dimensions, ToastAndroid, View, Text, StyleSheet } from "react-native";
+import loadValueSecure from "../utils/loadValueSecure";
+import userInfo from "../api/userInfo";
 import deleteValue from "../utils/deleteValue";
 import { LinearGradient } from "react-native-linear-gradient";
 import GoBack from "../components/common/goBackButtonWithText";
@@ -16,20 +17,26 @@ const UserProfile = ({ navigation }) => {
   const [lastName, setLastName] = useState("Lupus");
   const [username, setUsername] = useState("canislupus");
   const [email, setEmail] = useState("canislupus@akana.com");
+  const [plan, setPlan] = useState("Platinum");
+  const [credit, setCredit] = useState("999");
 
   useEffect(() => {
-    loadValue("firstName").then((savedFirstName) => {
-      setFirstName(savedFirstName);
-    });
-    loadValue("lastName").then((savedLastName) => {
-      setLastName(savedLastName);
-    });
-    loadValue("userName").then((savedUsername) => {
-      setUsername(savedUsername);
-    });
-    loadValue("email").then((savedEmail) => {
-      setEmail(savedEmail);
-    });
+    const getUserInfo = async () => {
+      const { username, password } = await loadValueSecure("userPass");
+      const response = await userInfo({ username_or_email: username, password: password });
+
+      if (response.status === 200) {
+        setFirstName(response.data.data.first_name);
+        setLastName(response.data.data.last_name);
+        setUsername(response.data.data.username);
+        setEmail(response.data.data.email);
+        setPlan(response.data.data.plan);
+        setCredit(response.data.data.credit);
+      } else {
+        ToastAndroid.show("Something went wrong retrieving the info from the server.", ToastAndroid.SHORT);
+      }
+    };
+    getUserInfo();
   }, []);
 
   const handleBackTo = () => {

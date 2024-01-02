@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Dimensions, ScrollView, View, Text, TextInput, StyleSheet } from "react-native";
-import loadValue from "../utils/loadValue";
-import saveValue from "../utils/saveValue";
+import { Dimensions, ToastAndroid, ScrollView, View, Text, TextInput, StyleSheet } from "react-native";
+import loadValueSecure from "../utils/loadValueSecure";
+import userInfo from "../api/userInfo";
 import deleteValue from "../utils/deleteValue";
+import updateUserCredentials from "../api/updateUserCredentials";
+import saveValueSecure from "../utils/saveValueSecure";
 import { LinearGradient } from "react-native-linear-gradient";
 import GoBack from "../components/common/goBackButtonWithText";
 import MCIIcon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -13,28 +15,38 @@ import ConfirmAlert from "../components/common/confirmAlert";
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
 const UserProfileEdit = ({ navigation }) => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
+  const [firstName, setFirstName] = useState("Canis");
+  const [firstNameLoaded, setFirstNameLoaded] = useState('');
+  const [lastName, setLastName] = useState("Lupus");
+  const [lastNameLoaded , setLastNameLoaded] = useState('');
+  const [username, setUsername] = useState("canislupus");
+  const [usernameLoaded, setUsernameLoaded] = useState('');
+  const [email, setEmail] = useState("canislupus@akana.com");
+  const [emailLoaded, setEmailLoaded] = useState('');
   const [showAccountAlert, setShowAccountAlert] = useState(false);
-  const [password, setPassword] = useState('');
-  const [retypePassword, setRetypePassword] = useState('');
+  const [passwordTyped, setPasswordTyped] = useState('');
+  const [retypePasswordTyped, setRetypePasswordTyped] = useState('');
   const [showPasswordAlert, setShowPasswordAlert] = useState(false);
 
   useEffect(() => {
-    loadValue("firstName").then((savedFirstName) => {
-      setFirstName(savedFirstName);
-    });
-    loadValue("lastName").then((savedLastName) => {
-      setLastName(savedLastName);
-    });
-    loadValue("userName").then((savedUsername) => {
-      setUsername(savedUsername);
-    });
-    loadValue("email").then((savedEmail) => {
-      setEmail(savedEmail);
-    });
+    const getUserInfo = async () => {
+      const { username, password } = await loadValueSecure("userPass");
+      const response = await userInfo({ username_or_email: username, password: password });
+
+      if (response.status === 200) {
+        setFirstName(response.data.data.first_name);
+        setFirstNameLoaded(response.data.data.first_name);
+        setLastName(response.data.data.last_name);
+        setLastNameLoaded(response.data.data.last_name);
+        setUsername(response.data.data.username);
+        setUsernameLoaded(response.data.data.username);
+        setEmail(response.data.data.email);
+        setEmailLoaded(response.data.data.email);
+      } else {
+        ToastAndroid.show("Something went wrong retrieving the info from the server.", ToastAndroid.SHORT);
+      }
+    };
+    getUserInfo();
   }, []);
 
   const handleBackTo = () => {
@@ -51,19 +63,41 @@ const UserProfileEdit = ({ navigation }) => {
     });
   }
 
-  const handleSave = () => {
-    saveValue("firstName", firstName);
-    saveValue("lastName", lastName);
-    saveValue("userName", username);
-    saveValue("email", email);
-    if (password) {
-      if (password !== retypePassword) {
+  const handleSave = async () => {
+    const { username, password } = await loadValueSecure("userPass");
+    const user = { username_or_email: username, password: password };
+    const actions = {};
+    if (firstName !== firstNameLoaded) {
+      actions.update_first_name = firstName;
+    }
+    if (lastName !== lastNameLoaded) {
+      actions.update_last_name = lastName;
+    }
+    if (username !== usernameLoaded) {
+      actions.update_username = username;
+    }
+    if (email !== emailLoaded) {
+      actions.update_email = email;
+    }
+    if (passwordTyped !== '') {
+      if (passwordTyped !== retypePasswordTyped) {
         setShowPasswordAlert(true);
         return;
       }
-      saveValue("password", password);
+      if (passwordTyped !== password) {
+        actions.update_password = password;
+      }
+    
     }
-    navigation.navigate("UserProfile");
+    const response = await updateUserCredentials({ user: user, actions: actions });
+    if (response.status === 200) {
+      if (actions.hasOwnProperty("username") || actions.hasOwnProperty("password")) {
+        await saveValueSecure(username, passwordTyped, "userPass");
+      }
+      navigation.navigate("UserProfile");
+    } else {
+      ToastAndroid.show("Something went wrong updating the info on the server.", ToastAndroid.SHORT);
+    }
   };
 
   return (
@@ -125,8 +159,8 @@ const UserProfileEdit = ({ navigation }) => {
                 <Text style={styles.title}>Password</Text>
                 <TextInput
                   style={{...styles.textInput, marginBottom: 10}}
-                  value={password}
-                  onChangeText={setPassword}
+                  value={passwordTyped}
+                  onChangeText={setPasswordTyped}
                   placeholder="************"
                   placeholderTextColor={"#ffffff"}
                   secureTextEntry={true}
@@ -136,8 +170,8 @@ const UserProfileEdit = ({ navigation }) => {
                 <Text style={styles.title}>Retype Password</Text>
                 <TextInput
                   style={{...styles.textInput, marginBottom: 10}}
-                  value={retypePassword}
-                  onChangeText={setRetypePassword}
+                  value={retypePasswordTyped}
+                  onChangeText={setRetypePasswordTyped}
                   placeholder="************"
                   placeholderTextColor={"#ffffff"}
                   secureTextEntry={true}

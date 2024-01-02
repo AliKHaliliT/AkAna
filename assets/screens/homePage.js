@@ -65,7 +65,7 @@ const HomePage = ({ navigation }) => {
         // console.log(Object.values(response.data.data));
         // setAnalyticsData(response.data.data);
       } else {
-        ToastAndroid.show("Something went wrong retrieving the services from the server.", ToastAndroid.SHORT);
+        ToastAndroid.show("Something went wrong retrieving the lameness detection data from the server.", ToastAndroid.SHORT);
       }
     }
     getServices();
