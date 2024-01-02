@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-import { Dimensions, ScrollView, Image, View, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Dimensions, ToastAndroid, ScrollView, Image, View, StyleSheet } from "react-native";
 import getRandomPosition from "../utils/randomPositionGenerator";
 import backgroundDecorations from "../utils/decorations";
+import loadValueSecure from "../utils/loadValueSecure";
+import services from "../api/services";
 import { LinearGradient } from "react-native-linear-gradient";
 import { TapGestureHandler, State } from "react-native-gesture-handler";
 import analyticsData from "../cache/data/analyticsUIData";
@@ -17,12 +19,27 @@ const screenHeight = Dimensions.get("window").height;
 
 const positions = getRandomPosition(screenHeight, screenWidth, 300, 200, backgroundDecorations.length);
 
-const descriptions = require("../cache/data/servicesData.json");
+// const descriptions = require("../cache/data/servicesData.json");
 const images = [require("../cache/img/lamenessDetection.png")];
 
 const HomePage = ({ navigation }) => {
   const [keyboardListener, setKeyboardListener] = useState(false);
   const [onTapCloseSuggestions, setOnTapCloseSuggestions] = useState(true);
+  const [descriptions, setDescriptions] = useState([]);
+
+  useEffect(() => {
+    const getServices = async () => {
+      const { username, password } = await loadValueSecure("userPass");
+      const response = await services({ username_or_email: username, password: password });
+      console.log(response);
+      if (response.status === 200) {
+        // setDescriptions(response.data.data);
+      } else {
+        ToastAndroid.show("Something went wrong retrieving the services from the server.", ToastAndroid.SHORT);
+      }
+    };
+    getServices();
+  }, []);
 
   return (
     <LinearGradient colors={["#06181d", "#02223d"]} style={styles.container}>

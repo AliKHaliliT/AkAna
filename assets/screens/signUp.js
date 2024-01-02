@@ -13,7 +13,6 @@ import ErrorAlert from "../components/common/errorAlert";
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
 const SignUp = ({ navigation }) => {
-
   const [termsAgreed, setTermsAgreed] = useState(false);
   const [subscriptionPlans, setSubscriptionPlans] = useState([]);
   const [firstName, setFirstName] = useState('');
@@ -49,7 +48,7 @@ const SignUp = ({ navigation }) => {
     };
     getPlans();
   }, []);
-  
+
   const handleTermsPress = () => {
     // Linking.openURL("your-terms-and-conditions-link");
   };
@@ -62,7 +61,7 @@ const SignUp = ({ navigation }) => {
       email.trim() !== '' &&
       password.trim() !== '' &&
       retypePassword.trim() !== '';
-  
+
     if (fieldsFilled) {
       if (password === retypePassword) {
         if (termsAgreed) {
@@ -78,10 +77,10 @@ const SignUp = ({ navigation }) => {
             ToastAndroid.show("Account created successfully.", ToastAndroid.SHORT);
             handleNavigation("Login");
           } else {
-            if(response.message === "User already exists"){
+            if (response.message === "User already exists") {
               setShowMultipleAlertText("There is already an account with this email address or username.");
               setShowMultipleAlert(true);
-            } else if (response.message === "Invalid email"){
+            } else if (response.message === "Invalid email") {
               setShowMultipleAlertText("Please enter a valid email address.");
               setShowMultipleAlert(true);
             } else {
@@ -98,54 +97,54 @@ const SignUp = ({ navigation }) => {
     } else {
       setShowFieldsAlert(true);
     }
-  }
+  };
 
   return (
     <LinearGradient colors={["#06181d", "#02223d"]} style={styles.container}>
-    <ScrollView style={styles.content}>
-      <KeyboardAvoidingView behavior={"padding"}>
-        <WelcomeText text={"Sign Up"} iconProps={["form", responsiveSize / 15, "#ffffff"]} containerStyle={styles.welcomeText}/>
-        <React.Fragment>
-          <View style={styles.nameFields}>
-            <TextInput placeholder={"First Name"} placeholderTextColor={"#6a7477"} style={[styles.input, styles.halfInput]} onChangeText={setFirstName} value={firstName}/>
-            <TextInput placeholder={"Last Name"} placeholderTextColor={"#6a7477"} style={[styles.input, styles.halfInput]} onChangeText={setLastName} value={lastName}/>
-          </View>
-          <TextInput placeholder={"Username"} placeholderTextColor={"#6a7477"} style={styles.input} onChangeText={setUserName} value={userName}/>
-          <TextInput placeholder={"Email"} placeholderTextColor={"#6a7477"} style={styles.input} onChangeText={setEmail} value={email}/>
-          <TextInput placeholder={"Password"} placeholderTextColor={"#6a7477"} secureTextEntry={true} style={styles.input} onChangeText={setPassword} value={password}/>
-          <TextInput placeholder={"Retype Password"} placeholderTextColor={"#6a7477"} secureTextEntry={true} style={styles.input} onChangeText={setRetypePassword} value={retypePassword}/>
-          <View style={{...styles.input, padding: 0, paddingVertical: 0}}>
-            <Picker
-              style={{color: "#06181d"}}
-              selectedValue={selectedPlan}
-              dropdownIconColor={"#06181d"}
-              mode={"dropdown"}
-              onValueChange={(itemValue, blackHole) =>
-                setSelectedPlan(itemValue)
-              }>
-              {Object.keys(subscriptionPlans).map((plan, index) => (
-                <Picker.Item key={index} label={`${Object.keys(subscriptionPlans)[index]} - ${Object.values(subscriptionPlans)[index].price}`} />
-              ))}
-            </Picker>
-          </View>
-          <View style={styles.checkboxArea}>
-            <CheckBox onChange={handleTermsAgreed} checked={termsAgreed} />
-            <Text style={styles.termsText}>I agree to the</Text>
-            <RenderLink text={"Terms of Service"} onPress={handleTermsPress}/>
-          </View>
-          <GradientButton text={"Sign Up"} onPress={handleSignUp} colors={["#4cbb17", "#3fa23e"]} />
-          <View style={styles.haveAccountArea}>
-            <Text style={styles.haveAccountText}>Already have an account?</Text>
-            <RenderLink text={"Login"} onPress={() => handleNavigation("Login")} />
-          </View>
-        </React.Fragment>
-      </KeyboardAvoidingView>
-    </ScrollView>
-    <ErrorAlert visible={showFieldsAlert} close={setShowFieldsAlert} alertTitle={"Error"} alertText={"Please fill all the fields."} />
-    <ErrorAlert visible={showPasswordAlert} close={setShowPasswordAlert} alertTitle={"Error"} alertText={"Passwords do not match."} />
-    <ErrorAlert visible={showMultipleAlert} close={setShowMultipleAlert} alertTitle={"Error"} alertText={showMultipleAlertText} />
-    <ErrorAlert visible={showTermsAlert} close={setShowTermsAlert} alertTitle={"Error"} alertText={"Please agree to the terms of service"} />
-  </LinearGradient>
+      <ScrollView style={styles.content}>
+        <KeyboardAvoidingView behavior={"padding"}>
+          <WelcomeText text={"Sign Up"} iconProps={["form", responsiveSize / 15, "#ffffff"]} containerStyle={styles.welcomeText} />
+          <React.Fragment>
+            <View style={styles.nameFields}>
+              <TextInput placeholder={"First Name"} placeholderTextColor={"#6a7477"} style={[styles.input, styles.halfInput]} onChangeText={setFirstName} value={firstName} />
+              <TextInput placeholder={"Last Name"} placeholderTextColor={"#6a7477"} style={[styles.input, styles.halfInput]} onChangeText={setLastName} value={lastName} />
+            </View>
+            <TextInput placeholder={"Username"} placeholderTextColor={"#6a7477"} style={styles.input} onChangeText={setUserName} value={userName} />
+            <TextInput placeholder={"Email"} placeholderTextColor={"#6a7477"} style={styles.input} onChangeText={setEmail} value={email} />
+            <TextInput placeholder={"Password"} placeholderTextColor={"#6a7477"} secureTextEntry={true} style={styles.input} onChangeText={setPassword} value={password} />
+            <TextInput placeholder={"Retype Password"} placeholderTextColor={"#6a7477"} secureTextEntry={true} style={styles.input} onChangeText={setRetypePassword} value={retypePassword} />
+            <View style={{ ...styles.input, padding: 0, paddingVertical: 0 }}>
+              <Picker
+                style={{ color: "#06181d" }}
+                selectedValue={selectedPlan}
+                dropdownIconColor={"#06181d"}
+                mode={"dropdown"}
+                onValueChange={(itemValue, blackHole) =>
+                  setSelectedPlan(itemValue)
+                }>
+                {Object.keys(subscriptionPlans).map((plan, index) => (
+                  <Picker.Item key={index} label={`${Object.keys(subscriptionPlans)[index]} - ${Object.values(subscriptionPlans)[index].price}`} />
+                ))}
+              </Picker>
+            </View>
+            <View style={styles.checkboxArea}>
+              <CheckBox onChange={handleTermsAgreed} checked={termsAgreed} />
+              <Text style={styles.termsText}>I agree to the</Text>
+              <RenderLink text={"Terms of Service"} onPress={handleTermsPress} />
+            </View>
+            <GradientButton text={"Sign Up"} onPress={handleSignUp} colors={["#4cbb17", "#3fa23e"]} />
+            <View style={styles.haveAccountArea}>
+              <Text style={styles.haveAccountText}>Already have an account?</Text>
+              <RenderLink text={"Login"} onPress={() => handleNavigation("Login")} />
+            </View>
+          </React.Fragment>
+        </KeyboardAvoidingView>
+      </ScrollView>
+      <ErrorAlert visible={showFieldsAlert} close={setShowFieldsAlert} alertTitle={"Error"} alertText={"Please fill all the fields."} />
+      <ErrorAlert visible={showPasswordAlert} close={setShowPasswordAlert} alertTitle={"Error"} alertText={"Passwords do not match."} />
+      <ErrorAlert visible={showTermsAlert} close={setShowTermsAlert} alertTitle={"Error"} alertText={"Please agree to the terms of service"} />
+      <ErrorAlert visible={showMultipleAlert} close={setShowMultipleAlert} alertTitle={"Error"} alertText={showMultipleAlertText} />
+    </LinearGradient>
   );
 };
 
