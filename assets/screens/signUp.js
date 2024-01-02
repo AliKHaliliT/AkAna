@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { Dimensions, ScrollView, KeyboardAvoidingView, View, TextInput, Text, StyleSheet } from "react-native";
-import isValidEmail from "../utils/validateEmail";
-import saveValue from "../utils/saveValue";
+import React, { useState, useEffect } from "react";
+import { Dimensions, ToastAndroid, ScrollView, KeyboardAvoidingView, View, TextInput, Text, StyleSheet } from "react-native";
+import plans from "../api/plans";
+import signUp from "../api/signUp";
 import { LinearGradient } from "react-native-linear-gradient";
 import WelcomeText from "../components/common/welcomeText";
 import { Picker } from "@react-native-picker/picker";
@@ -15,6 +15,7 @@ const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window"
 const SignUp = ({ navigation }) => {
 
   const [termsAgreed, setTermsAgreed] = useState(false);
+  const [subscriptionPlans, setSubscriptionPlans] = useState([]);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [userName, setUserName] = useState('');
@@ -22,10 +23,11 @@ const SignUp = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [retypePassword, setRetypePassword] = useState('');
   const [showFieldsAlert, setShowFieldsAlert] = useState(false);
-  const [showEmailAlert, setShowEmailAlert] = useState(false);
   const [showPasswordAlert, setShowPasswordAlert] = useState(false);
   const [showTermsAlert, setShowTermsAlert] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState(''); 
+  const [showMultipleAlert, setShowMultipleAlert] = useState(false);
+  const [showMultipleAlertText, setShowMultipleAlertText] = useState('');
+  const [selectedPlan, setSelectedPlan] = useState('');
 
   const handleNavigation = (screen) => {
     navigation.navigate(screen);
@@ -35,6 +37,19 @@ const SignUp = ({ navigation }) => {
     agreed ? setTermsAgreed(true) : setTermsAgreed(false);
   };
 
+  useEffect(() => {
+    const getPlans = async () => {
+      const response = await plans();
+      if (response.status === 200) {
+        setSubscriptionPlans(response.data.data);
+        setSelectedPlan(`${Object.keys(response.data.data)[0]} - ${Object.values(response.data.data)[0].price}`);
+      } else {
+        ToastAndroid.show("Something went wrong retrieving the plans from the server.", ToastAndroid.SHORT);
+      }
+    };
+    getPlans();
+  }, []);
+  
   const handleTermsPress = () => {
     // Linking.openURL("your-terms-and-conditions-link");
   };
@@ -49,40 +64,41 @@ const SignUp = ({ navigation }) => {
       retypePassword.trim() !== '';
   
     if (fieldsFilled) {
-      if (isValidEmail(email.trim())) {
-        // isValidDomain should be handled on the backend
-        if (password === retypePassword) {
-          if (termsAgreed) {
-            try {
-              await Promise.all([
-                saveValue("firstName", firstName.trim()),
-                saveValue("lastName", lastName.trim()),
-                saveValue("userName", userName.trim()),
-                saveValue("email", email.trim()),
-                saveValue("password", password.trim()),
-                saveValue("termsAgreed", termsAgreed.toString()),
-              ]);
-              navigation.navigate("Login");
-            } catch (error) {
-              console.error("Error saving values:", error);
+      if (password === retypePassword) {
+        if (termsAgreed) {
+          const response = await signUp({
+            first_name: firstName.trim(),
+            last_name: lastName.trim(),
+            username: userName.trim(),
+            email: email.trim(),
+            password: password.trim(),
+            plan: selectedPlan.split(" - ")[0],
+          });
+          if (response.status === 200) {
+            ToastAndroid.show("Account created successfully.", ToastAndroid.SHORT);
+            handleNavigation("Login");
+          } else {
+            if(response.message === "User already exists"){
+              setShowMultipleAlertText("There is already an account with this email address or username.");
+              setShowMultipleAlert(true);
+            } else if (response.message === "Invalid email"){
+              setShowMultipleAlertText("Please enter a valid email address.");
+              setShowMultipleAlert(true);
+            } else {
+              setShowMultipleAlertText("Something went wrong. Please try again later.");
+              setShowMultipleAlert(true);
             }
           }
-          else {
-            setShowTermsAlert(true);
-          }
+        } else {
+          setShowTermsAlert(true);
         }
-        else {
-          setShowPasswordAlert(true);
-        }
+      } else {
+        setShowPasswordAlert(true);
       }
-      else {
-        setShowEmailAlert(true);
-      }
-    }
-    else {
+    } else {
       setShowFieldsAlert(true);
     }
-  };
+  }
 
   return (
     <LinearGradient colors={["#06181d", "#02223d"]} style={styles.container}>
@@ -104,12 +120,12 @@ const SignUp = ({ navigation }) => {
               selectedValue={selectedPlan}
               dropdownIconColor={"#06181d"}
               mode={"dropdown"}
-              onValueChange={(itemValue, itemIndex) =>
+              onValueChange={(itemValue, blackHole) =>
                 setSelectedPlan(itemValue)
               }>
-              <Picker.Item label="Basic" value="basic" />
-              <Picker.Item label="Standard" value="standard" />
-              <Picker.Item label="Premium" value="premium" />
+              {Object.keys(subscriptionPlans).map((plan, index) => (
+                <Picker.Item key={index} label={`${Object.keys(subscriptionPlans)[index]} - ${Object.values(subscriptionPlans)[index].price}`} />
+              ))}
             </Picker>
           </View>
           <View style={styles.checkboxArea}>
@@ -126,8 +142,8 @@ const SignUp = ({ navigation }) => {
       </KeyboardAvoidingView>
     </ScrollView>
     <ErrorAlert visible={showFieldsAlert} close={setShowFieldsAlert} alertTitle={"Error"} alertText={"Please fill all the fields."} />
-    <ErrorAlert visible={showEmailAlert} close={setShowEmailAlert} alertTitle={"Error"} alertText={"Please enter a valid email address."} />
     <ErrorAlert visible={showPasswordAlert} close={setShowPasswordAlert} alertTitle={"Error"} alertText={"Passwords do not match."} />
+    <ErrorAlert visible={showMultipleAlert} close={setShowMultipleAlert} alertTitle={"Error"} alertText={showMultipleAlertText} />
     <ErrorAlert visible={showTermsAlert} close={setShowTermsAlert} alertTitle={"Error"} alertText={"Please agree to the terms of service"} />
   </LinearGradient>
   );
@@ -186,6 +202,22 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat-Medium",
     fontSize: responsiveSize / 42,
     marginRight: 5,
+  },
+  planPrice: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginVertical: 5,
+  },
+  planName: {
+    color: "#ffffff",
+    fontFamily: "Montserrat-Medium",
+    fontSize: responsiveSize / 42,
+  },
+  planPriceText: {
+    color: "#ffffff",
+    fontFamily: "Montserrat-Medium",
+    fontSize: responsiveSize / 42,
   },
 });
 

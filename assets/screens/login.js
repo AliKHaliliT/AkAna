@@ -24,10 +24,18 @@ const Login = ({ navigation }) => {
   useEffect(() => {
     const getRememberMe = async () => {
       const rememberMeValue = await loadValue("rememberMe");
+
+      const { username, password } = { username: '', password: '' };
+
       if (rememberMeValue === "true") {
-        const { username, password } = await loadValueSecure("userPass");
-        setEmailOrUsername(username || '');
-        setPassword(password || '');
+        try {
+          const { username, password } = await loadValueSecure("userPass");
+        } catch (error) {
+          console.log("This is the first time the user is logging in.")
+        }
+
+        setEmailOrUsername(username);
+        setPassword(password);
         handleRememberMe(true);
       }
     };
@@ -46,7 +54,7 @@ const Login = ({ navigation }) => {
     try {
       const response = await login({ username_or_email: emailOrUsername.trim(), password: password.trim() });
   
-      if (response || emailOrUsername.trim() === "canislupus" && password.trim() === "test") {
+      if (response.status === 200 || emailOrUsername.trim() === "canislupus" && password.trim() === "test") {
         await saveValue("isLoggedIn", "true");
         await saveValue("rememberMe", rememberMe ? "true" : "false");
         await saveValueSecure(emailOrUsername.trim(), password.trim(), "userPass");

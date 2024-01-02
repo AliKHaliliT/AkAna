@@ -5,14 +5,14 @@ const instance = axios.create({
   timeout: 10000, // Timeout set to 5 seconds
 });
 
-const login = async (loginData) => {
+const plans = async () => {
   try {
-    const response = await instance.post(`${addressPrefix}/actions/login/`, loginData);
-    return response;
+    const response = await instance.get(`${addressPrefix}/data/plans/`);
+    return response; 
   } catch (error) {
     if (error.response) {
       // The request was made and the server responded with a status code that falls out of the range of 2xx
-      return error.response.data; // Return the response data from the server error
+      return error.response.data
     } else if (error.request) {
       console.log("No response received:", error.request);
       return { message: "No response received" };
@@ -24,4 +24,4 @@ const login = async (loginData) => {
   }
 };
 
-export default login;
+export default plans;
