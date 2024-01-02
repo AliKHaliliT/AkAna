@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Dimensions, View, TextInput, Text, StyleSheet } from 'react-native';
-import loadValue from '../utils/loadValue';
+import forgotPassword from '../api/forgotPassword';
 import { LinearGradient } from 'react-native-linear-gradient';
 import WelcomeText from '../components/common/welcomeText';
-import Icon from "react-native-vector-icons/MaterialCommunityIcons"
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import GradientButton from '../components/common/gradientButton';
 import RenderLink from '../components/common/renderLink';
 import ErrorAlert from '../components/common/errorAlert';
@@ -12,10 +12,8 @@ const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window"
 
 const ForgotPassword = ({ navigation }) => {
   const [emailOrUsername, setEmailOrUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [showFieldsAlert, setShowFieldsAlert] = useState(false);
-  const [noAccountAlert, setnoAccountAlert] = useState(false);
-  const [showPasswordAlert, setShowPasswordAlert] = useState(false);
+  const [showConfirmationAlert, setShowConfirmationAlert] = useState(false);
 
   const handleNavigation = (screen) => {
     navigation.navigate(screen);
@@ -24,33 +22,27 @@ const ForgotPassword = ({ navigation }) => {
   const handleForgotPassword = async () => {
     try {
       if (emailOrUsername.trim() !== "") {
-        const retrievedMail = await loadValue('email');
-        const retrievedUserName = await loadValue('userName');
-        const retrievedPassword = await loadValue('password');
-  
-        if (retrievedMail === emailOrUsername.trim() || retrievedUserName === emailOrUsername.trim()) {
-          setPassword(retrievedPassword);
-          setShowPasswordAlert(true);
-        } else {
-          setnoAccountAlert(true);
+        const response = await forgotPassword({ username_or_email: emailOrUsername.trim() });
+        if (response) {
+          setShowConfirmationAlert(true);
         }
       } else {
         setShowFieldsAlert(true);
       }
     } catch (error) {
-      console.error("Error during password reset:", error);
+      console.log(error);
     }
-  };  
+  };
 
-  const handlePasswordSeen = () => {
-    setShowPasswordAlert(false);
+  const handleConfirmed = () => {
+    setShowConfirmationAlert(false);
     navigation.navigate('Login');
-  }
+  };
 
   return (
     <LinearGradient colors={['#06181d', '#02223d']} style={styles.container}>
       <View style={styles.content}>
-        <WelcomeText text={"Forgot Password"} iconProps={['lock-reset', responsiveSize / 8, '#ffffff']} containerStyle={styles.welcomeText} IconObject={Icon}/>
+        <WelcomeText text={"Forgot Password"} iconProps={['lock-reset', responsiveSize / 8, '#ffffff']} containerStyle={styles.welcomeText} IconObject={Icon} />
         <TextInput placeholder={"Email or Username"} placeholderTextColor={"#6a7477"} style={styles.input} onChangeText={setEmailOrUsername} value={emailOrUsername} />
         <GradientButton text={"Forgot Password"} onPress={handleForgotPassword} colors={['#4cbb17', '#3fa23e']} />
         <View style={styles.rememberArea}>
@@ -59,8 +51,12 @@ const ForgotPassword = ({ navigation }) => {
         </View>
       </View>
       <ErrorAlert visible={showFieldsAlert} close={setShowFieldsAlert} alertTitle={"Error"} alertText={"Please fill all the fields."} />
-      <ErrorAlert visible={noAccountAlert} close={setnoAccountAlert} alertTitle={"Error"} alertText={"No account found with that email or username."} />
-      <ErrorAlert visible={showPasswordAlert} close={handlePasswordSeen} alertTitle={"Success!"} alertText={`Your password is "${password}"`} />
+      <ErrorAlert
+        visible={showConfirmationAlert}
+        close={handleConfirmed}
+        alertTitle={"Success!"}
+        alertText={"A password reset mail was sent to the entered email. If the entered email was correct, you should receive the reset mail momentarily. Please check your spam folder if you can't find the mail."}
+      />
     </LinearGradient>
   );
 };

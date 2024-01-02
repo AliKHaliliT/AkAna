@@ -5,9 +5,9 @@ const instance = axios.create({
   timeout: 10000, // Timeout set to 5 seconds
 });
 
-const services = async (servicesData) => {
+const forgotPassword = async (forgotPasswordData) => {
   try {
-    const response = await instance.post(`${addressPrefix}/data/services/`, servicesData);
+    const response = await instance.post(`${addressPrefix}/actions/forgot_password/`, forgotPasswordData);
     return response;
   } catch (error) {
     if (error.response) {
@@ -24,4 +24,4 @@ const services = async (servicesData) => {
   }
 };
 
-export default services;
+export default forgotPassword;

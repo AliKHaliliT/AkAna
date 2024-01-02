@@ -5,9 +5,9 @@ const instance = axios.create({
   timeout: 10000, // Timeout set to 5 seconds
 });
 
-const services = async (servicesData) => {
+const userLamnessDetectionData = async (userLamnessDetectionDataData) => {
   try {
-    const response = await instance.post(`${addressPrefix}/data/services/`, servicesData);
+    const response = await instance.post(`${addressPrefix}/data/user_lameness_detection_data/`, userLamnessDetectionDataData);
     return response;
   } catch (error) {
     if (error.response) {
@@ -24,4 +24,4 @@ const services = async (servicesData) => {
   }
 };
 
-export default services;
+export default userLamnessDetectionData;

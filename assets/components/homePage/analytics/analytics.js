@@ -9,9 +9,13 @@ const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window"
 
 const Analytics = ({ data, onTextInputPress, onTapCloseSuggestions }) => {
   const [userSessions, setUserSessions] = useState([]);
+  const [chartData, setChartData] = useState([]);
+
+  console.log(data);
 
   useEffect(() => {
-    setUserSessions(require("../../../cache/data/userSessions.json").sessions);
+    setUserSessions(Object.keys(data));
+    setChartData(Object.values(data));
   }, []);
 
   const processed = data.reduce((total, item) => total + item.value, 0);

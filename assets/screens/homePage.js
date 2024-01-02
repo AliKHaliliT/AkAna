@@ -4,9 +4,10 @@ import getRandomPosition from "../utils/randomPositionGenerator";
 import backgroundDecorations from "../utils/decorations";
 import loadValueSecure from "../utils/loadValueSecure";
 import services from "../api/services";
+import userLamnessDetectionData from "../api/UserLamenessDetectionData";
 import { LinearGradient } from "react-native-linear-gradient";
 import { TapGestureHandler, State } from "react-native-gesture-handler";
-import analyticsData from "../cache/data/analyticsUIData";
+import analyticsDataDefault from "../cache/data/analyticsUIDataDefault";
 import HeaderHomePage from "../components/homePage/header/headerHomePage";
 import ProcessingTypeCard from "../components/homePage/processingTypeCard/processingTypeCard";
 import ModelCard from "../components/homePage/modelCard/modelCard";
@@ -19,25 +20,54 @@ const screenHeight = Dimensions.get("window").height;
 
 const positions = getRandomPosition(screenHeight, screenWidth, 300, 200, backgroundDecorations.length);
 
+// const images = [require("../cache/img/lamenessDetection.png")];
 // const descriptions = require("../cache/data/servicesData.json");
-const images = [require("../cache/img/lamenessDetection.png")];
+
 
 const HomePage = ({ navigation }) => {
   const [keyboardListener, setKeyboardListener] = useState(false);
   const [onTapCloseSuggestions, setOnTapCloseSuggestions] = useState(true);
-  const [descriptions, setDescriptions] = useState([]);
+  const [descriptions, setDescriptions] = useState({});
+  const [images, setImages] = useState([]);
+  const [analyticsData, setAnalyticsData] = useState(analyticsDataDefault);
 
   useEffect(() => {
     const getServices = async () => {
       const { username, password } = await loadValueSecure("userPass");
       const response = await services({ username_or_email: username, password: password });
-      console.log(response);
       if (response.status === 200) {
-        // setDescriptions(response.data.data);
+        Object.keys(response.data.data).forEach((key) => {
+          if (Object.keys(descriptions).includes(key)) {
+            return;
+          }
+          setDescriptions({ [key]: response.data.data[key].description });
+          setImages([{ uri: `data:image/jpg;base64,${response.data.data[key].image}` }]);
+          if (key === "Lameness Detection") {
+            getUserLamnessDetectionData();
+          }
+        });
       } else {
         ToastAndroid.show("Something went wrong retrieving the services from the server.", ToastAndroid.SHORT);
       }
     };
+    // Currently, this is just designed to get the lameness detection data.
+    // And the server only serves lameness detection data.
+    // Upon adding more services, this should be changed.
+    // For example, the analytics card should be rendered dynamically based on the
+    // currently selected service. Also the analytics card might need to be modified for other 
+    // services.
+    // Also the backend and the frontend should be changed to only serve and request
+    // the data that is needed and used the cached data for the rest.
+    const getUserLamnessDetectionData = async () => {
+      const { username, password } = await loadValueSecure("userPass");
+      const response = await userLamnessDetectionData({ username_or_email: username, password: password });
+      if (response.status === 200) {
+        // console.log(Object.values(response.data.data));
+        // setAnalyticsData(response.data.data);
+      } else {
+        ToastAndroid.show("Something went wrong retrieving the services from the server.", ToastAndroid.SHORT);
+      }
+    }
     getServices();
   }, []);
 
