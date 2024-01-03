@@ -1,5 +1,5 @@
-import React from 'react';
-import { Modal, View, ActivityIndicator, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import React from "react";
+import { Modal, View, ActivityIndicator, Text, StyleSheet} from "react-native";
 
 const LoadingIndicator = ({ visible, onClose, text, indicatorColor = "#4cbb17", indicatorSize = "large" }) => {
   return (
@@ -22,15 +22,15 @@ const LoadingIndicator = ({ visible, onClose, text, indicatorColor = "#4cbb17", 
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
     padding: 20,
     borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   closeButton: {
     marginTop: 20,

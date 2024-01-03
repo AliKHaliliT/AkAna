@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Dimensions, ToastAndroid, ScrollView, View, Text, TextInput, StyleSheet } from "react-native";
+import loadValue from "../utils/loadValue";
 import loadValueSecure from "../utils/loadValueSecure";
-import userInfo from "../api/userInfo";
 import deleteValue from "../utils/deleteValue";
 import updateUserCredentials from "../api/updateUserCredentials";
 import saveValueSecure from "../utils/saveValueSecure";
@@ -9,12 +9,14 @@ import { LinearGradient } from "react-native-linear-gradient";
 import GoBack from "../components/common/goBackButtonWithText";
 import MCIIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import GradientButton from "../components/common/gradientButton";
+import LoadingIndicator from "../components/common/activityIndicatorModal";
 import ErrorAlert from "../components/common/errorAlert";
 import ConfirmAlert from "../components/common/confirmAlert";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
 const UserProfileEdit = ({ navigation }) => {
+  const [loading, setLoading] = useState(false);
   const [firstName, setFirstName] = useState("Canis");
   const [firstNameLoaded, setFirstNameLoaded] = useState('');
   const [lastName, setLastName] = useState("Lupus");
@@ -37,28 +39,48 @@ const UserProfileEdit = ({ navigation }) => {
   }, [navigation]);
 
   useEffect(() => {
-    const getUserInfo = async () => {
-      const { username, password } = await loadValueSecure("userPass");
-      const response = await userInfo({ username_or_email: username, password: password });
 
-      if (response.status === 200) {
-        setFirstName(response.data.data.first_name);
-        setFirstNameLoaded(response.data.data.first_name);
-        setLastName(response.data.data.last_name);
-        setLastNameLoaded(response.data.data.last_name);
-        setUsername(response.data.data.username);
-        setUsernameLoaded(response.data.data.username);
-        setEmail(response.data.data.email);
-        setEmailLoaded(response.data.data.email);
+    setLoading(true);
+
+    const getUserInfo = async () => {
+
+      if (Promise.all([loadValue("firstName"), loadValue("lastName"), loadValue("username"), loadValue("email")])) {
+
+        const [asyncStorageFirstName, 
+               asyncStorageLastName, 
+               asyncStorageUsername, 
+               asyncStorageEmail
+              ] = await Promise.all(
+                                    [loadValue("firstName"),
+                                      loadValue("lastName"), 
+                                      loadValue("username"), 
+                                      loadValue("email")]
+                                      );
+        setFirstName(asyncStorageFirstName);
+        setFirstNameLoaded(asyncStorageFirstName);
+        setLastName(asyncStorageLastName);
+        setLastNameLoaded(asyncStorageLastName);
+        setUsername(asyncStorageUsername);
+        setUsernameLoaded(asyncStorageUsername);
+        setEmail(asyncStorageEmail);
+        setEmailLoaded(asyncStorageEmail);
+
+        setLoading(false);
+
       } else {
-        ToastAndroid.show("Something went wrong retrieving the info from the server.", ToastAndroid.SHORT);
+        setLoading(false);
+        console.log("Error loading user info from AsyncStorage.");
       }
     };
+  
     getUserInfo();
   }, []);
 
   const handleBackTo = () => {
-    navigation.navigate("UserProfile");
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "UserProfile" }],
+    });
   };
 
   const handleDelete = () => {
@@ -72,6 +94,9 @@ const UserProfileEdit = ({ navigation }) => {
   }
 
   const handleSave = async () => {
+
+    setLoading(true);
+
     const { username, password } = await loadValueSecure("userPass");
     const user = { username_or_email: username, password: password };
     const actions = {};
@@ -97,16 +122,23 @@ const UserProfileEdit = ({ navigation }) => {
       }
     
     }
-    const response = await updateUserCredentials({ user: user, actions: actions });
-    if (response.status === 200) {
-      if (actions.hasOwnProperty("username") || actions.hasOwnProperty("password")) {
-        await saveValueSecure(username, passwordTyped, "userPass");
+    updateUserCredentials({ user: user, actions: actions }).then(async (response) => {
+
+      if (response.status === 200) {
+        if (actions.hasOwnProperty("username") || actions.hasOwnProperty("password")) {
+          await saveValueSecure(username, passwordTyped, "userPass");
+        }
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "UserProfile" }],
+        });
+      } else {
+        ToastAndroid.show("Something went wrong updating the info on the server.", ToastAndroid.SHORT);
       }
-      navigation.navigate("UserProfile");
-    } else {
-      ToastAndroid.show("Something went wrong updating the info on the server.", ToastAndroid.SHORT);
-    }
-  };
+
+      setLoading(false);
+    });
+  }
 
   return (
     <LinearGradient colors={["#06181d", "#02223d"]} style={styles.container}>
@@ -197,6 +229,7 @@ const UserProfileEdit = ({ navigation }) => {
           />
         </LinearGradient>
       </ScrollView>
+      <LoadingIndicator visible={loading} onClose={() => setLoading(false)} text={"Loading..."} />
       <ErrorAlert visible={showPasswordAlert} close={setShowPasswordAlert} alertTitle={"Error"} alertText={"Passwords do not match."} />
       <ConfirmAlert visible={showAccountAlert} close={setShowAccountAlert} confirm={handleDelete} alertTitle={"Confirm"} alertText={"Are you sure you want to delete your account?"} />
     </LinearGradient>
