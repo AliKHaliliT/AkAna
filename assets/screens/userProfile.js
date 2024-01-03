@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Dimensions, ToastAndroid, View, Text, StyleSheet } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import loadValueSecure from "../utils/loadValueSecure";
 import loadValue from "../utils/loadValue";
 import userInfo from "../api/userInfo";
@@ -24,15 +25,8 @@ const UserProfile = ({ navigation }) => {
   const [plan, setPlan] = useState("Platinum");
   const [credit, setCredit] = useState("999");
 
-    // In order to trigger a re-render when the screen gains focus (navigated to) again. 
-    useEffect(() => {
-      const unsubscribe = navigation.addListener('focus', () => {
-        console.log('Screen UserProfile gained focus again');
-      });
-      return unsubscribe;
-    }, [navigation]);
-
-  useEffect(() => {
+  useFocusEffect(
+    React.useCallback(() => {
 
     setLoading(true);
 
@@ -95,10 +89,11 @@ const UserProfile = ({ navigation }) => {
       });
     }
     getUserInfo();
-  }, []);
+  }, [])
+  )
 
   const handleBackTo = () => {
-    navigation.navigate("Home");
+    navigation.navigate("DrawerNavigator");
   };
 
   const handleEditProfile = () => {

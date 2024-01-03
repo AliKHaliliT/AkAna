@@ -30,14 +30,6 @@ const UserProfileEdit = ({ navigation }) => {
   const [retypePasswordTyped, setRetypePasswordTyped] = useState('');
   const [showPasswordAlert, setShowPasswordAlert] = useState(false);
 
-  // In order to trigger a re-render when the screen gains focus (navigated to) again. 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      console.log('Screen UserProfileEdit gained focus again');
-    });
-    return unsubscribe;
-  }, [navigation]);
-
   useEffect(() => {
 
     setLoading(true);
@@ -77,10 +69,7 @@ const UserProfileEdit = ({ navigation }) => {
   }, []);
 
   const handleBackTo = () => {
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "UserProfile" }],
-    });
+    navigation.navigate("UserProfile");
   };
 
   const handleDelete = () => {
@@ -128,10 +117,7 @@ const UserProfileEdit = ({ navigation }) => {
         if (actions.hasOwnProperty("username") || actions.hasOwnProperty("password")) {
           await saveValueSecure(username, passwordTyped, "userPass");
         }
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "UserProfile" }],
-        });
+        navigation.navigate("UserProfile");
       } else {
         ToastAndroid.show("Something went wrong updating the info on the server.", ToastAndroid.SHORT);
       }

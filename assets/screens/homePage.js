@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Dimensions, ToastAndroid, ScrollView, Image, View, StyleSheet } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import getRandomPosition from "../utils/randomPositionGenerator";
 import backgroundDecorations from "../utils/decorations";
 import loadValueSecure from "../utils/loadValueSecure";
@@ -32,15 +33,8 @@ const HomePage = ({ navigation }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [analyticsData, setAnalyticsData] = useState(analyticsDataDefault);
 
-    // In order to trigger a re-render when the screen gains focus (navigated to) again. 
-    useEffect(() => {
-      const unsubscribe = navigation.addListener('focus', () => {
-        console.log('Screen HomePage gained focus again');
-      });
-      return unsubscribe;
-    }, [navigation]);
-
-  useEffect(() => {
+  useFocusEffect(
+    React.useCallback(() => {
     const getServices = async () => {
       const { username, password } = await loadValueSecure("userPass");
       const response = await services({ username_or_email: username, password: password });
@@ -78,7 +72,8 @@ const HomePage = ({ navigation }) => {
       }
     }
     getServices();
-  }, []);
+  }, [])
+  )
 
   return (
     <LinearGradient colors={["#06181d", "#02223d"]} style={styles.container}>
