@@ -14,16 +14,20 @@ import inference from "../../../api/inference";
 import { LinearGradient } from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import GradientImagedButton from "./gradintImageButton";
+import LoadingIndicator from "../../common/activityIndicatorModal";
 import ErrorAlert from "../../common/errorAlert";
 
 const responsiveSize =
   (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
 const InputSelector = ({ close, currentService }) => {
+  const [loading, setLoading] = useState(false);
   const [result, setResult] = useState();
   const [alertVisible, setAlertVisible] = useState(false);
 
   const handleInference = async (video) => {
+
+    setLoading(true);
 
     const { username, password } = await loadValueSecure("userPass");
 
@@ -48,6 +52,7 @@ const InputSelector = ({ close, currentService }) => {
           console.log("User tapped custom button: ", response.customButton);
         } else {
           handleInference(response.assets[0].uri).then((response) => {
+            setLoading(false);
             if (response.status === 200) {
               console.log(response.data);
               setResult(response.data.result);
@@ -96,6 +101,7 @@ const InputSelector = ({ close, currentService }) => {
           console.log("User tapped custom button: ", response.customButton);
         } else {
           handleInference(response.assets[0].uri).then((response) => {
+            setLoading(false);
             if (response.status === 200) {
               console.log(response.data);
               setResult(response.data.result);
@@ -147,6 +153,7 @@ const InputSelector = ({ close, currentService }) => {
           />
         </View>
       </LinearGradient>
+      <LoadingIndicator visible={loading} onClose={() => setLoading(false)} text={"Uploading..."} />
       <ErrorAlert
         visible={alertVisible}
         close={setAlertVisible}
