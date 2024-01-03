@@ -100,13 +100,15 @@ const UserProfile = ({ navigation }) => {
     navigation.navigate("UserProfileEdit");
   }
 
-  const handleLogout = () => {
-    deleteValue("isLoggedIn").then(() => {
+  const handleLogout = async () => {
+    Promise.all([deleteValue("firstName"), deleteValue("lastName"), deleteValue("username"),
+                        deleteValue("email"), deleteValue("plan"), deleteValue("credit")]).then(() => {
       navigation.reset({
         index: 0,
         routes: [{ name: "Login" }],
       });
-    });
+    }
+    );
   };
 
   return (
