@@ -11,27 +11,36 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import CheckBox from "../components/common/checkbox";
 import RenderLink from "../components/common/renderLink";
 import GradientButton from "../components/common/gradientButton";
+import LoadingIndicator from "../components/common/activityIndicatorModal";
 import ErrorAlert from "../components/common/errorAlert";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
 const Login = ({ navigation }) => {
+  const [loading, setLoading] = useState(false);
   const [emailOrUsername, setEmailOrUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
 
   useEffect(() => {
+    
+    setLoading(true);
+
     const getRememberMe = async () => {
       const rememberMeValue = await loadValue("rememberMe");
 
       if (rememberMeValue === "true") {
         try {
-          const { username, password } = await loadValueSecure("userPass");
-          setEmailOrUsername(username);
-          setPassword(password);
-          handleRememberMe(true);
+          loadValueSecure("userPass").then((userPass) => {
+            setEmailOrUsername(userPass.username);
+            setPassword(userPass.password);
+            handleRememberMe(true);
+            setLoading(false);
+          }
+          );
         } catch (error) {
+          setLoading(false);
           console.log("This is the first time the user is logging in.");
         }
       }
@@ -48,9 +57,11 @@ const Login = ({ navigation }) => {
   };
 
   const handleLogin = async () => {
-    try {
-      const response = await login({ username_or_email: emailOrUsername.trim(), password: password.trim() });
-  
+
+    setLoading(true);
+
+    login({ username_or_email: emailOrUsername.trim(), password: password.trim() }).then( async (response) => {
+
       if (response.status === 200 || emailOrUsername.trim() === "canislupus" && password.trim() === "canislupus") {
         await saveValue("isLoggedIn", "true");
         await saveValue("rememberMe", rememberMe ? "true" : "false");
@@ -63,9 +74,11 @@ const Login = ({ navigation }) => {
       } else {
         setShowErrorAlert(true);
       }
-    } catch (error) {
-      console.error("Error during login:", error);
+
+      setLoading(false);
+
     }
+    );
   };  
 
   return (
@@ -87,6 +100,7 @@ const Login = ({ navigation }) => {
         <Text style={styles.noAccountText}>Don't have an account?</Text>
         <RenderLink text={"Sign Up"} onPress={() => handleNavigation("SignUp")} />
       </View>
+      <LoadingIndicator visible={loading} close={() => setLoading(false)} text={"Loading..."} />
       <ErrorAlert visible={showErrorAlert} close={setShowErrorAlert} alertTitle={"Error"} alertText={"No user found with the given credentials."} />
     </LinearGradient>
   );
