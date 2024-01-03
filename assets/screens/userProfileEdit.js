@@ -122,6 +122,7 @@ const UserProfileEdit = ({ navigation }) => {
     }
     if (passwordTyped !== '') {
       if (passwordTyped !== retypePasswordTyped) {
+        setLoading(false);
         setShowPasswordAlert(true);
         return;
       }

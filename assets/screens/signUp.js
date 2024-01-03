@@ -1,20 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { Dimensions, ToastAndroid, ScrollView, KeyboardAvoidingView, View, TextInput, Text, StyleSheet } from "react-native";
+import { Dimensions, ToastAndroid, ScrollView, KeyboardAvoidingView, View, TextInput, TouchableOpacity, Text, StyleSheet } from "react-native";
 import plans from "../api/plans";
 import signUp from "../api/signUp";
 import { LinearGradient } from "react-native-linear-gradient";
 import WelcomeText from "../components/common/welcomeText";
+import Icon from "react-native-vector-icons/FontAwesome5";
 import { Picker } from "@react-native-picker/picker";
 import CheckBox from "../components/common/checkbox";
 import RenderLink from "../components/common/renderLink";
 import GradientButton from "../components/common/gradientButton";
+import LoadingIndicator from "../components/common/activityIndicatorModal";
 import ErrorAlert from "../components/common/errorAlert";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
 const SignUp = ({ navigation }) => {
+  const [loading, setLoading] = useState(false);
   const [termsAgreed, setTermsAgreed] = useState(false);
-  const [subscriptionPlans, setSubscriptionPlans] = useState([]);
+  const [subscriptionPlans, setSubscriptionPlans] = useState({});
+  const [selectedPlan, setSelectedPlan] = useState('');
+  const [selectedPlanDescription, setSelectedPlanDescription] = useState('');
+  const [showPlanInfoAlert, setShowPlanInfoAlert] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [userName, setUserName] = useState('');
@@ -26,7 +32,6 @@ const SignUp = ({ navigation }) => {
   const [showTermsAlert, setShowTermsAlert] = useState(false);
   const [showMultipleAlert, setShowMultipleAlert] = useState(false);
   const [showMultipleAlertText, setShowMultipleAlertText] = useState('');
-  const [selectedPlan, setSelectedPlan] = useState('');
 
   const handleNavigation = (screen) => {
     navigation.navigate(screen);
@@ -37,23 +42,32 @@ const SignUp = ({ navigation }) => {
   };
 
   useEffect(() => {
-    const getPlans = async () => {
-      const response = await plans();
+
+    setLoading(true);
+    plans().then((response) => {
       if (response.status === 200) {
         setSubscriptionPlans(response.data.data);
-        setSelectedPlan(`${Object.keys(response.data.data)[0]} - ${Object.values(response.data.data)[0].price}`);
       } else {
         ToastAndroid.show("Something went wrong retrieving the plans from the server.", ToastAndroid.SHORT);
       }
-    };
-    getPlans();
+    }
+    );
+    setLoading(false);
   }, []);
+
+  const handleInfoPress = () => {
+    setShowPlanInfoAlert(true);
+    setSelectedPlanDescription(`${subscriptionPlans[selectedPlan.split(" - ")[0]].description}`);
+  };
 
   const handleTermsPress = () => {
     // Linking.openURL("your-terms-and-conditions-link");
   };
 
   const handleSignUp = async () => {
+
+    setLoading(true);
+
     const fieldsFilled =
       firstName.trim() !== '' &&
       lastName.trim() !== '' &&
@@ -65,36 +79,42 @@ const SignUp = ({ navigation }) => {
     if (fieldsFilled) {
       if (password === retypePassword) {
         if (termsAgreed) {
-          const response = await signUp({
+          signUp({
             first_name: firstName.trim(),
             last_name: lastName.trim(),
             username: userName.trim(),
             email: email.trim(),
             password: password.trim(),
             plan: selectedPlan.split(" - ")[0],
-          });
-          if (response.status === 200) {
-            ToastAndroid.show("Account created successfully.", ToastAndroid.SHORT);
-            handleNavigation("Login");
-          } else {
-            if (response.message === "User already exists") {
-              setShowMultipleAlertText("There is already an account with this email address or username.");
-              setShowMultipleAlert(true);
-            } else if (response.message === "Invalid email") {
-              setShowMultipleAlertText("Please enter a valid email address.");
-              setShowMultipleAlert(true);
+          }).then((response) => {
+            if (response.status === 200) {
+              ToastAndroid.show("Account created successfully.", ToastAndroid.SHORT);
+              handleNavigation("Login");
             } else {
-              setShowMultipleAlertText("Something went wrong. Please try again later.");
-              setShowMultipleAlert(true);
+              if (response.message === "User already exists") {
+                setShowMultipleAlertText("There is already an account with this email address or username.");
+                setShowMultipleAlert(true);
+              } else if (response.message === "Invalid email") {
+                setShowMultipleAlertText("Please enter a valid email address.");
+                setShowMultipleAlert(true);
+              } else {
+                setShowMultipleAlertText("Something went wrong. Please try again later.");
+                setShowMultipleAlert(true);
+              }
             }
+            setLoading(false);
           }
+          );
         } else {
+          setLoading(false);
           setShowTermsAlert(true);
         }
       } else {
+        setLoading(false);
         setShowPasswordAlert(true);
       }
     } else {
+      setLoading(false);
       setShowFieldsAlert(true);
     }
   };
@@ -113,19 +133,29 @@ const SignUp = ({ navigation }) => {
             <TextInput placeholder={"Email"} placeholderTextColor={"#6a7477"} style={styles.input} onChangeText={setEmail} value={email} />
             <TextInput placeholder={"Password"} placeholderTextColor={"#6a7477"} secureTextEntry={true} style={styles.input} onChangeText={setPassword} value={password} />
             <TextInput placeholder={"Retype Password"} placeholderTextColor={"#6a7477"} secureTextEntry={true} style={styles.input} onChangeText={setRetypePassword} value={retypePassword} />
-            <View style={{ ...styles.input, padding: 0, paddingVertical: 0 }}>
-              <Picker
-                style={{ color: "#06181d" }}
-                selectedValue={selectedPlan}
-                dropdownIconColor={"#06181d"}
-                mode={"dropdown"}
-                onValueChange={(itemValue, blackHole) =>
-                  setSelectedPlan(itemValue)
-                }>
-                {Object.keys(subscriptionPlans).map((plan, index) => (
-                  <Picker.Item key={index} label={`${Object.keys(subscriptionPlans)[index]} - ${Object.values(subscriptionPlans)[index].price}`} />
-                ))}
-              </Picker>
+            <View style={[ styles.input, styles.pickerContainer ]}>
+              <TouchableOpacity style={styles.infoButton} onPress={handleInfoPress}>
+                <Icon name={"info-circle"} size={responsiveSize / 25} color={"#06181d"} />
+              </TouchableOpacity>
+              <View style={styles.pickerConetent}>
+                <Picker
+                  style={{ color: "#06181d" }}
+                  selectedValue={selectedPlan}
+                  dropdownIconColor={"#06181d"}
+                  mode={"dropdown"}
+                  onValueChange={(itemValue, blackHole) =>
+                    setSelectedPlan(itemValue)
+                  }>
+                  {Object.keys(subscriptionPlans).map((plan, index) => (
+                    <Picker.Item 
+                      key={index} 
+                      label={`${Object.keys(subscriptionPlans)[index]} - ${Object.values(subscriptionPlans)[index].price}`}
+                      value={`${Object.keys(subscriptionPlans)[index]} - ${Object.values(subscriptionPlans)[index].price}`}
+                    />
+                  ))}
+                </Picker>
+              </View>
+
             </View>
             <View style={styles.checkboxArea}>
               <CheckBox onChange={handleTermsAgreed} checked={termsAgreed} />
@@ -140,9 +170,11 @@ const SignUp = ({ navigation }) => {
           </React.Fragment>
         </KeyboardAvoidingView>
       </ScrollView>
+      <LoadingIndicator visible={loading} close={() => setLoading(false)} text={"Loading..."} />
       <ErrorAlert visible={showFieldsAlert} close={setShowFieldsAlert} alertTitle={"Error"} alertText={"Please fill all the fields."} />
       <ErrorAlert visible={showPasswordAlert} close={setShowPasswordAlert} alertTitle={"Error"} alertText={"Passwords do not match."} />
       <ErrorAlert visible={showTermsAlert} close={setShowTermsAlert} alertTitle={"Error"} alertText={"Please agree to the terms of service"} />
+      <ErrorAlert visible={showPlanInfoAlert} close={setShowPlanInfoAlert} alertTitle={selectedPlan} alertText={selectedPlanDescription} />
       <ErrorAlert visible={showMultipleAlert} close={setShowMultipleAlert} alertTitle={"Error"} alertText={showMultipleAlertText} />
     </LinearGradient>
   );
@@ -179,17 +211,36 @@ const styles = StyleSheet.create({
   halfInput: {
     width: "48%",
   },
+  pickerContainer: {
+    flexDirection: "row", 
+    padding: 0, 
+    paddingVertical: 0, 
+    backgroundColor: "transparent",
+  },
+  infoButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ffffff",
+    borderRadius: 5,
+    marginRight: 5,
+    minWidth: "10%", 
+  },
+  pickerConetent: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+    borderRadius: 5,
+  },
+  checkboxArea: {
+    flexDirection: "row",
+    marginBottom: 10,
+    marginTop: 10,
+  },
   termsText: {
     color: "#ffffff",
     marginLeft: 10,
     marginRight: 5,
     fontFamily: "Montserrat-Medium",
     fontSize: responsiveSize / 42,
-  },
-  checkboxArea: {
-    flexDirection: "row",
-    marginBottom: 10,
-    marginTop: 10,
   },
   haveAccountArea: {
     flexDirection: "row",
@@ -201,22 +252,6 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat-Medium",
     fontSize: responsiveSize / 42,
     marginRight: 5,
-  },
-  planPrice: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginVertical: 5,
-  },
-  planName: {
-    color: "#ffffff",
-    fontFamily: "Montserrat-Medium",
-    fontSize: responsiveSize / 42,
-  },
-  planPriceText: {
-    color: "#ffffff",
-    fontFamily: "Montserrat-Medium",
-    fontSize: responsiveSize / 42,
   },
 });
 
