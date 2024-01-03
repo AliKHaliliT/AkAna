@@ -20,6 +20,14 @@ const UserProfile = ({ navigation }) => {
   const [plan, setPlan] = useState("Platinum");
   const [credit, setCredit] = useState("999");
 
+    // In order to trigger a re-render when the screen gains focus (navigated to) again. 
+    useEffect(() => {
+      const unsubscribe = navigation.addListener('focus', () => {
+        console.log('Screen UserProfile gained focus again');
+      });
+      return unsubscribe;
+    }, [navigation]);
+
   useEffect(() => {
     const getUserInfo = async () => {
       const { username, password } = await loadValueSecure("userPass");

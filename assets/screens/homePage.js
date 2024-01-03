@@ -4,7 +4,7 @@ import getRandomPosition from "../utils/randomPositionGenerator";
 import backgroundDecorations from "../utils/decorations";
 import loadValueSecure from "../utils/loadValueSecure";
 import services from "../api/services";
-import userLamnessDetectionData from "../api/UserLamenessDetectionData";
+import userLamnessDetectionData from "../api/userLamenessDetectionData";
 import { LinearGradient } from "react-native-linear-gradient";
 import { TapGestureHandler, State } from "react-native-gesture-handler";
 import analyticsDataDefault from "../cache/data/analyticsUIDataDefault";
@@ -30,6 +30,14 @@ const HomePage = ({ navigation }) => {
   const [descriptions, setDescriptions] = useState({});
   const [images, setImages] = useState([]);
   const [analyticsData, setAnalyticsData] = useState(analyticsDataDefault);
+
+    // In order to trigger a re-render when the screen gains focus (navigated to) again. 
+    useEffect(() => {
+      const unsubscribe = navigation.addListener('focus', () => {
+        console.log('Screen HomePage gained focus again');
+      });
+      return unsubscribe;
+    }, [navigation]);
 
   useEffect(() => {
     const getServices = async () => {
