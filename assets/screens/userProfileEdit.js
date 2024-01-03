@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Dimensions, ToastAndroid, ScrollView, View, Text, TextInput, StyleSheet } from "react-native";
 import loadValue from "../utils/loadValue";
 import loadValueSecure from "../utils/loadValueSecure";
+import deleteAccount from "../api/deleteAccount";
 import deleteValue from "../utils/deleteValue";
 import updateUserCredentials from "../api/updateUserCredentials";
 import saveValueSecure from "../utils/saveValueSecure";
@@ -21,9 +22,9 @@ const UserProfileEdit = ({ navigation }) => {
   const [firstNameLoaded, setFirstNameLoaded] = useState('');
   const [lastName, setLastName] = useState("Lupus");
   const [lastNameLoaded , setLastNameLoaded] = useState('');
-  const [username, setUsername] = useState("canislupus");
+  const [usernameTyped, setUsernameTyped] = useState("canislupus");
   const [usernameLoaded, setUsernameLoaded] = useState('');
-  const [email, setEmail] = useState("canislupus@akana.com");
+  const [emailTyped, setEmailTyped] = useState("canislupus@akana.com");
   const [emailLoaded, setEmailLoaded] = useState('');
   const [showAccountAlert, setShowAccountAlert] = useState(false);
   const [passwordTyped, setPasswordTyped] = useState('');
@@ -52,9 +53,9 @@ const UserProfileEdit = ({ navigation }) => {
         setFirstNameLoaded(asyncStorageFirstName);
         setLastName(asyncStorageLastName);
         setLastNameLoaded(asyncStorageLastName);
-        setUsername(asyncStorageUsername);
+        setUsernameTyped(asyncStorageUsername);
         setUsernameLoaded(asyncStorageUsername);
-        setEmail(asyncStorageEmail);
+        setEmailTyped(asyncStorageEmail);
         setEmailLoaded(asyncStorageEmail);
 
         setLoading(false);
@@ -72,13 +73,30 @@ const UserProfileEdit = ({ navigation }) => {
     navigation.navigate("UserProfile");
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
+
     setShowAccountAlert(false);
-    deleteValue("isLoggedIn").then(() => {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Login" }],
-      });
+
+    setLoading(true);
+
+    const { username, password } = await loadValueSecure("userPass");
+
+    deleteAccount({ username_or_email: username, password: password }).then(async (response) => {
+
+      if (response.status === 200) {
+    
+        if (Promise.all([deleteValue("firstName"), deleteValue("lastName"), deleteValue("username"), deleteValue("email"), deleteValue("isLoggedIn")])) {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Login" }],
+          });
+        }
+      } else {
+        ToastAndroid.show("Something went wrong deleting the account on the server.", ToastAndroid.SHORT);
+      }
+
+      setLoading(false);
+    
     });
   }
 
@@ -95,11 +113,12 @@ const UserProfileEdit = ({ navigation }) => {
     if (lastName !== lastNameLoaded) {
       actions.update_last_name = lastName;
     }
-    if (username !== usernameLoaded) {
-      actions.update_username = username;
+    if (usernameTyped !== usernameLoaded) {
+      actions.update_username = usernameTyped;
+      saveValueSecure(usernameTyped, password, "userPass");
     }
-    if (email !== emailLoaded) {
-      actions.update_email = email;
+    if (emailTyped !== emailLoaded) {
+      actions.update_email = emailTyped;
     }
     if (passwordTyped !== '') {
       if (passwordTyped !== retypePasswordTyped) {
@@ -108,6 +127,7 @@ const UserProfileEdit = ({ navigation }) => {
       }
       if (passwordTyped !== password) {
         actions.update_password = password;
+        saveValueSecure(username, passwordTyped, "userPass");
       }
     
     }
@@ -167,16 +187,16 @@ const UserProfileEdit = ({ navigation }) => {
               <Text style={styles.title}>Username</Text>
               <TextInput
                 style={styles.textInput}
-                value={username}
-                onChangeText={setUsername}
+                value={usernameTyped}
+                onChangeText={setUsernameTyped}
                 placeholder="Enter Username"
                 placeholderTextColor={"#6a7477"}
               />
               <Text style={styles.title}>Email</Text>
               <TextInput
                 style={styles.textInput}
-                value={email}
-                onChangeText={setEmail}
+                value={emailTyped}
+                onChangeText={setEmailTyped}
                 placeholder="Enter Email"
                 placeholderTextColor={"#6a7477"}
               />
