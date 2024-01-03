@@ -98,10 +98,7 @@ const UserProfile = ({ navigation }) => {
   }, []);
 
   const handleBackTo = () => {
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "DrawerNavigator" }],
-    });
+    navigation.navigate("Home");
   };
 
   const handleEditProfile = () => {
