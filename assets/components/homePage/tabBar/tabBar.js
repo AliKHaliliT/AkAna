@@ -14,7 +14,7 @@ const yMin = 0;
 const xMax = screenWidth;
 const yMax = tabBarHeight;
 
-const TabBar = () => {
+const TabBar = ({ currentService }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const bounceValue = useRef(new Animated.Value(0)).current;
@@ -119,7 +119,7 @@ const TabBar = () => {
         visible={modalVisible}
         onRequestClose={handleModalClose}
       >
-        <InputSelector close={handleModalClose} />
+        <InputSelector close={handleModalClose} currentService={currentService}/>
       </Modal>
     </View>
   );

@@ -29,6 +29,7 @@ const HomePage = ({ navigation }) => {
   const [onTapCloseSuggestions, setOnTapCloseSuggestions] = useState(true);
   const [descriptions, setDescriptions] = useState({});
   const [images, setImages] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [analyticsData, setAnalyticsData] = useState(analyticsDataDefault);
 
     // In order to trigger a re-render when the screen gains focus (navigated to) again. 
@@ -112,7 +113,7 @@ const HomePage = ({ navigation }) => {
           <View style={{ zIndex: 3 }}>
             <ProcessingTypeCard />
           </View>
-          <ModelCard images={images} descriptions={descriptions} />
+          <ModelCard images={images} descriptions={descriptions} currentIndexState={[currentIndex, setCurrentIndex]}/>
           <Analytics
             data={analyticsData}
             onTextInputPress={setKeyboardListener}
@@ -122,7 +123,7 @@ const HomePage = ({ navigation }) => {
       </TapGestureHandler>
       {!keyboardListener ? (
         <View style={styles.tabBarContainer}>
-          <TabBar />
+          <TabBar currentService={Object.keys(descriptions)[currentIndex]}/>
         </View>
       ) : null}
     </LinearGradient>

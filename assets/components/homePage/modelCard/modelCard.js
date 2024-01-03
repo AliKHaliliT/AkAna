@@ -7,8 +7,8 @@ import GradientButton from "../../common/gradientButton";
 const screenWidth = Dimensions.get("window").width;
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
-const ModelCard = ({ images, descriptions }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+const ModelCard = ({ images, descriptions, currentIndexState }) => {
+  const [currentIndex, setCurrentIndex] = currentIndexState;
   const [expanded, setExpanded] = useState(false);
   const [bounceLeftRight] = useState(new Animated.Value(1));
   const [bounceInOut] = useState(new Animated.Value(1));

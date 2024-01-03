@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   Dimensions,
+  ToastAndroid,
   PermissionsAndroid,
   View,
   TouchableOpacity,
@@ -8,6 +9,8 @@ import {
   StyleSheet,
 } from "react-native";
 import * as ImagePicker from "react-native-image-picker";
+import loadValueSecure from "../../../utils/loadValueSecure";
+import inference from "../../../api/inference";
 import { LinearGradient } from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import GradientImagedButton from "./gradintImageButton";
@@ -16,36 +19,57 @@ import ErrorAlert from "../../common/errorAlert";
 const responsiveSize =
   (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
-const InputSelector = ({ close }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+const InputSelector = ({ close, currentService }) => {
+  const [result, setResult] = useState();
+  const [alertVisible, setAlertVisible] = useState(false);
 
-  const launchCameraHandler = () => {
+  const handleInference = async (video) => {
+
+    const { username, password } = await loadValueSecure("userPass");
+
+    return await inference({ username_or_email: username, password: password, service_type: currentService }, video);
+  };
+  const launchCameraHandler = async () => {
+
     ImagePicker.launchCamera(
       {
         mediaType: "video",
         includeBase64: false,
         maxWidth: 172,
         maxHeight: 172,
+        saveToPhotos: true,
       },
       (response) => {
-        setModalVisible(true);
+        if (response.didCancel) {
+          console.log("User cancelled image picker");
+        } else if (response.error) {
+          console.log("ImagePicker Error: ", response.error);
+        } else if (response.customButton) {
+          console.log("User tapped custom button: ", response.customButton);
+        } else {
+          handleInference(response.assets[0].uri).then((response) => {
+            if (response.status === 200) {
+              console.log(response.data);
+              setResult(response.data.result);
+              setAlertVisible(true);
+            } else {
+              ToastAndroid.show("Something went wrong uploading the video.", ToastAndroid.SHORT);
+            }
+          });
+        }
       }
     );
   };
 
   const requestCameraPermission = async () => {
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-        {
-          title: "AkAna App Camera Permission",
-          message: "AkAna App needs access to your camera",
-          buttonNeutral: "Ask Me Later",
-          buttonNegative: "Cancel",
-          buttonPositive: "OK",
-        }
+      const grantedCamera = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA
       );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      const grantedStorage = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+      );
+      if (grantedCamera === PermissionsAndroid.RESULTS.GRANTED && grantedStorage === PermissionsAndroid.RESULTS.GRANTED) {
         launchCameraHandler();
       } else {
         console.log("Camera permission denied");
@@ -64,10 +88,42 @@ const InputSelector = ({ close }) => {
         maxWidth: 172,
       },
       (response) => {
-        setModalVisible(true);
+        if (response.didCancel) {
+          console.log("User cancelled image picker");
+        } else if (response.error) {
+          console.log("ImagePicker Error: ", response.error);
+        } else if (response.customButton) {
+          console.log("User tapped custom button: ", response.customButton);
+        } else {
+          handleInference(response.assets[0].uri).then((response) => {
+            if (response.status === 200) {
+              console.log(response.data);
+              setResult(response.data.result);
+              setAlertVisible(true);
+            } else {
+              console.log(response);
+            }
+          });
+        }
       }
     );
   };
+
+  const requestGalleryPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        launchImageLibraryHandler();
+      } else {
+        console.log("Storage permission denied");
+      }
+    }
+    catch (err) {
+      console.warn(err);
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -85,18 +141,18 @@ const InputSelector = ({ close }) => {
             buttonText={"Camera"}
           />
           <GradientImagedButton
-            onPress={launchImageLibraryHandler}
+            onPress={requestGalleryPermission}
             iconSource={require("../../../img/galleryIcon.png")}
             buttonText={"Gallery"}
           />
         </View>
       </LinearGradient>
       <ErrorAlert
-        visible={modalVisible}
-        close={setModalVisible}
-        alertTitle={"Thanks!"}
+        visible={alertVisible}
+        close={setAlertVisible}
+        alertTitle={"Upload was successfull!"}
         alertText={
-          "Thank you for choosing this service. This feature is currently under development. Please check back later."
+          `Your video has been uploaded successfully. The result you for your video using ${currentService} model was ${result}. You can view all of the results in the analytics tab. `
         }
       />
     </View>
