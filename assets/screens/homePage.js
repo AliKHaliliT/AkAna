@@ -14,6 +14,7 @@ import ProcessingTypeCard from "../components/homePage/processingTypeCard/proces
 import ModelCard from "../components/homePage/modelCard/modelCard";
 import Analytics from "../components/homePage/analytics/analytics";
 import TabBar from "../components/homePage/tabBar/tabBar";
+import LoadingIndicator from "../components/common/activityIndicatorModal";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 const screenWidth = Dimensions.get("window").width;
@@ -26,6 +27,7 @@ const positions = getRandomPosition(screenHeight, screenWidth, 300, 200, backgro
 
 
 const HomePage = ({ navigation }) => {
+  const [loading, setLoading] = useState(false);
   const [keyboardListener, setKeyboardListener] = useState(false);
   const [onTapCloseSuggestions, setOnTapCloseSuggestions] = useState(true);
   const [descriptions, setDescriptions] = useState({});
@@ -35,43 +37,35 @@ const HomePage = ({ navigation }) => {
 
   useFocusEffect(
     React.useCallback(() => {
-    const getServices = async () => {
-      const { username, password } = await loadValueSecure("userPass");
-      const response = await services({ username_or_email: username, password: password });
-      if (response.status === 200) {
-        Object.keys(response.data.data).forEach((key) => {
-          if (Object.keys(descriptions).includes(key)) {
-            return;
-          }
-          setDescriptions({ [key]: response.data.data[key].description });
-          setImages([{ uri: `data:image/jpg;base64,${response.data.data[key].image}` }]);
-          if (key === "Lameness Detection") {
-            getUserLamnessDetectionData();
-          }
-        });
-      } else {
-        ToastAndroid.show("Something went wrong retrieving the services from the server.", ToastAndroid.SHORT);
+      const getServices = async () => {
+        const { username, password } = await loadValueSecure("userPass");
+        const response = await services({ username_or_email: username, password: password });
+        if (response.status === 200) {
+          Object.keys(response.data.data).forEach((key) => {
+            if (Object.keys(descriptions).includes(key)) {
+              return;
+            }
+            setDescriptions({ [key]: response.data.data[key].description });
+            setImages([{ uri: `data:image/jpg;base64,${response.data.data[key].image}` }]);
+            if (Object.keys(response.data.data)[currentIndex] === "Lameness Detection") {
+              getUserLamnessDetectionData();
+            }
+          });
+        } else {
+          ToastAndroid.show("Something went wrong retrieving the services from the server.", ToastAndroid.SHORT);
+        }
+      };
+      const getUserLamnessDetectionData = async () => {
+        const { username, password } = await loadValueSecure("userPass");
+        const response = await userLamnessDetectionData({ username_or_email: username, password: password });
+        if (response.status === 200) {
+          // console.log(Object.values(response.data.data));
+          // setAnalyticsData(response.data.data);
+        } else {
+          ToastAndroid.show("Something went wrong retrieving the lameness detection data from the server.", ToastAndroid.SHORT);
+        }
       }
-    };
-    // Currently, this is just designed to get the lameness detection data.
-    // And the server only serves lameness detection data.
-    // Upon adding more services, this should be changed.
-    // For example, the analytics card should be rendered dynamically based on the
-    // currently selected service. Also the analytics card might need to be modified for other 
-    // services.
-    // Also the backend and the frontend should be changed to only serve and request
-    // the data that is needed and used the cached data for the rest.
-    const getUserLamnessDetectionData = async () => {
-      const { username, password } = await loadValueSecure("userPass");
-      const response = await userLamnessDetectionData({ username_or_email: username, password: password });
-      if (response.status === 200) {
-        // console.log(Object.values(response.data.data));
-        // setAnalyticsData(response.data.data);
-      } else {
-        ToastAndroid.show("Something went wrong retrieving the lameness detection data from the server.", ToastAndroid.SHORT);
-      }
-    }
-    getServices();
+      getServices();
   }, [])
   )
 
@@ -121,6 +115,7 @@ const HomePage = ({ navigation }) => {
           <TabBar currentService={Object.keys(descriptions)[currentIndex]}/>
         </View>
       ) : null}
+      <LoadingIndicator visible={loading} close={() => setLoading(false)} text={"Loading..."} />
     </LinearGradient>
   );
 };
