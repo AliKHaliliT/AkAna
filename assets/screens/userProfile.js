@@ -101,8 +101,8 @@ const UserProfile = ({ navigation }) => {
   }
 
   const handleLogout = async () => {
-    Promise.all([deleteValue("firstName"), deleteValue("lastName"), deleteValue("username"),
-                        deleteValue("email"), deleteValue("plan"), deleteValue("credit")]).then(() => {
+    Promise.all([deleteValue("isLoggedIn"), deleteValue("firstName"), deleteValue("lastName"), deleteValue("username"),
+                 deleteValue("email"), deleteValue("plan"), deleteValue("credit")]).then(() => {
       navigation.reset({
         index: 0,
         routes: [{ name: "Login" }],
@@ -160,19 +160,19 @@ const UserProfile = ({ navigation }) => {
         </LinearGradient> */}
         <View style={styles.editAndLogoutContainer}>
           <GradientButton 
-              text={"Edit Profile"} 
-              onPress={handleEditProfile} 
-              colors={["#1f2f34", "#3e5158"]} 
-              textStyle={styles.buttonTextStyle}
-              buttonStyle={{flex: 1, marginLeft: 5, marginRight: 5}}
-            />
-            <GradientButton 
-              text={"Logout"} 
-              onPress={handleLogout} 
-              colors={["#1f2f34", "#3e5158"]} 
-              textStyle={{...styles.buttonTextStyle, color: "#ff0000"}}
-              buttonStyle={{flex: 1, marginLeft: 5, marginRight: 5}}
-            />
+            text={"Edit Profile"} 
+            onPress={handleEditProfile} 
+            colors={["#1f2f34", "#3e5158"]}
+            textStyle={styles.buttonTextStyle}
+            buttonStyle={{flex: 1, marginLeft: 5, marginRight: 5}}
+          />
+          <GradientButton 
+            text={"Logout"} 
+            onPress={handleLogout} 
+            colors={["#1f2f34", "#3e5158"]} 
+            textStyle={{...styles.buttonTextStyle, color: "#ff0000"}}
+            buttonStyle={{flex: 1, marginLeft: 5, marginRight: 5}}
+          />
         </View>
       </View>
       <LoadingIndicator visible={loading} onClose={() => setLoading(false)} text={"Loading..."} />

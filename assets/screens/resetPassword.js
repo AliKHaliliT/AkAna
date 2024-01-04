@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Dimensions, TextInput, View, Text, StyleSheet } from "react-native";
+import resetPassword from "../api/resetPassword";
 import { LinearGradient } from "react-native-linear-gradient";
 import WelcomeText from "../components/common/welcomeText";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
