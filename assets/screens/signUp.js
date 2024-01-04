@@ -170,7 +170,7 @@ const SignUp = ({ navigation }) => {
           </React.Fragment>
         </KeyboardAvoidingView>
       </ScrollView>
-      <LoadingIndicator visible={loading} close={() => setLoading(false)} text={"Loading..."} />
+      <LoadingIndicator visible={loading} close={() => setLoading(false)} text={"Signing Up..."} />
       <ErrorAlert visible={showFieldsAlert} close={setShowFieldsAlert} alertTitle={"Error"} alertText={"Please fill all the fields."} />
       <ErrorAlert visible={showPasswordAlert} close={setShowPasswordAlert} alertTitle={"Error"} alertText={"Passwords do not match."} />
       <ErrorAlert visible={showTermsAlert} close={setShowTermsAlert} alertTitle={"Error"} alertText={"Please agree to the terms of service"} />

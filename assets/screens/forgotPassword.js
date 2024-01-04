@@ -6,11 +6,13 @@ import WelcomeText from '../components/common/welcomeText';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import GradientButton from '../components/common/gradientButton';
 import RenderLink from '../components/common/renderLink';
+import LoadingIndicator from '../components/common/activityIndicatorModal';
 import ErrorAlert from '../components/common/errorAlert';
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
 const ForgotPassword = ({ navigation }) => {
+  const [loading, setLoading] = useState(false);
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [showFieldsAlert, setShowFieldsAlert] = useState(false);
   const [showConfirmationAlert, setShowConfirmationAlert] = useState(false);
@@ -21,15 +23,20 @@ const ForgotPassword = ({ navigation }) => {
 
   const handleForgotPassword = async () => {
     if (emailOrUsername.trim() !== "") {
-      const response = await forgotPassword({ username_or_email: emailOrUsername.trim() });
-      if (response) {
-        setShowConfirmationAlert(true);
-      } else {
-        ToastAndroid.show("Something went wrong. Please try again.", ToastAndroid.SHORT);
-      }
+      setLoading(true);
+      forgotPassword({ username_or_email: emailOrUsername.trim() }).then((response) => {
+        if (response.status === 200) {
+          setLoading(false);
+          setShowConfirmationAlert(true);
+        } else {
+          setLoading(false);
+          ToastAndroid.show("Something went wrong. Please try again.", ToastAndroid.SHORT);
+        }
+      });
     } else {
       setShowFieldsAlert(true);
     }
+    
   };
 
   const handleConfirmed = () => {
@@ -48,6 +55,7 @@ const ForgotPassword = ({ navigation }) => {
           <RenderLink text={"Login"} onPress={() => handleNavigation("Login")} />
         </View>
       </View>
+      <LoadingIndicator visible={loading} close={() => setLoading(false)} text={"Connecting to Server..."} />
       <ErrorAlert visible={showFieldsAlert} close={setShowFieldsAlert} alertTitle={"Error"} alertText={"Please fill all the fields."} />
       <ErrorAlert
         visible={showConfirmationAlert}

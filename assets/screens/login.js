@@ -100,7 +100,7 @@ const Login = ({ navigation }) => {
         <Text style={styles.noAccountText}>Don't have an account?</Text>
         <RenderLink text={"Sign Up"} onPress={() => handleNavigation("SignUp")} />
       </View>
-      <LoadingIndicator visible={loading} close={() => setLoading(false)} text={"Loading..."} />
+      <LoadingIndicator visible={loading} close={() => setLoading(false)} text={"Logging In..."} />
       <ErrorAlert visible={showErrorAlert} close={setShowErrorAlert} alertTitle={"Error"} alertText={"No user found with the given credentials."} />
     </LinearGradient>
   );
