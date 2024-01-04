@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Dimensions, ToastAndroid, ScrollView, Image, View, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Dimensions, ToastAndroid, RefreshControl, ScrollView, Image, View, StyleSheet } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import getRandomPosition from "../utils/randomPositionGenerator";
 import backgroundDecorations from "../utils/decorations";
@@ -8,7 +8,7 @@ import services from "../api/services";
 import userLamnessDetectionData from "../api/userLamenessDetectionData";
 import { LinearGradient } from "react-native-linear-gradient";
 import { TapGestureHandler, State } from "react-native-gesture-handler";
-import analyticsDataDefault from "../cache/data/analyticsUIDataDefault";
+import lamenessDetectionTemplate from "../cache/data/lamenessDetectionAnalyticsUITemplate"
 import HeaderHomePage from "../components/homePage/header/headerHomePage";
 import ProcessingTypeCard from "../components/homePage/processingTypeCard/processingTypeCard";
 import ModelCard from "../components/homePage/modelCard/modelCard";
@@ -28,46 +28,80 @@ const positions = getRandomPosition(screenHeight, screenWidth, 300, 200, backgro
 
 const HomePage = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
-  const [keyboardListener, setKeyboardListener] = useState(false);
-  const [onTapCloseSuggestions, setOnTapCloseSuggestions] = useState(true);
+  const [analyticsData, setAnalyticsData] = useState(lamenessDetectionTemplate);
   const [descriptions, setDescriptions] = useState({});
   const [images, setImages] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [analyticsData, setAnalyticsData] = useState(analyticsDataDefault);
+  const [refreshing, setRefreshing] = useState(false);
+  const [onTapCloseSuggestions, setOnTapCloseSuggestions] = useState(true);
+  const [keyboardListener, setKeyboardListener] = useState(false);
 
+
+  // console.log(lamenessDetectionTemplate);
+
+  const getUserLamnessDetectionData = async () => {
+    const { username, password } = await loadValueSecure("userPass");
+    const response = await userLamnessDetectionData({ username_or_email: username, password: password });
+    if (response.status === 200) {
+      console.log(Object.values(response.data.data));
+      // setAnalyticsData(response.data.data);
+    } else if (response.message === "No data found") {
+      ToastAndroid.show("You have no data to display.", ToastAndroid.SHORT);
+    } else {
+      ToastAndroid.show("Something went wrong retrieving the data from the server.", ToastAndroid.SHORT);
+    }
+  }
+
+  const getServices = async () => {
+    const { username, password } = await loadValueSecure("userPass");
+  
+    try {
+      const response = await services({ username_or_email: username, password: password });
+  
+      if (response.status === 200) {
+        for (const key of Object.keys(response.data.data)) {
+          if (Object.keys(descriptions).includes(key)) {
+            continue;
+          }
+  
+          setDescriptions({ [key]: response.data.data[key].description });
+          setImages([{ uri: `data:image/jpg;base64,${response.data.data[key].image}` }]);
+  
+          if (Object.keys(response.data.data)[currentIndex] === "Lameness Detection") {
+            await getUserLamnessDetectionData(); // Await here to ensure completion before moving forward
+          }
+        }
+      } else {
+        ToastAndroid.show("Something went wrong retrieving the services from the server.", ToastAndroid.SHORT);
+      }
+
+    } catch (error) {
+      console.error(error);
+      ToastAndroid.show("Something went wrong retrieving the services from the server.", ToastAndroid.SHORT);
+      return null;
+    }
+  };
+  
   useFocusEffect(
     React.useCallback(() => {
-      const getServices = async () => {
-        const { username, password } = await loadValueSecure("userPass");
-        const response = await services({ username_or_email: username, password: password });
-        if (response.status === 200) {
-          Object.keys(response.data.data).forEach((key) => {
-            if (Object.keys(descriptions).includes(key)) {
-              return;
-            }
-            setDescriptions({ [key]: response.data.data[key].description });
-            setImages([{ uri: `data:image/jpg;base64,${response.data.data[key].image}` }]);
-            if (Object.keys(response.data.data)[currentIndex] === "Lameness Detection") {
-              getUserLamnessDetectionData();
-            }
-          });
-        } else {
-          ToastAndroid.show("Something went wrong retrieving the services from the server.", ToastAndroid.SHORT);
-        }
-      };
-      const getUserLamnessDetectionData = async () => {
-        const { username, password } = await loadValueSecure("userPass");
-        const response = await userLamnessDetectionData({ username_or_email: username, password: password });
-        if (response.status === 200) {
-          // console.log(Object.values(response.data.data));
-          // setAnalyticsData(response.data.data);
-        } else {
-          ToastAndroid.show("Something went wrong retrieving the lameness detection data from the server.", ToastAndroid.SHORT);
-        }
-      }
-      getServices();
-  }, [])
-  )
+      setLoading(true);
+      getServices().then((response) => {
+        setLoading(false);
+      }).catch((error) => {
+        setLoading(false);
+      });
+    }, [])
+  );
+  
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    getServices().then((response) => {
+      setRefreshing(false);
+    }).catch((error) => {
+      setRefreshing(false);
+    });
+  };
 
   return (
     <LinearGradient colors={["#06181d", "#02223d"]} style={styles.container}>
@@ -78,7 +112,12 @@ const HomePage = ({ navigation }) => {
           }
         }}
       >
-        <ScrollView style={styles.scrollViewContainer}>
+        <ScrollView 
+          style={styles.scrollViewContainer}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          >
           <Image source={require("../img/corner.png")} resizeMode="contain" style={styles.cornerImageStyle} />
           {backgroundDecorations.map((image, index) => (
             <React.Fragment key={index}>

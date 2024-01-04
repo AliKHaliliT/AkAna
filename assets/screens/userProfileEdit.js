@@ -31,43 +31,49 @@ const UserProfileEdit = ({ navigation }) => {
   const [retypePasswordTyped, setRetypePasswordTyped] = useState('');
   const [showPasswordAlert, setShowPasswordAlert] = useState(false);
 
-  useEffect(() => {
-
-    setLoading(true);
-
-    const getUserInfo = async () => {
-
-      if (Promise.all([loadValue("firstName"), loadValue("lastName"), loadValue("username"), loadValue("email")])) {
-
-        const [asyncStorageFirstName, 
-               asyncStorageLastName, 
-               asyncStorageUsername, 
-               asyncStorageEmail
-              ] = await Promise.all(
-                                    [loadValue("firstName"),
-                                      loadValue("lastName"), 
-                                      loadValue("username"), 
-                                      loadValue("email")]
-                                      );
+  const getUserInfoFromAsyncStorage = async () => {
+    try {
+      const [
+        asyncStorageFirstName,
+        asyncStorageLastName,
+        asyncStorageUsername,
+        asyncStorageEmail
+      ] = await Promise.all([
+        loadValue("firstName"),
+        loadValue("lastName"),
+        loadValue("username"),
+        loadValue("email")
+      ]);
+  
+      if (asyncStorageFirstName) {
         setFirstName(asyncStorageFirstName);
         setFirstNameLoaded(asyncStorageFirstName);
+      }
+      if (asyncStorageLastName) {
         setLastName(asyncStorageLastName);
         setLastNameLoaded(asyncStorageLastName);
+      }
+      if (asyncStorageUsername) {
         setUsernameTyped(asyncStorageUsername);
         setUsernameLoaded(asyncStorageUsername);
+      }
+      if (asyncStorageEmail) {
         setEmailTyped(asyncStorageEmail);
         setEmailLoaded(asyncStorageEmail);
-
-        setLoading(false);
-
-      } else {
-        setLoading(false);
-        console.log("Error loading user info from AsyncStorage.");
       }
-    };
   
-    getUserInfo();
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.error("Error loading user info from AsyncStorage.", error);
+    }
+  };
+  
+  useEffect(() => {
+    setLoading(true);
+    getUserInfoFromAsyncStorage();
   }, []);
+  
 
   const handleBackTo = () => {
     navigation.navigate("UserProfile");

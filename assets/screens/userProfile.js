@@ -25,72 +25,83 @@ const UserProfile = ({ navigation }) => {
   const [plan, setPlan] = useState("Platinum");
   const [credit, setCredit] = useState("999");
 
+  const getUserInfoFromAsyncStorage = async () => {
+    const [
+      asyncStorageFirstName,
+      asyncStorageLastName,
+      asyncStorageUsername,
+      asyncStorageEmail,
+      asyncStoragePlan,
+      asyncStorageCredit
+    ] = await Promise.all([
+      loadValue("firstName"),
+      loadValue("lastName"),
+      loadValue("username"),
+      loadValue("email"),
+      loadValue("plan"),
+      loadValue("credit")
+    ]);
+  
+    if (asyncStorageFirstName) setFirstName(asyncStorageFirstName);
+    if (asyncStorageLastName) setLastName(asyncStorageLastName);
+    if (asyncStorageUsername) setUsername(asyncStorageUsername);
+    if (asyncStorageEmail) setEmail(asyncStorageEmail);
+    if (asyncStoragePlan) setPlan(asyncStoragePlan);
+    if (asyncStorageCredit) setCredit(asyncStorageCredit);
+  };
+  
+  const updateUserInfo = async () => {
+    const userPass = await loadValueSecure("userPass");
+  
+    try {
+      const response = await userInfo({ username_or_email: userPass.username, password: userPass.password });
+  
+      if (response.status === 200) {
+        if (response.data.data.first_name !== firstName) {
+          setFirstName(response.data.data.first_name);
+          saveValue("firstName", response.data.data.first_name);
+        }
+        if (response.data.data.last_name !== lastName) {
+          setLastName(response.data.data.last_name);
+          saveValue("lastName", response.data.data.last_name);
+        }
+        if (response.data.data.username !== username) {
+          setUsername(response.data.data.username);
+          saveValue("username", response.data.data.username);
+        }
+        if (response.data.data.email !== email) {
+          setEmail(response.data.data.email);
+          saveValue("email", response.data.data.email);
+        }
+        if (response.data.data.plan !== plan) {
+          setPlan(response.data.data.plan);
+          saveValue("plan", response.data.data.plan);
+        }
+        if (String(response.data.data.credit) !== credit) {
+          setCredit(String(response.data.data.credit));
+          saveValue("credit", String(response.data.data.credit));
+        }
+      } else {
+        ToastAndroid.show("Something went wrong retrieving the info from the server.", ToastAndroid.SHORT);
+      }
+    } catch (error) {
+      console.error(error);
+      ToastAndroid.show("Something went wrong retrieving the info from the server.", ToastAndroid.SHORT);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   useFocusEffect(
     React.useCallback(() => {
-
-    setLoading(true);
-
-    const getUserInfo = async () => {
-
-      if (Promise.all([loadValue("firstName"), loadValue("lastName"), loadValue("username"), 
-                      loadValue("email"), loadValue("plan"), loadValue("credit")])) {
-        var [asyncStorageFirstName, asyncStorageLastName, asyncStorageUsername, 
-              asyncStorageEmail, asyncStoragePlan, asyncStorageCredit] = await Promise.all(
-                                                                                          [loadValue("firstName"), loadValue("lastName"), 
-                                                                                          loadValue("username"), loadValue("email"), 
-                                                                                          loadValue("plan"), loadValue("credit")]
-                                                                                          );
-        setFirstName(asyncStorageFirstName);
-        setLastName(asyncStorageLastName);
-        setUsername(asyncStorageUsername);
-        setEmail(asyncStorageEmail);
-        setPlan(asyncStoragePlan);
-        setCredit(asyncStorageCredit);
-      } else {
-        var asyncStorageFirstName, asyncStorageLastName, asyncStorageUsername,
-            asyncStorageEmail, asyncStoragePlan, asyncStorageCredit
-      }
-
-      const { username, password } = await loadValueSecure("userPass");
-      userInfo({ username_or_email: username, password: password }).then((response) => {
-      
-        if (response.status === 200) {
-
-          if (response.data.data.first_name !== asyncStorageFirstName) {
-            setFirstName(response.data.data.first_name);
-            saveValue("firstName", response.data.data.first_name)
-          }
-          if (response.data.data.last_name !== asyncStorageLastName) {
-            setLastName(response.data.data.last_name);
-            saveValue("lastName", response.data.data.last_name);
-          }
-          if (response.data.data.username !== asyncStorageUsername) {
-            setUsername(response.data.data.username);
-            saveValue("username", response.data.data.username);
-          }
-          if (response.data.data.email !== asyncStorageEmail) {
-            setEmail(response.data.data.email);
-            saveValue("email", response.data.data.email);
-          }
-          if (response.data.data.plan !== asyncStoragePlan) {
-            setPlan(response.data.data.plan);
-            saveValue("plan", response.data.data.plan);
-          }
-          if (String(response.data.data.credit) !== asyncStorageCredit) {
-            setCredit(String(response.data.data.credit));
-            saveValue("credit", String(response.data.data.credit));
-          }
-
-        } else {
-          ToastAndroid.show("Something went wrong retrieving the info from the server.", ToastAndroid.SHORT);
-        }
-
-        setLoading(false);
+      setLoading(true);
+  
+      getUserInfoFromAsyncStorage().then(() => {
+        updateUserInfo();
       });
-    }
-    getUserInfo();
-  }, [])
-  )
+  
+    }, [])
+  );  
 
   const handleBackTo = () => {
     navigation.navigate("DrawerNavigator");

@@ -1,4 +1,4 @@
-const analyticsDataDefault = [
+const lamenessDetectionTemplate = [
   {
     value: 500,
     color: "green",
@@ -28,4 +28,4 @@ const analyticsDataDefault = [
   },
 ];
   
-export default analyticsDataDefault;
+export default lamenessDetectionTemplate;

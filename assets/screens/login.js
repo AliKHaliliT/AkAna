@@ -23,49 +23,51 @@ const Login = ({ navigation }) => {
   const [rememberMe, setRememberMe] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
 
-  useEffect(() => {
-    
-    setLoading(true);
-
-    const getRememberMe = async () => {
-      const rememberMeValue = await loadValue("rememberMe");
-
-      if (rememberMeValue === "true") {
-        try {
-          loadValueSecure("userPass").then((userPass) => {
-            setEmailOrUsername(userPass.username);
-            setPassword(userPass.password);
-            handleRememberMe(true);
-            setLoading(false);
-          }
-          );
-        } catch (error) {
-          setLoading(false);
-          console.log("This is the first time the user is logging in.");
-        }
+  const getRememberMe = async () => {
+    const rememberMeValue = await loadValue("rememberMe");
+  
+    if (rememberMeValue === "true") {
+      try {
+        const userPass = await loadValueSecure("userPass");
+        setEmailOrUsername(userPass.username);
+        setPassword(userPass.password);
+        handleRememberMe(true);
+      } catch (error) {
+        console.error(error);
+        // Handle error if loading userPass fails
+      } finally {
+        setLoading(false);
       }
-    };
-    getRememberMe();
-  }, []);
+    } else {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
+    setLoading(true);
+    getRememberMe();
+  }, []); 
+  
   const handleRememberMe = (agreed) => {
     agreed ? setRememberMe(true) : setRememberMe(false);
   };
-
+  
   const handleNavigation = (screen) => {
     navigation.navigate(screen);
   };
-
+  
   const handleLogin = async () => {
-
     setLoading(true);
-
-    login({ username_or_email: emailOrUsername.trim(), password: password.trim() }).then( async (response) => {
-
-      if (response.status === 200 || emailOrUsername.trim() === "canislupus" && password.trim() === "canislupus") {
-        await saveValue("isLoggedIn", "true");
-        await saveValue("rememberMe", rememberMe ? "true" : "false");
-        await saveValueSecure(emailOrUsername.trim(), password.trim(), "userPass");
+  
+    try {
+      const response = await login({ username_or_email: emailOrUsername.trim(), password: password.trim() });
+  
+      if (response.status === 200 || (emailOrUsername.trim() === "canislupus" && password.trim() === "canislupus")) {
+        await Promise.all([
+          saveValue("isLoggedIn", "true"),
+          saveValue("rememberMe", rememberMe ? "true" : "false"),
+          saveValueSecure(emailOrUsername.trim(), password.trim(), "userPass")
+        ]);
   
         navigation.reset({
           index: 0,
@@ -74,12 +76,14 @@ const Login = ({ navigation }) => {
       } else {
         setShowErrorAlert(true);
       }
-
+    } catch (error) {
+      console.error(error);
+      // Handle error for login request
+      setShowErrorAlert(true);
+    } finally {
       setLoading(false);
-
     }
-    );
-  };  
+  };
 
   return (
     <LinearGradient colors={["#06181d", "#02223d"]} style={styles.container}>
