@@ -7,7 +7,7 @@ const instance = axios.create({
 
 const deleteAccount = async (deleteAccountData) => {
   try {
-    const response = await instance.delete(`${addressPrefix}/actions/delete_account/`, deleteAccountData);
+    const response = await instance.delete(`${addressPrefix}/actions/delete_account/`, { data: deleteAccountData });
     return response;
   } catch (error) {
     if (error.response) {
