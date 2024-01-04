@@ -33,8 +33,7 @@ const Login = ({ navigation }) => {
         setPassword(userPass.password);
         handleRememberMe(true);
       } catch (error) {
-        console.error(error);
-        // Handle error if loading userPass fails
+        console.log(error);
       } finally {
         setLoading(false);
       }

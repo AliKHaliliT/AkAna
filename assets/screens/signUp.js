@@ -16,8 +16,8 @@ const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window"
 
 const SignUp = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
-  const [termsAgreed, setTermsAgreed] = useState(false);
   const [subscriptionPlans, setSubscriptionPlans] = useState({});
+  const [termsAgreed, setTermsAgreed] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState('');
   const [selectedPlanDescription, setSelectedPlanDescription] = useState('');
   const [showPlanInfoAlert, setShowPlanInfoAlert] = useState(false);
@@ -33,6 +33,30 @@ const SignUp = ({ navigation }) => {
   const [showMultipleAlert, setShowMultipleAlert] = useState(false);
   const [showMultipleAlertText, setShowMultipleAlertText] = useState('');
 
+  const fetchSubscriptionPlans = async () => {
+    try {
+      setLoading(true);
+  
+      const response = await plans();
+  
+      if (response.status === 200) {
+        setSubscriptionPlans(response.data.data);
+      } else {
+        ToastAndroid.show("Something went wrong retrieving the plans from the server.", ToastAndroid.SHORT);
+      }
+    } catch (error) {
+      console.error("Error fetching plans from the server:", error);
+      ToastAndroid.show("Something went wrong retrieving the plans from the server.", ToastAndroid.SHORT);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  useEffect(() => {
+    fetchSubscriptionPlans();
+  }, []);
+  
+
   const handleNavigation = (screen) => {
     navigation.navigate(screen);
   };
@@ -40,20 +64,6 @@ const SignUp = ({ navigation }) => {
   const handleTermsAgreed = (agreed) => {
     agreed ? setTermsAgreed(true) : setTermsAgreed(false);
   };
-
-  useEffect(() => {
-
-    setLoading(true);
-    plans().then((response) => {
-      if (response.status === 200) {
-        setSubscriptionPlans(response.data.data);
-      } else {
-        ToastAndroid.show("Something went wrong retrieving the plans from the server.", ToastAndroid.SHORT);
-      }
-    }
-    );
-    setLoading(false);
-  }, []);
 
   const handleInfoPress = () => {
     setShowPlanInfoAlert(true);
