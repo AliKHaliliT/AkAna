@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dimensions, ToastAndroid, View, Text, StyleSheet } from "react-native";
+import { Dimensions, ToastAndroid, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import loadValueSecure from "../utils/loadValueSecure";
 import loadValue from "../utils/loadValue";
@@ -133,6 +133,31 @@ const UserProfile = ({ navigation }) => {
           <DetailCard iconName="money-check" title="Plan" description={plan} IconComponent={Icon} />
           <DetailCard iconName="credit-card" title="Credit" description={credit} IconComponent={Icon} containerStyle={{}}/>
         </LinearGradient>
+        {/* Unfinished feature - A placeholder for generating api token*/}
+        {/* <LinearGradient 
+          colors={["#1f2f34", "#283E45"]}
+          style={styles.apiTokenContainer}
+        >
+          <TouchableOpacity>
+            <LinearGradient
+              colors={["red", "#283E45"]}
+              style={styles.apiTitle}
+            >
+              <Text style={styles.apiText}>{"Token >>"}</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+            <Text style={styles.apiText} numberOfLines={1} ellipsizeMode="tail">bkbahbfabbfbabdsdsdsadasdasfb</Text>
+          </View>
+          <TouchableOpacity>
+            <LinearGradient
+              colors={["orange", "#283E45"]}
+              style={styles.apiTitle}
+            >
+              <Text style={styles.apiText}>Generate</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        </LinearGradient> */}
         <View style={styles.editAndLogoutContainer}>
           <GradientButton 
               text={"Edit Profile"} 
@@ -167,9 +192,9 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   content: {
+    flex: 1,
     paddingHorizontal: 10,
-    height: "90%",
-    width: "100%",
+    marginHorizontal: 10,
   },
   profileContainer: {
     flexDirection: "row",
@@ -189,6 +214,29 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginVertical: 10,
     marginHorizontal: 5,
+  },
+  apiTokenContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 10,
+    marginTop: 10,
+    marginHorizontal: 5,
+    marginBottom: 20
+  },
+  apiTitle: {
+    minWidth: "20%", 
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  apiText: {
+    fontSize: responsiveSize / 40,
+    fontFamily: "Montserrat-Medium",
+    color: "#ffffff",
+    marginLeft: 10,
+    marginRight: 10,
   },
   editAndLogoutContainer: {
     flexDirection: "row",
