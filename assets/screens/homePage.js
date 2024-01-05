@@ -20,7 +20,6 @@ import lamenessDetectionTemplate from "../data/lamenessDetectionAnalyticsUITempl
 import Analytics from "../components/homePage/analytics/analytics";
 import TabBar from "../components/homePage/tabBar/tabBar";
 import LoadingIndicator from "../components/common/activityIndicatorModal";
-import saveJSON from "../utils/saveJSONToDevice";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 const screenWidth = Dimensions.get("window").width;

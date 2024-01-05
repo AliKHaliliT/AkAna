@@ -11,6 +11,9 @@ import {
 import * as ImagePicker from "react-native-image-picker";
 import loadValueSecure from "../../../utils/loadValueSecure";
 import inference from "../../../api/inference";
+import userInfo from "../../../api/userInfo";
+import loadValue from "../../../utils/loadValue";
+import saveValue from "../../../utils/saveValue";
 import { LinearGradient } from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import GradientImagedButton from "./gradintImageButton";
@@ -33,6 +36,28 @@ const InputSelector = ({ close, currentService, currentProcessingType }) => {
 
     return await inference({ username_or_email: username, password: password, service_type: currentService }, video);
   };
+
+  handleCredit = async () => {
+      if (await loadValue("credit") === null) {
+      const { username, password } = await loadValueSecure("userPass");
+      const response = await userInfo({ username_or_email: username, password: password });
+      if (response.status === 200) {
+        await saveValue("credit", String(response.data.data.credit - 1));
+        setResult("Healthy");
+        setAlertVisible(true);
+        ToastAndroid.show("This option is not available yet. Showing a dummy result.", ToastAndroid.SHORT);
+      } else {
+        ToastAndroid.show("Something went wrong getting the credit. You must connect to the internet for the intial configurations", ToastAndroid.SHORT);
+      }
+    } else {
+      setResult("Healthy");
+      setAlertVisible(true);
+      await saveValue("credit", String(parseInt(await loadValue("credit")) - 1));
+      ToastAndroid.show("This option is not available yet. Showing a dummy result.", ToastAndroid.SHORT);
+    }
+  }
+
+
   const launchCameraHandler = async () => {
 
     ImagePicker.launchCamera(
@@ -50,7 +75,7 @@ const InputSelector = ({ close, currentService, currentProcessingType }) => {
           console.log("ImagePicker Error: ", response.error);
         } else if (response.customButton) {
           console.log("User tapped custom button: ", response.customButton);
-        } else {
+        } else if (currentProcessingType === "Server"){
           handleInference(response.assets[0].uri).then((response) => {
             setLoading(false);
             if (response.status === 200) {
@@ -58,9 +83,11 @@ const InputSelector = ({ close, currentService, currentProcessingType }) => {
               setResult(response.data.result);
               setAlertVisible(true);
             } else {
-              ToastAndroid.show("Something went wrong uploading the video.", ToastAndroid.SHORT);
+              ToastAndroid.show("Something went wrong uploading the video. Please check your connection", ToastAndroid.SHORT);
             }
           });
+        } else if (currentProcessingType === "Device") {
+          handleCredit();
         }
       }
     );
@@ -107,13 +134,11 @@ const InputSelector = ({ close, currentService, currentProcessingType }) => {
               setResult(response.data.result);
               setAlertVisible(true);
             } else {
-              console.log(response);
+              ToastAndroid.show("Something went wrong uploading the video. Please check your connection", ToastAndroid.SHORT);
             }
           });
         } else if (currentProcessingType === "Device") {
-          ToastAndroid.show("This option is not available yet. Showing a dummy result.", ToastAndroid.SHORT);
-          setResult("Healthy");
-          setAlertVisible(true);
+          handleCredit();
         }
       }
     );

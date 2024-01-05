@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Dimensions, ToastAndroid, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import loadValueSecure from "../utils/loadValueSecure";
 import loadValue from "../utils/loadValue";
+import loadValueSecure from "../utils/loadValueSecure";
+import updateCredit from "../api/updateCredit";
 import userInfo from "../api/userInfo";
 import saveValue from "../utils/saveValue";
 import deleteValue from "../utils/deleteValue";
@@ -54,6 +55,24 @@ const UserProfile = ({ navigation }) => {
     const userPass = await loadValueSecure("userPass");
   
     try {
+      
+      if (await loadValue("credit") === null) {
+        const responseGetCredit = await userInfo({ username_or_email: userPass.username, password: userPass.password });
+        await saveValue("credit", String(responseGetCredit.data.data.credit));
+      }
+
+      const updateCreditPayload = {
+        user: {
+          username_or_email: userPass.username,
+          password: userPass.password,
+        },
+        credit: {
+          credit: parseInt(await loadValue("credit")),
+        },
+      };
+
+      await updateCredit(updateCreditPayload);
+      
       const response = await userInfo({ username_or_email: userPass.username, password: userPass.password });
   
       if (response.status === 200) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Dimensions, TextInput, View, Text, StyleSheet } from "react-native";
+import { Dimensions, TextInput, View, Text, StyleSheet, ToastAndroid } from "react-native";
 import loadValue from "../utils/loadValue";
 import loadValueSecure from "../utils/loadValueSecure";
 import login from "../api/login";
@@ -72,6 +72,8 @@ const Login = ({ navigation }) => {
           index: 0,
           routes: [{ name: "DrawerNavigator" }],
         });
+      } else if (response.message == "No response received") {
+        ToastAndroid.show("Something went wrong. Please check your internet connection.", ToastAndroid.SHORT);
       } else {
         setShowErrorAlert(true);
       }
