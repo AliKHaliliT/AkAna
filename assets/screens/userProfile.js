@@ -6,6 +6,7 @@ import loadValueSecure from "../utils/loadValueSecure";
 import updateCredit from "../api/updateCredit";
 import userInfo from "../api/userInfo";
 import saveValue from "../utils/saveValue";
+import updateRecharged from "../api/updateRecharged";
 import deleteValue from "../utils/deleteValue";
 import { LinearGradient } from "react-native-linear-gradient";
 import GoBack from "../components/common/goBackButtonWithText";
@@ -61,13 +62,24 @@ const UserProfile = ({ navigation }) => {
         await saveValue("credit", String(responseGetCredit.data.data.credit));
       }
 
+      const responseGetCredit = await userInfo({ username_or_email: userPass.username, password: userPass.password });
+
+      try {
+        if (responseGetCredit.data.data.recharged === true) {
+          await updateRecharged({ username_or_email: userPass.username })
+          await saveValue("credit", String(responseGetCredit.data.data.credit));
+        } 
+      } catch (error) {
+        ToastAndroid.show("Something went wrong retrieving the info from the server.", ToastAndroid.SHORT);
+      }
+
       const updateCreditPayload = {
         user: {
           username_or_email: userPass.username,
           password: userPass.password,
         },
         credit: {
-          credit: parseInt(await loadValue("credit")),
+          credit: responseGetCredit.data.data.credit > parseInt(await loadValue("credit")) ? parseInt(await loadValue("credit")) : responseGetCredit.data.data.credit,
         },
       };
 

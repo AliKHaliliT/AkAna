@@ -57,6 +57,10 @@ const HomePage = ({ navigation }) => {
     const response = await userLamnessDetectionData({ username_or_email: username, password: password });
     if (response.status === 200) {
       setAnalyticsData(response.data.data);
+    } else if (response.message === "No data found") {
+      setAnalyticsData(lamenessDetectionDataTemplate);
+      saveValue(`${lamenessDetectionDataTemplate} - lameness`, "0");
+      ToastAndroid.show("No data found to display for today. Showing a default template.", ToastAndroid.SHORT);
     } else {
       setAnalyticsData(lamenessDetectionDataTemplate);
       saveValue(`${lamenessDetectionDataTemplate} - lameness`, "0");
@@ -181,7 +185,7 @@ const HomePage = ({ navigation }) => {
       </TapGestureHandler>
       {!keyboardListener ? (
         <View style={styles.tabBarContainer}>
-          <TabBar currentService={Object.keys(descriptions)[currentIndex]} currentProcessingType={currentProcessingType}/>
+          <TabBar navigation={navigation} currentService={Object.keys(descriptions)[currentIndex]} currentProcessingType={currentProcessingType}/>
         </View>
       ) : null}
       <LoadingIndicator visible={loading} close={() => setLoading(false)} text={"Loading..."} />

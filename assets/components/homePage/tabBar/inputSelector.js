@@ -12,8 +12,10 @@ import * as ImagePicker from "react-native-image-picker";
 import loadValueSecure from "../../../utils/loadValueSecure";
 import inference from "../../../api/inference";
 import userInfo from "../../../api/userInfo";
+import deleteValue from "../../../utils/deleteValue";
 import loadValue from "../../../utils/loadValue";
 import saveValue from "../../../utils/saveValue";
+import saveVideo from "../../../utils/saveVideoToDevice";
 import { LinearGradient } from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import GradientImagedButton from "./gradintImageButton";
@@ -23,7 +25,7 @@ import ErrorAlert from "../../common/errorAlert";
 const responsiveSize =
   (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
-const InputSelector = ({ close, currentService, currentProcessingType }) => {
+const InputSelector = ({ navigation, close, currentService, currentProcessingType }) => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState();
   const [alertVisible, setAlertVisible] = useState(false);
@@ -38,14 +40,25 @@ const InputSelector = ({ close, currentService, currentProcessingType }) => {
     return await inference({ username_or_email: username, password: password, service_type: currentService }, video);
   };
 
-  handleCredit = async () => {
-      if (await loadValue("credit") === null) {
+  const handleLogout = async () => {
+    setShowCreditAlert(false);
+    Promise.all([deleteValue("isLoggedIn"), deleteValue("firstName"), deleteValue("lastName"), deleteValue("username"),
+                 deleteValue("email"), deleteValue("plan"), deleteValue("credit")]).then(() => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Login" }],
+      });
+    }
+    );
+  };
+
+  const handleCredit = async (video) => {
+    if (await loadValue("credit") === null) {
       const { username, password } = await loadValueSecure("userPass");
       const response = await userInfo({ username_or_email: username, password: password });
-      if (response.status === 200 ) {
+      if (response.status === 200) {
         if (response.data.data.credit === 0) {
           setShowCreditAlert(true);
-          await saveValue("credit", String(response.data.data.credit));
           return;
         }
         await saveValue("credit", String(response.data.data.credit - 1));
@@ -53,10 +66,10 @@ const InputSelector = ({ close, currentService, currentProcessingType }) => {
         setAlertVisible(true);
         ToastAndroid.show("This option is not available yet. Showing a dummy result.", ToastAndroid.SHORT);
       } else {
-        ToastAndroid.show("Something went wrong getting the credit. You must connect to the internet for the intial configurations", ToastAndroid.SHORT);
+        ToastAndroid.show("Something went wrong getting the credit. You must connect to the internet for the initial configurations", ToastAndroid.SHORT);
       }
     } else {
-      const creditLoaded = parseInt(await loadValue("credit")); 
+      const creditLoaded = parseInt(await loadValue("credit"));
       if (creditLoaded !== 0) {
         setResult("Healthy");
         setAlertVisible(true);
@@ -66,7 +79,14 @@ const InputSelector = ({ close, currentService, currentProcessingType }) => {
         setShowCreditAlert(true);
       }
     }
+  
+  if (currentProcessingType === "Device" && result) {
+    const folderName = "unsentVideos";
+    const fileName = `${currentService}_${result}_${new Date().getTime()}`;
+
+    await saveVideo(folderName, fileName, video);
   }
+  };
 
 
   const launchCameraHandler = async () => {
@@ -100,7 +120,7 @@ const InputSelector = ({ close, currentService, currentProcessingType }) => {
             }
           });
         } else if (currentProcessingType === "Device") {
-          handleCredit();
+          handleCredit(response.assets[0].uri);
         }
       }
     );
@@ -208,10 +228,10 @@ const InputSelector = ({ close, currentService, currentProcessingType }) => {
       />
       <ErrorAlert
         visible={showCreditAlert}
-        close={setShowCreditAlert}
+        close={handleLogout}
         alertTitle={"No credits left!"}
         alertText={
-          `You have no credits left. Please buy more credits.`
+          `You have no credits left. Please buy more credits. Logging Out!`
         }
       />
     </View>
