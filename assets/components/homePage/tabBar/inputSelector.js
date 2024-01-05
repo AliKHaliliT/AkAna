@@ -20,7 +20,7 @@ import ErrorAlert from "../../common/errorAlert";
 const responsiveSize =
   (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
-const InputSelector = ({ close, currentService }) => {
+const InputSelector = ({ close, currentService, currentProcessingType }) => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState();
   const [alertVisible, setAlertVisible] = useState(false);
@@ -99,7 +99,7 @@ const InputSelector = ({ close, currentService }) => {
           console.log("ImagePicker Error: ", response.error);
         } else if (response.customButton) {
           console.log("User tapped custom button: ", response.customButton);
-        } else {
+        } else if (currentProcessingType === "Server") {
           handleInference(response.assets[0].uri).then((response) => {
             setLoading(false);
             if (response.status === 200) {
@@ -110,6 +110,10 @@ const InputSelector = ({ close, currentService }) => {
               console.log(response);
             }
           });
+        } else if (currentProcessingType === "Device") {
+          ToastAndroid.show("This option is not available yet. Showing a dummy result.", ToastAndroid.SHORT);
+          setResult("Healthy");
+          setAlertVisible(true);
         }
       }
     );

@@ -182,7 +182,7 @@ const HomePage = ({ navigation }) => {
       </TapGestureHandler>
       {!keyboardListener ? (
         <View style={styles.tabBarContainer}>
-          <TabBar currentService={Object.keys(descriptions)[currentIndex]}/>
+          <TabBar currentService={Object.keys(descriptions)[currentIndex]} currentProcessingType={currentProcessingType}/>
         </View>
       ) : null}
       <LoadingIndicator visible={loading} close={() => setLoading(false)} text={"Loading..."} />
