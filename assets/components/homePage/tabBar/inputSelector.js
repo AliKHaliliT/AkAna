@@ -21,6 +21,8 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import GradientImagedButton from "./gradintImageButton";
 import LoadingIndicator from "../../common/activityIndicatorModal";
 import ErrorAlert from "../../common/errorAlert";
+import listFilesInDirectory from "../../../utils/logFilesFromDirectory";
+import deleteDirectory from "../../../utils/deleteDirectoryFromDevice";
 
 const responsiveSize =
   (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
@@ -30,6 +32,12 @@ const InputSelector = ({ navigation, close, currentService, currentProcessingTyp
   const [result, setResult] = useState();
   const [alertVisible, setAlertVisible] = useState(false);
   const [showCreditAlert, setShowCreditAlert] = useState(false);
+
+  // For testing purposes
+  React.useEffect(() => {
+    // listFilesInDirectory("unsentVideos");
+    // deleteDirectory("unsentVideos")
+  }, []);
 
   const handleInference = async (video) => {
 
@@ -80,12 +88,12 @@ const InputSelector = ({ navigation, close, currentService, currentProcessingTyp
       }
     }
   
-  if (currentProcessingType === "Device" && result) {
-    const folderName = "unsentVideos";
-    const fileName = `${currentService}_${result}_${new Date().getTime()}`;
+    if (currentProcessingType === "Device" && result) {
+      const folderName = "unsentVideos";
+      const fileName = `${currentService}_${result}_${new Date().getTime()}`;
 
-    await saveVideo(folderName, fileName, video);
-  }
+      await saveVideo(folderName, fileName, video);
+    }
   };
 
 
@@ -173,7 +181,7 @@ const InputSelector = ({ navigation, close, currentService, currentProcessingTyp
             }
           });
         } else if (currentProcessingType === "Device") {
-          handleCredit();
+          handleCredit(response.assets[0].uri);
         }
       }
     );
