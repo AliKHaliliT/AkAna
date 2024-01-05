@@ -4,10 +4,13 @@ import { useFocusEffect } from "@react-navigation/native";
 import getRandomPosition from "../utils/randomPositionGenerator";
 import backgroundDecorations from "../utils/decorations";
 import loadValueSecure from "../utils/loadValueSecure";
+import sendUserLamenessDetectionData from "../api/sendLamenessDetectionData";
 import userLamnessDetectionData from "../api/userLamenessDetectionData";
 import saveValue from "../utils/saveValue";
 import lamenessDetectionDataTemplate from "../data/lamenessDetectionDataTemplate";
 import services from "../api/services";
+import saveImages from "../utils/saveImagesToDevice"
+import saveJSON from "../utils/saveJSONToDevice";
 import { LinearGradient } from "react-native-linear-gradient";
 import { TapGestureHandler, State } from "react-native-gesture-handler";
 import HeaderHomePage from "../components/homePage/header/headerHomePage";
@@ -17,6 +20,7 @@ import lamenessDetectionTemplate from "../data/lamenessDetectionAnalyticsUITempl
 import Analytics from "../components/homePage/analytics/analytics";
 import TabBar from "../components/homePage/tabBar/tabBar";
 import LoadingIndicator from "../components/common/activityIndicatorModal";
+import saveJSON from "../utils/saveJSONToDevice";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 const screenWidth = Dimensions.get("window").width;
@@ -52,13 +56,11 @@ const HomePage = ({ navigation }) => {
   const getUserLamnessDetectionData = async () => {
     const { username, password } = await loadValueSecure("userPass");
     const response = await userLamnessDetectionData({ username_or_email: username, password: password });
-    console.log(response)
     if (response.status === 200) {
       setAnalyticsData(response.data.data);
-      if (response.message == "No data found.") {
-        saveValue(`${Object.keys(response.data.data)[0]} - lameness`, "0");
-      }
     } else {
+      setAnalyticsData(lamenessDetectionDataTemplate);
+      saveValue(`${lamenessDetectionDataTemplate} - lameness`, "0");
       ToastAndroid.show("Something went wrong retrieving the data from the server.", ToastAndroid.SHORT);
     }
   }
@@ -68,21 +70,28 @@ const HomePage = ({ navigation }) => {
   
     try {
       const response = await services({ username_or_email: username, password: password });
-  
+
       if (response.status === 200) {
         for (const key of Object.keys(response.data.data)) {
           if (Object.keys(descriptions).includes(key)) {
             continue;
           }
 
-          setImages([{ uri: `data:image/jpg;base64,${response.data.data[key].image}` }]);
-          setDescriptions({ [key]: response.data.data[key].description });
-  
+          const imageBase64 = response.data.data[key].image;
+          const description = response.data.data[key].description;
+
+          await saveImages("servicesData", key, imageBase64);
+          await saveJSON("servicesData", key, description);
+
+          setImages([{ uri: `data:image/jpg;base64,${imageBase64}` }]);
+          setDescriptions({ ...descriptions, [key]: description });
         }
 
         if (Object.keys(response.data.data)[currentIndex] === "Lameness Detection") {
-          await getUserLamnessDetectionData(); 
+          await getUserLamnessDetectionData();
         }
+
+        await saveJSON("lamenessDetection", "lamenessDetectionData", analyticsData);
 
       } else {
         setAnalyticsData(lamenessDetectionDataTemplate);
@@ -93,7 +102,6 @@ const HomePage = ({ navigation }) => {
     } catch (error) {
       console.error(error);
       ToastAndroid.show("Something went wrong retrieving the services from the server.", ToastAndroid.SHORT);
-      return null;
     }
   };
   
