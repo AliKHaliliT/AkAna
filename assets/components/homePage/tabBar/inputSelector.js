@@ -27,6 +27,7 @@ const InputSelector = ({ close, currentService, currentProcessingType }) => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState();
   const [alertVisible, setAlertVisible] = useState(false);
+  const [showCreditAlert, setShowCreditAlert] = useState(false);
 
   const handleInference = async (video) => {
 
@@ -41,7 +42,12 @@ const InputSelector = ({ close, currentService, currentProcessingType }) => {
       if (await loadValue("credit") === null) {
       const { username, password } = await loadValueSecure("userPass");
       const response = await userInfo({ username_or_email: username, password: password });
-      if (response.status === 200) {
+      if (response.status === 200 ) {
+        if (response.data.data.credit === 0) {
+          setShowCreditAlert(true);
+          await saveValue("credit", String(response.data.data.credit));
+          return;
+        }
         await saveValue("credit", String(response.data.data.credit - 1));
         setResult("Healthy");
         setAlertVisible(true);
@@ -50,10 +56,15 @@ const InputSelector = ({ close, currentService, currentProcessingType }) => {
         ToastAndroid.show("Something went wrong getting the credit. You must connect to the internet for the intial configurations", ToastAndroid.SHORT);
       }
     } else {
-      setResult("Healthy");
-      setAlertVisible(true);
-      await saveValue("credit", String(parseInt(await loadValue("credit")) - 1));
-      ToastAndroid.show("This option is not available yet. Showing a dummy result.", ToastAndroid.SHORT);
+      const creditLoaded = parseInt(await loadValue("credit")); 
+      if (creditLoaded !== 0) {
+        setResult("Healthy");
+        setAlertVisible(true);
+        await saveValue("credit", String(creditLoaded - 1));
+        ToastAndroid.show("This option is not available yet. Showing a dummy result.", ToastAndroid.SHORT);
+      } else {
+        setShowCreditAlert(true);
+      }
     }
   }
 
@@ -82,6 +93,8 @@ const InputSelector = ({ close, currentService, currentProcessingType }) => {
               console.log(response.data);
               setResult(response.data.result);
               setAlertVisible(true);
+            } else if (response.message == "No credits left") {
+              setShowCreditAlert(true);
             } else {
               ToastAndroid.show("Something went wrong uploading the video. Please check your connection", ToastAndroid.SHORT);
             }
@@ -133,6 +146,8 @@ const InputSelector = ({ close, currentService, currentProcessingType }) => {
               console.log(response.data);
               setResult(response.data.result);
               setAlertVisible(true);
+            } else if (response.message == "No credits left") {
+              setShowCreditAlert(true);
             } else {
               ToastAndroid.show("Something went wrong uploading the video. Please check your connection", ToastAndroid.SHORT);
             }
@@ -189,6 +204,14 @@ const InputSelector = ({ close, currentService, currentProcessingType }) => {
         alertTitle={"Upload was successfull!"}
         alertText={
           `Your video has been uploaded successfully. The result you for your video using ${currentService} model was ${result}. You can view all of the results in the analytics tab. `
+        }
+      />
+      <ErrorAlert
+        visible={showCreditAlert}
+        close={setShowCreditAlert}
+        alertTitle={"No credits left!"}
+        alertText={
+          `You have no credits left. Please buy more credits.`
         }
       />
     </View>
