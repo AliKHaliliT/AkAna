@@ -11,6 +11,7 @@ import { TapGestureHandler, State } from "react-native-gesture-handler";
 import HeaderHomePage from "../components/homePage/header/headerHomePage";
 import ProcessingTypeCard from "../components/homePage/processingTypeCard/processingTypeCard";
 import ModelCard from "../components/homePage/modelCard/modelCard";
+import lamenessDetectionTemplate from "../data/lamenessDetectionAnalyticsUITemplate";
 import Analytics from "../components/homePage/analytics/analytics";
 import TabBar from "../components/homePage/tabBar/tabBar";
 import LoadingIndicator from "../components/common/activityIndicatorModal";
@@ -23,6 +24,9 @@ const positions = getRandomPosition(screenHeight, screenWidth, 300, 200, backgro
 
 // const images = [require("../cache/img/lamenessDetection.png")];
 // const descriptions = require("../cache/data/servicesData.json");
+
+
+templates = {"Lameness Detection": lamenessDetectionTemplate};
 
 
 const HomePage = ({ navigation }) => {
@@ -144,11 +148,18 @@ const HomePage = ({ navigation }) => {
             <ProcessingTypeCard />
           </View>
           <ModelCard images={images} descriptions={descriptions} currentIndexState={[currentIndex, setCurrentIndex]}/>
+          {/* 
+          When there are more services, the below code will be used to render the analytics for each service 
+          Then, a map function will be used to render the analytics for each service and pass the correct template as a prop
+          */}
+          {Object.keys(descriptions).length > 0 &&
           <Analytics
             data={analyticsData}
             onTextInputPress={setKeyboardListener}
             onTapCloseSuggestions={[onTapCloseSuggestions, setOnTapCloseSuggestions]}
+            template={templates["Lameness Detection"]}
           />
+          }
         </ScrollView>
       </TapGestureHandler>
       {!keyboardListener ? (

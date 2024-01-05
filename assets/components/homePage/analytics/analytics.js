@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Dimensions, View, Text, StyleSheet } from "react-native";
-import lamenessDetectionTemplate from "../../../data/lamenessDetectionAnalyticsUITemplate";
 import ChartLegend from "./chartLegend";
 import { LinearGradient } from "react-native-linear-gradient";
 import Dropdown from "./dropdown";
@@ -8,19 +7,19 @@ import { PieChart } from "react-native-gifted-charts";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
-const Analytics = ({ data, onTextInputPress, onTapCloseSuggestions }) => {
+const Analytics = ({ data, template, onTextInputPress, onTapCloseSuggestions }) => {
   const [userSessions, setUserSessions] = useState([]);
-  const [chartData, setChartData] = useState(lamenessDetectionTemplate);
+  const [chartData, setChartData] = useState(template);
   const [currentSession, setCurrentSession] = useState('');
 
   useEffect(() => {
 
-    // Make a Deep Copy of the lamenessDetectionTemplate
+    // Make a Deep Copy of the template
     tempObject = {};
 
     setUserSessions(Object.keys(data));
     Object.keys(data).forEach((key) => {
-      tempTemplate = JSON.parse(JSON.stringify(lamenessDetectionTemplate));
+      tempTemplate = JSON.parse(JSON.stringify(template));
       tempTemplate.forEach((item) => {
         item.value = data[key][item.legendName.toLowerCase()];
       });
@@ -109,7 +108,7 @@ const Analytics = ({ data, onTextInputPress, onTapCloseSuggestions }) => {
         </View>
         <View style={styles.chartContent}>
           <PieChart
-            data={chartData[currentSession] ? chartData[currentSession] : lamenessDetectionTemplate}
+            data={chartData[currentSession] ? chartData[currentSession] : template}
             donut
             showGradient
             sectionAutoFocus
