@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Dimensions, ToastAndroid, RefreshControl, ScrollView, Image, View, StyleSheet } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import getRandomPosition from "../utils/randomPositionGenerator";
@@ -20,8 +20,6 @@ const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window"
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
-const positions = getRandomPosition(screenHeight, screenWidth, 300, 200, backgroundDecorations.length);
-
 // ModelCard default values - Only used for presentation purposes
 const imagesTemplate = [require("../img/lamenessDetection.png")];
 const descriptionsTemplate = require("../data/servicesData.json");
@@ -31,9 +29,12 @@ const descriptionsTemplate = require("../data/servicesData.json");
 const sessions = require("../data/userSessions.json").sessions;
 const templates = {"Lameness Detection": lamenessDetectionTemplate};
 
+const positionsTemp = getRandomPosition(screenHeight, screenWidth, 300, 200, backgroundDecorations.length);
+
 
 const HomePage = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
+  const [currentProcessingType, setCurrentProcessingType] = useState("Server");
   const [analyticsData, setAnalyticsData] = useState({});
   const [images, setImages] = useState(imagesTemplate);
   const [descriptions, setDescriptions] = useState(descriptionsTemplate);
@@ -42,6 +43,9 @@ const HomePage = ({ navigation }) => {
   const [onTapCloseSuggestions, setOnTapCloseSuggestions] = useState(true);
   const [keyboardListener, setKeyboardListener] = useState(false);
 
+  const positions = useRef(getRandomPosition(screenHeight, screenWidth, 300, 200, backgroundDecorations.length));
+  // `${Math.random() * 360}deg`
+  const rotatations = useRef([...Array(positionsTemp.length)].map(() => `${Math.random() * 360}deg`));
 
   // console.log(lamenessDetectionTemplate);
 
@@ -131,15 +135,15 @@ const HomePage = ({ navigation }) => {
           <Image source={require("../img/corner.png")} resizeMode="contain" style={styles.cornerImageStyle} />
           {backgroundDecorations.map((image, index) => (
             <React.Fragment key={index}>
-              {[...Array(positions.length / backgroundDecorations.length)].map((blackHole, indexInner) => (
+              {[...Array(positions.current.length / backgroundDecorations.length)].map((blackHole, indexInner) => (
                 <Image
                   key={`${index}-${indexInner}`}
                   source={image}
                   style={{
                     ...styles.backgroundDecorationsStyle,
-                    top: positions[index * positions.length / backgroundDecorations.length + indexInner].top,
-                    left: positions[index * positions.length / backgroundDecorations.length + indexInner].left,
-                    transform: [{ rotate: `${Math.random() * 360}deg` }],
+                    top: positions.current[index * positions.current.length / backgroundDecorations.length + indexInner].top,
+                    left: positions.current[index * positions.current.length / backgroundDecorations.length + indexInner].left,
+                    transform: [{ rotate: rotatations.current[index * positions.current.length / backgroundDecorations.length + indexInner] }],
                   }}
                 />
               ))}
@@ -149,7 +153,10 @@ const HomePage = ({ navigation }) => {
             <HeaderHomePage navigation={navigation} headerTitle="AkAna" />
           </View>
           <View style={{ zIndex: 3 }}>
-            <ProcessingTypeCard />
+            <ProcessingTypeCard 
+              selectedButton={currentProcessingType}
+              setSelectedButton={setCurrentProcessingType}
+            />
           </View>
           <ModelCard images={images} descriptions={descriptions} currentIndexState={[currentIndex, setCurrentIndex]}/>
           {Object.keys(descriptions).length > 0 &&

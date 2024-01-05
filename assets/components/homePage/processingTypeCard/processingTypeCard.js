@@ -5,8 +5,7 @@ import LinearGradient from "react-native-linear-gradient";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
-const ProcessingTypeCard = () => {
-  const [selectedButton, setSelectedButton] = useState("Server");
+const ProcessingTypeCard = ({ selectedButton, setSelectedButton }) => {
   const [blinkAnimation] = useState(new Animated.Value(0));
 
   const blinkRef = useRef();
