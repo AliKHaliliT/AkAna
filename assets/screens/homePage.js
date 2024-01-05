@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Dimensions, ToastAndroid, RefreshControl, ScrollView, Image, View, StyleSheet } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import getRandomPosition from "../utils/randomPositionGenerator";
@@ -8,7 +8,6 @@ import services from "../api/services";
 import userLamnessDetectionData from "../api/userLamenessDetectionData";
 import { LinearGradient } from "react-native-linear-gradient";
 import { TapGestureHandler, State } from "react-native-gesture-handler";
-import lamenessDetectionTemplate from "../cache/data/lamenessDetectionAnalyticsUITemplate"
 import HeaderHomePage from "../components/homePage/header/headerHomePage";
 import ProcessingTypeCard from "../components/homePage/processingTypeCard/processingTypeCard";
 import ModelCard from "../components/homePage/modelCard/modelCard";
@@ -28,7 +27,7 @@ const positions = getRandomPosition(screenHeight, screenWidth, 300, 200, backgro
 
 const HomePage = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
-  const [analyticsData, setAnalyticsData] = useState(lamenessDetectionTemplate);
+  const [analyticsData, setAnalyticsData] = useState({});
   const [descriptions, setDescriptions] = useState({});
   const [images, setImages] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -43,8 +42,7 @@ const HomePage = ({ navigation }) => {
     const { username, password } = await loadValueSecure("userPass");
     const response = await userLamnessDetectionData({ username_or_email: username, password: password });
     if (response.status === 200) {
-      console.log(Object.values(response.data.data));
-      // setAnalyticsData(response.data.data);
+      setAnalyticsData(response.data.data);
     } else if (response.message === "No data found") {
       ToastAndroid.show("You have no data to display.", ToastAndroid.SHORT);
     } else {
@@ -52,7 +50,7 @@ const HomePage = ({ navigation }) => {
     }
   }
 
-  const getServices = async () => {
+  const getData = async () => {
     const { username, password } = await loadValueSecure("userPass");
   
     try {
@@ -67,10 +65,12 @@ const HomePage = ({ navigation }) => {
           setDescriptions({ [key]: response.data.data[key].description });
           setImages([{ uri: `data:image/jpg;base64,${response.data.data[key].image}` }]);
   
-          if (Object.keys(response.data.data)[currentIndex] === "Lameness Detection") {
-            await getUserLamnessDetectionData(); // Await here to ensure completion before moving forward
-          }
         }
+
+        if (Object.keys(response.data.data)[currentIndex] === "Lameness Detection") {
+          await getUserLamnessDetectionData(); 
+        }
+
       } else {
         ToastAndroid.show("Something went wrong retrieving the services from the server.", ToastAndroid.SHORT);
       }
@@ -85,7 +85,7 @@ const HomePage = ({ navigation }) => {
   useFocusEffect(
     React.useCallback(() => {
       setLoading(true);
-      getServices().then((response) => {
+      getData().then((response) => {
         setLoading(false);
       }).catch((error) => {
         setLoading(false);
@@ -96,7 +96,7 @@ const HomePage = ({ navigation }) => {
 
   const onRefresh = () => {
     setRefreshing(true);
-    getServices().then((response) => {
+    getData().then((response) => {
       setRefreshing(false);
     }).catch((error) => {
       setRefreshing(false);
@@ -108,7 +108,9 @@ const HomePage = ({ navigation }) => {
       <TapGestureHandler
         onHandlerStateChange={(event) => {
           if (event.nativeEvent.state === State.END) {
-            setOnTapCloseSuggestions(false);
+            if (!keyboardListener) {
+              setOnTapCloseSuggestions(false);
+            }
           }
         }}
       >

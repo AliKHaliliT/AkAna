@@ -104,7 +104,9 @@ const Dropdown = ({ options, onSelect, onTextInputPress, onTapCloseSuggestions})
             onChangeText={handleInputChange}
             onBlur={() => {
               onTextInputPress(false);
-              onSelect(searchText);
+              if (options.includes(searchText)) {
+                onSelect(searchText);
+              }
             }}
           />
         </LinearGradient>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Dimensions, View, Text, StyleSheet } from "react-native";
+import lamenessDetectionTemplate from "../../../data/lamenessDetectionAnalyticsUITemplate";
 import ChartLegend from "./chartLegend";
 import { LinearGradient } from "react-native-linear-gradient";
 import Dropdown from "./dropdown";
@@ -9,23 +10,42 @@ const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window"
 
 const Analytics = ({ data, onTextInputPress, onTapCloseSuggestions }) => {
   const [userSessions, setUserSessions] = useState([]);
-  const [chartData, setChartData] = useState([]);
+  const [chartData, setChartData] = useState(lamenessDetectionTemplate);
+  const [currentSession, setCurrentSession] = useState('');
 
   useEffect(() => {
-    setUserSessions(Object.keys(data));
-    setChartData(Object.values(data));
-  }, []);
 
-  const processed = data.reduce((total, item) => total + item.value, 0);
-  const healthy = data.find((item) => item.legendName === "Healthy").value;
-  const percentHealthy = Math.ceil((healthy / processed) * 100);
+    // Make a Deep Copy of the lamenessDetectionTemplate
+    tempObject = {};
+
+    setUserSessions(Object.keys(data));
+    Object.keys(data).forEach((key) => {
+      tempTemplate = JSON.parse(JSON.stringify(lamenessDetectionTemplate));
+      tempTemplate.forEach((item) => {
+        item.value = data[key][item.legendName.toLowerCase()];
+      });
+      tempObject[key] = tempTemplate;
+    });
+    setChartData(tempObject);
+    setCurrentSession(Object.keys(data)[0]);
+  }, [data]);
+
+  const processed = chartData[currentSession] ? chartData[currentSession].reduce((total, item) => total + item.value, 0) : 0;
+  const healthy = chartData[currentSession] ? chartData[currentSession].find((item) => item.legendName === "Healthy").value : 0;
+  const percentHealthy = processed !== 0 ? Math.ceil((healthy / processed) * 100) : 0;
   const qualityState = percentHealthy >= 90 ? "Excellent" : percentHealthy >= 80 ? "Good" : percentHealthy >= 70 ? "Fair" : "Poor";
+  
 
   const renderChartLegend = () => {
-    return data.map((blackHole, index) => {
-      if (index % 2 === 0 && index + 1 !== data.length) {
-        const tempItemOne = data[index];
-        const tempItemTwo = data[index + 1];
+
+    if (!chartData[currentSession] || !Array.isArray(chartData[currentSession])) {
+      return null;
+    }
+
+    return chartData[currentSession].map((blackHole, index) => {
+      if (index % 2 === 0 && index + 1 !== chartData[currentSession].length) {
+        const tempItemOne = chartData[currentSession][index]
+        const tempItemTwo = chartData[currentSession][index + 1]
         const furtherInformationRequiredArray = ["FIR", "Uncertain"];
         const infoArray = [];
         if (furtherInformationRequiredArray.includes(tempItemOne.legendName)) {
@@ -49,8 +69,8 @@ const Analytics = ({ data, onTextInputPress, onTapCloseSuggestions }) => {
             infoText={infoArray}
           />
         );
-      } else if (data.length % 2 !== 0 && index + 1 === data.length) {
-        const tempItem = data[index];
+      } else if (chartData[currentSession].length % 2 !== 0 && index + 1 === chartData[currentSession].length) {
+        const tempItem = chartData[currentSession][index];
         const furtherInformationRequiredArray = ["FIR", "Uncertain"];
         const infoArray = [];
         if (furtherInformationRequiredArray.includes(tempItem.legendName)) {
@@ -82,14 +102,14 @@ const Analytics = ({ data, onTextInputPress, onTapCloseSuggestions }) => {
           <Text style={styles.titleText}>Analytics</Text>
           <Dropdown
             options={userSessions}
-            onSelect={(option) => console.log(option)}
+            onSelect={setCurrentSession}
             onTextInputPress={onTextInputPress}
             onTapCloseSuggestions={onTapCloseSuggestions}
           />
         </View>
         <View style={styles.chartContent}>
           <PieChart
-            data={data}
+            data={chartData[currentSession] ? chartData[currentSession] : lamenessDetectionTemplate}
             donut
             showGradient
             sectionAutoFocus
