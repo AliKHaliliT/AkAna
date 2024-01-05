@@ -4,8 +4,9 @@ import { useFocusEffect } from "@react-navigation/native";
 import getRandomPosition from "../utils/randomPositionGenerator";
 import backgroundDecorations from "../utils/decorations";
 import loadValueSecure from "../utils/loadValueSecure";
-import services from "../api/services";
 import userLamnessDetectionData from "../api/userLamenessDetectionData";
+import saveValue from "../utils/saveValue";
+import services from "../api/services";
 import { LinearGradient } from "react-native-linear-gradient";
 import { TapGestureHandler, State } from "react-native-gesture-handler";
 import HeaderHomePage from "../components/homePage/header/headerHomePage";
@@ -29,6 +30,7 @@ const descriptionsTemplate = require("../data/servicesData.json");
 const sessions = require("../data/userSessions.json").sessions;
 const templates = {"Lameness Detection": lamenessDetectionTemplate};
 
+// Background decorations - Consistent across renders
 const positionsTemp = getRandomPosition(screenHeight, screenWidth, 300, 200, backgroundDecorations.length);
 
 
@@ -43,20 +45,18 @@ const HomePage = ({ navigation }) => {
   const [onTapCloseSuggestions, setOnTapCloseSuggestions] = useState(true);
   const [keyboardListener, setKeyboardListener] = useState(false);
 
+  // Background decorations - Consistent across renders
   const positions = useRef(getRandomPosition(screenHeight, screenWidth, 300, 200, backgroundDecorations.length));
-  // `${Math.random() * 360}deg`
   const rotatations = useRef([...Array(positionsTemp.length)].map(() => `${Math.random() * 360}deg`));
-
-  // console.log(lamenessDetectionTemplate);
 
   const getUserLamnessDetectionData = async () => {
     const { username, password } = await loadValueSecure("userPass");
     const response = await userLamnessDetectionData({ username_or_email: username, password: password });
     if (response.status === 200) {
       setAnalyticsData(response.data.data);
-      console.log(response.data.data)
-    } else if (response.message === "No data found") {
-      ToastAndroid.show("You have no data to display.", ToastAndroid.SHORT);
+      if (response.message == "No data found.") {
+        saveValue(Object.keys(response.data.data)[0], "0");
+      }
     } else {
       ToastAndroid.show("Something went wrong retrieving the data from the server.", ToastAndroid.SHORT);
     }
