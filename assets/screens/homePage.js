@@ -6,6 +6,7 @@ import backgroundDecorations from "../utils/decorations";
 import loadValueSecure from "../utils/loadValueSecure";
 import userLamnessDetectionData from "../api/userLamenessDetectionData";
 import saveValue from "../utils/saveValue";
+import lamenessDetectionDataTemplate from "../data/lamenessDetectionDataTemplate";
 import services from "../api/services";
 import { LinearGradient } from "react-native-linear-gradient";
 import { TapGestureHandler, State } from "react-native-gesture-handler";
@@ -27,7 +28,6 @@ const descriptionsTemplate = require("../data/servicesData.json");
 
 
 // Analytics default values - Only used for presentation purposes
-const sessions = require("../data/userSessions.json").sessions;
 const templates = {"Lameness Detection": lamenessDetectionTemplate};
 
 // Background decorations - Consistent across renders
@@ -52,10 +52,11 @@ const HomePage = ({ navigation }) => {
   const getUserLamnessDetectionData = async () => {
     const { username, password } = await loadValueSecure("userPass");
     const response = await userLamnessDetectionData({ username_or_email: username, password: password });
+    console.log(response)
     if (response.status === 200) {
       setAnalyticsData(response.data.data);
       if (response.message == "No data found.") {
-        saveValue(Object.keys(response.data.data)[0], "0");
+        saveValue(`${Object.keys(response.data.data)[0]} - lameness`, "0");
       }
     } else {
       ToastAndroid.show("Something went wrong retrieving the data from the server.", ToastAndroid.SHORT);
@@ -84,6 +85,8 @@ const HomePage = ({ navigation }) => {
         }
 
       } else {
+        setAnalyticsData(lamenessDetectionDataTemplate);
+        saveValue(`${lamenessDetectionDataTemplate} - lameness`, "0");
         ToastAndroid.show("Something went wrong retrieving the services from the server.", ToastAndroid.SHORT);
       }
 
@@ -162,8 +165,7 @@ const HomePage = ({ navigation }) => {
           {Object.keys(descriptions).length > 0 &&
           <Analytics
             data={analyticsData}
-            sessions={sessions}
-            template={templates["Lameness Detection"]}
+            template={templates[Object.keys(descriptions)[currentIndex]]}
             onTextInputPress={setKeyboardListener}
             onTapCloseSuggestions={[onTapCloseSuggestions, setOnTapCloseSuggestions]}
           />
