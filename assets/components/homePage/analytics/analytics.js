@@ -7,8 +7,8 @@ import { PieChart } from "react-native-gifted-charts";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
-const Analytics = ({ data, template, onTextInputPress, onTapCloseSuggestions }) => {
-  const [userSessions, setUserSessions] = useState([]);
+const Analytics = ({ data, sessions, template, onTextInputPress, onTapCloseSuggestions }) => {
+  const [userSessions, setUserSessions] = useState(sessions);
   const [chartData, setChartData] = useState(template);
   const [currentSession, setCurrentSession] = useState('');
 
@@ -17,9 +17,9 @@ const Analytics = ({ data, template, onTextInputPress, onTapCloseSuggestions }) 
     // Make a Deep Copy of the template
     tempObject = {};
 
-    setUserSessions(Object.keys(data));
+    Object.keys(data).length > 0 ? setUserSessions(Object.keys(data)) : setUserSessions(sessions);
     Object.keys(data).forEach((key) => {
-      tempTemplate = JSON.parse(JSON.stringify(template));
+      let tempTemplate = JSON.parse(JSON.stringify(template));
       tempTemplate.forEach((item) => {
         item.value = data[key][item.legendName.toLowerCase()];
       });

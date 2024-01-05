@@ -22,18 +22,21 @@ const screenHeight = Dimensions.get("window").height;
 
 const positions = getRandomPosition(screenHeight, screenWidth, 300, 200, backgroundDecorations.length);
 
-// const images = [require("../cache/img/lamenessDetection.png")];
-// const descriptions = require("../cache/data/servicesData.json");
+// ModelCard default values - Only used for presentation purposes
+const imagesTemplate = [require("../img/lamenessDetection.png")];
+const descriptionsTemplate = require("../data/servicesData.json");
 
 
-templates = {"Lameness Detection": lamenessDetectionTemplate};
+// Analytics default values - Only used for presentation purposes
+const sessions = require("../data/userSessions.json").sessions;
+const templates = {"Lameness Detection": lamenessDetectionTemplate};
 
 
 const HomePage = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [analyticsData, setAnalyticsData] = useState({});
-  const [descriptions, setDescriptions] = useState({});
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState(imagesTemplate);
+  const [descriptions, setDescriptions] = useState(descriptionsTemplate);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const [onTapCloseSuggestions, setOnTapCloseSuggestions] = useState(true);
@@ -47,6 +50,7 @@ const HomePage = ({ navigation }) => {
     const response = await userLamnessDetectionData({ username_or_email: username, password: password });
     if (response.status === 200) {
       setAnalyticsData(response.data.data);
+      console.log(response.data.data)
     } else if (response.message === "No data found") {
       ToastAndroid.show("You have no data to display.", ToastAndroid.SHORT);
     } else {
@@ -65,9 +69,9 @@ const HomePage = ({ navigation }) => {
           if (Object.keys(descriptions).includes(key)) {
             continue;
           }
-  
-          setDescriptions({ [key]: response.data.data[key].description });
+
           setImages([{ uri: `data:image/jpg;base64,${response.data.data[key].image}` }]);
+          setDescriptions({ [key]: response.data.data[key].description });
   
         }
 
@@ -148,16 +152,13 @@ const HomePage = ({ navigation }) => {
             <ProcessingTypeCard />
           </View>
           <ModelCard images={images} descriptions={descriptions} currentIndexState={[currentIndex, setCurrentIndex]}/>
-          {/* 
-          When there are more services, the below code will be used to render the analytics for each service 
-          Then, a map function will be used to render the analytics for each service and pass the correct template as a prop
-          */}
           {Object.keys(descriptions).length > 0 &&
           <Analytics
             data={analyticsData}
+            sessions={sessions}
+            template={templates["Lameness Detection"]}
             onTextInputPress={setKeyboardListener}
             onTapCloseSuggestions={[onTapCloseSuggestions, setOnTapCloseSuggestions]}
-            template={templates["Lameness Detection"]}
           />
           }
         </ScrollView>
