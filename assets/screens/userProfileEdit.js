@@ -5,6 +5,7 @@ import loadValueSecure from "../utils/loadValueSecure";
 import deleteAccount from "../api/deleteAccount";
 import deleteValue from "../utils/deleteValue";
 import deleteValueSecure from "../utils/deleteValueSecure";
+import deleteDirectory from "../utils/deleteDirectoryFromDevice";
 import updateUserCredentials from "../api/updateUserCredentials";
 import saveValueSecure from "../utils/saveValueSecure";
 import { LinearGradient } from "react-native-linear-gradient";
@@ -91,6 +92,7 @@ const UserProfileEdit = ({ navigation }) => {
       const response = await deleteAccount({ username_or_email: username, password: password });
   
       if (response.status === 200) {
+        await deleteDirectory("unsent");
         await Promise.all([
           deleteValue("firstName"),
           deleteValue("lastName"),

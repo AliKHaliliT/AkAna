@@ -1,18 +1,23 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// Function to load a value for a specified key
-const loadValue = async (key) => {
+const loadValue = async (key, verbose = false) => {
   try {
     const value = await AsyncStorage.getItem(key);
     if (value !== null) {
-      console.log("Value loaded successfully:", value);
+      if (verbose) {
+        console.log("Value loaded successfully:", value);
+      }
       return value;
     } else {
-      console.log("No value found for the key:", key);
+      if (verbose) {
+        console.log("No value found for the key:", key);
+      }
       return null;
     }
   } catch (error) {
-    console.error("Error loading value:", error);
+    if (verbose) {
+      console.error("Error loading value:", error);
+    }
     return null;
   }
 };

@@ -1,6 +1,6 @@
 import RNFetchBlob from 'rn-fetch-blob';
 
-const deleteDirectory = async (folderName) => {
+const deleteDirectory = async (folderName, verbose = false) => {
   const dirToDelete = `${RNFetchBlob.fs.dirs.DocumentDir}/${folderName}`;
 
   try {
@@ -10,12 +10,18 @@ const deleteDirectory = async (folderName) => {
     if (isDirExists) {
       // Delete the directory and its contents
       await RNFetchBlob.fs.unlink(dirToDelete);
-      console.log(`Directory ${folderName} deleted successfully.`);
+      if (verbose) {
+        console.log(`Directory ${folderName} deleted successfully.`);
+      }
     } else {
-      console.log(`Directory ${folderName} does not exist.`);
+      if (verbose) {
+        console.log(`Directory ${folderName} does not exist.`);
+      }
     }
   } catch (error) {
-    console.error(`Error deleting directory ${folderName}:`, error);
+    if (verbose) {
+      console.log(`Error deleting directory ${folderName}:`, error);
+    }
   }
 };
 

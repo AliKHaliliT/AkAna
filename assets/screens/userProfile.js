@@ -8,6 +8,8 @@ import userInfo from "../api/userInfo";
 import saveValue from "../utils/saveValue";
 import updateRecharged from "../api/updateRecharged";
 import deleteValue from "../utils/deleteValue";
+import listDir from "../utils/listSortedFilesFromDirectory";
+import deleteDirectory from "../utils/deleteDirectoryFromDevice";
 import { LinearGradient } from "react-native-linear-gradient";
 import GoBack from "../components/common/goBackButtonWithText";
 import Icon from "react-native-vector-icons/FontAwesome6";
@@ -15,6 +17,7 @@ import MCIIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import DetailCard from "../components/userProfile/detailCard";
 import GradientButton from "../components/common/gradientButton";
 import LoadingIndicator from "../components/common/activityIndicatorModal";
+import ConfirmAlert from "../components/common/confirmAlert";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
@@ -26,6 +29,8 @@ const UserProfile = ({ navigation }) => {
   const [email, setEmail] = useState("canislupus@akana.com");
   const [plan, setPlan] = useState("Platinum");
   const [credit, setCredit] = useState("999");
+  const [showSyncStatusAlert, setShowSyncStatusAlert] = useState(false);
+  const [showMultipleConfirmText, setShowMultipleConfirmText] = useState('');
 
   const getUserInfoFromAsyncStorage = async () => {
     const [
@@ -59,7 +64,9 @@ const UserProfile = ({ navigation }) => {
       
       if (await loadValue("credit") === null) {
         const responseGetCredit = await userInfo({ username_or_email: userPass.username, password: userPass.password });
-        await saveValue("credit", String(responseGetCredit.data.data.credit));
+        if (responseGetCredit.status === 200) {
+          await saveValue("credit", String(responseGetCredit.data.data.credit));
+        }
       }
 
       const responseGetCredit = await userInfo({ username_or_email: userPass.username, password: userPass.password });
@@ -73,17 +80,21 @@ const UserProfile = ({ navigation }) => {
         ToastAndroid.show("Something went wrong retrieving the info from the server.", ToastAndroid.SHORT);
       }
 
-      const updateCreditPayload = {
-        user: {
-          username_or_email: userPass.username,
-          password: userPass.password,
-        },
-        credit: {
-          credit: responseGetCredit.data.data.credit > parseInt(await loadValue("credit")) ? parseInt(await loadValue("credit")) : responseGetCredit.data.data.credit,
-        },
-      };
+      if (responseGetCredit.status === 200) {
+        const updateCreditPayload = {
+          user: {
+            username_or_email: userPass.username,
+            password: userPass.password,
+          },
+          credit: {
+            credit: responseGetCredit.data.data.credit > parseInt(await loadValue("credit")) ? parseInt(await loadValue("credit")) : responseGetCredit.data.data.credit,
+          },
+        };
 
-      await updateCredit(updateCreditPayload);
+        await updateCredit(updateCreditPayload);
+      } else {
+        ToastAndroid.show("Something went wrong retrieving the info from the server.", ToastAndroid.SHORT);
+      }
       
       const response = await userInfo({ username_or_email: userPass.username, password: userPass.password });
   
@@ -142,7 +153,24 @@ const UserProfile = ({ navigation }) => {
     navigation.navigate("UserProfileEdit");
   }
 
+  const handleSyncStatus = async () => {
+    const lsDir = await listDir("unsent");
+    if (lsDir !== null) {
+      if (lsDir.length > 0) {
+        setShowSyncStatusAlert(true);
+        setShowMultipleConfirmText(`You have unsynced files. If you logout, they will be deleted. Are you sure you want to logout?`);
+      } else {
+        setShowSyncStatusAlert(true);
+        setShowMultipleConfirmText(`Are you sure you want to logout?`);
+      }
+    } else {
+      setShowSyncStatusAlert(true);
+      setShowMultipleConfirmText(`Are you sure you want to logout?`);
+    }
+  };
+
   const handleLogout = async () => {
+    await deleteDirectory("unsent");
     Promise.all([deleteValue("isLoggedIn"), deleteValue("firstName"), deleteValue("lastName"), deleteValue("username"),
                  deleteValue("email"), deleteValue("plan"), deleteValue("credit")]).then(() => {
       navigation.reset({
@@ -210,7 +238,7 @@ const UserProfile = ({ navigation }) => {
           />
           <GradientButton 
             text={"Logout"} 
-            onPress={handleLogout} 
+            onPress={handleSyncStatus} 
             colors={["#1f2f34", "#3e5158"]} 
             textStyle={{...styles.buttonTextStyle, color: "#ff0000"}}
             buttonStyle={{flex: 1, marginLeft: 5, marginRight: 5}}
@@ -218,6 +246,7 @@ const UserProfile = ({ navigation }) => {
         </View>
       </View>
       <LoadingIndicator visible={loading} onClose={() => setLoading(false)} text={"Loading..."} />
+      <ConfirmAlert visible={showSyncStatusAlert} close={setShowSyncStatusAlert} confirm={handleLogout} alertTitle={"Confirm"} alertText={showMultipleConfirmText} />
     </LinearGradient>
   );
 };

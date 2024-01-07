@@ -1,17 +1,23 @@
 import * as Keychain from "react-native-keychain";
 
-const loadValueSecure = async (service) => {
+const loadValueSecure = async (service, verbose = false) => {
   try {
-    const credentials = await Keychain.getGenericPassword({ service: service });
+    const credentials = await Keychain.getGenericPassword({ service });
     if (credentials) {
-      console.log(`Value loaded from keychain with service ${service}.`);
+      if (verbose) {
+        console.log(`Value loaded from keychain with service ${service}.`);
+      }
       return credentials;
     } else {
-      console.log(`No value found in keychain for service ${service}.`);
+      if (verbose) {
+        console.log(`No value found in keychain for service ${service}.`);
+      }
       return null;
     }
   } catch (error) {
-    console.error("Error loading value securely:", error);
+    if (verbose) {
+      console.error("Error loading value securely:", error);
+    }
     return null;
   }
 };

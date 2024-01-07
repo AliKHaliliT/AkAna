@@ -1,8 +1,8 @@
-function getRandomPosition(height, width, rectangleHeight = 300, rectangleWidth = 200, pointsPerRectangle = 1) {
+const getRandomPosition = (height, width, rectangleHeight = 300, rectangleWidth = 200, pointsPerRectangle = 1) => {
   const maxDivisionsHeight = Math.floor(height / rectangleHeight) + 1;
   const maxDivisionsWidth = Math.floor(width / rectangleWidth) + 1;
 
-  positions = [];
+  let positions = [];
   for (let row = 0; row < maxDivisionsHeight; row++) {
     for (let col = 0; col < maxDivisionsWidth; col++) {
       for (let point = 0; point < pointsPerRectangle; point++) {

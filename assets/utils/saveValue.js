@@ -1,12 +1,15 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// Function to save a value with a specified key
-const saveValue = async (key, value) => {
+const saveValue = async (key, value, verbose = false) => {
   try {
     await AsyncStorage.setItem(key, value);
-    console.log("Value saved successfully!");
+    if (verbose) {
+      console.log("Value saved successfully!");
+    }
   } catch (error) {
-    console.error("Error saving value:", error);
+    if (verbose) {
+      console.error("Error saving value:", error);
+    }
   }
 };
 

@@ -15,19 +15,25 @@ import userInfo from "../../../api/userInfo";
 import deleteValue from "../../../utils/deleteValue";
 import loadValue from "../../../utils/loadValue";
 import saveValue from "../../../utils/saveValue";
+import formatDate from "../../../utils/getDate";
+import sortFilesByDate from "../../../utils/sortDates";
+import readJSON from "../../../utils/readJSONFromDevice";
+import saveJSON from "../../../utils/saveJSONToDevice";
 import saveVideo from "../../../utils/saveVideoToDevice";
 import { LinearGradient } from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import GradientImagedButton from "./gradintImageButton";
 import LoadingIndicator from "../../common/activityIndicatorModal";
 import ErrorAlert from "../../common/errorAlert";
-import listFilesInDirectory from "../../../utils/logFilesFromDirectory";
+import listDir from "../../../utils/listSortedFilesFromDirectory";
 import deleteDirectory from "../../../utils/deleteDirectoryFromDevice";
 
 const responsiveSize =
   (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
-const InputSelector = ({ navigation, close, currentService, currentProcessingType }) => {
+const InputSelector = ({ navigation, close, currentService, 
+                        currentProcessingType, analyticsData={analyticsData}, 
+                        setAnalyticsData={setAnalyticsData}}) => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState();
   const [alertVisible, setAlertVisible] = useState(false);
@@ -35,8 +41,9 @@ const InputSelector = ({ navigation, close, currentService, currentProcessingTyp
 
   // For testing purposes
   React.useEffect(() => {
-    // listFilesInDirectory("unsentVideos");
-    // deleteDirectory("unsentVideos")
+    // deleteDirectory("unsent");
+    // console.log(readJSON(`unsent/${currentService}`, formatDate()));
+    // console.log(analyticsData);
   }, []);
 
   const handleInference = async (video) => {
@@ -60,6 +67,33 @@ const InputSelector = ({ navigation, close, currentService, currentProcessingTyp
     );
   };
 
+  const handleNewData = async (response) => {
+    const lsDir = await listDir(`unsent/${currentService}`);
+    if (lsDir !== null) {
+      if (lsDir.includes(`${formatDate()}.json`)) {
+        const latestData = await readJSON(`unsent/${currentService}`, formatDate());
+        latestData[response.data.result.toLowerCase()] += 1;
+        console.log("Exists")
+        await saveJSON(`unsent/${currentService}`, formatDate(), latestData);
+        const temp = {...analyticsData};
+        temp[formatDate()] = latestData;
+        setAnalyticsData(temp);
+        console.log(analyticsData)
+      }
+    } else {
+      sortedDataDates = sortFilesByDate(Object.keys(analyticsData));
+      const latestData = analyticsData[sortedDataDates[sortedDataDates.length - 1]];
+      console.log("Doesn't exist")
+      console.log(latestData)
+      latestData[response.data.result.toLowerCase()] += 1;
+      await saveJSON(`unsent/${currentService}`, formatDate(), latestData);
+      const temp = {...analyticsData};
+      temp[formatDate()] = latestData;
+      setAnalyticsData(temp);
+      console.log(analyticsData)
+    }
+  }
+
   const handleCredit = async (video) => {
     if (await loadValue("credit") === null) {
       const { username, password } = await loadValueSecure("userPass");
@@ -72,6 +106,30 @@ const InputSelector = ({ navigation, close, currentService, currentProcessingTyp
         await saveValue("credit", String(response.data.data.credit - 1));
         setResult("Healthy");
         setAlertVisible(true);
+        const lsDir = await listDir(`unsent/${currentService}`);
+        if (lsDir !== null) {
+          if (lsDir.includes(`${formatDate()}.json`)) {
+            const latestData = await readJSON(`unsent/${currentService}`, formatDate());
+            latestData["healthy"] += 1;
+            console.log("Exists")
+            await saveJSON(`unsent/${currentService}`, formatDate(), latestData);
+            const temp = {...analyticsData};
+            temp[formatDate()] = latestData;
+            setAnalyticsData(temp);
+            console.log(analyticsData)
+          }
+        } else {
+          sortedDataDates = sortFilesByDate(Object.keys(analyticsData));
+          const latestData = analyticsData[sortedDataDates[sortedDataDates.length - 1]];
+          console.log("Doesn't exist")
+          console.log(latestData)
+          latestData["healthy"] += 1;
+          await saveJSON(`unsent/${currentService}`, formatDate(), latestData);
+          const temp = {...analyticsData};
+          temp[formatDate()] = latestData;
+          setAnalyticsData(temp);
+          console.log(analyticsData)
+        }
         ToastAndroid.show("This option is not available yet. Showing a dummy result.", ToastAndroid.SHORT);
       } else {
         ToastAndroid.show("Something went wrong getting the credit. You must connect to the internet for the initial configurations", ToastAndroid.SHORT);
@@ -82,6 +140,30 @@ const InputSelector = ({ navigation, close, currentService, currentProcessingTyp
         setResult("Healthy");
         setAlertVisible(true);
         await saveValue("credit", String(creditLoaded - 1));
+        const lsDir = await listDir(`unsent/${currentService}`);
+        if (lsDir !== null) {
+          if (lsDir.includes(`${formatDate()}.json`)) {
+            const latestData = await readJSON(`unsent/${currentService}`, formatDate());
+            latestData["healthy"] += 1;
+            console.log("Exists")
+            await saveJSON(`unsent/${currentService}`, formatDate(), latestData);
+            const temp = {...analyticsData};
+            temp[formatDate()] = latestData;
+            setAnalyticsData(temp);
+            console.log(analyticsData)
+          }
+        } else {
+          sortedDataDates = sortFilesByDate(Object.keys(analyticsData));
+          const latestData = analyticsData[sortedDataDates[sortedDataDates.length - 1]];
+          console.log("Doesn't exist")
+          console.log(latestData)
+          latestData["healthy"] += 1;
+          await saveJSON(`unsent/${currentService}`, formatDate(), latestData);
+          const temp = {...analyticsData};
+          temp[formatDate()] = latestData;
+          setAnalyticsData(temp);
+          console.log(analyticsData)
+        }
         ToastAndroid.show("This option is not available yet. Showing a dummy result.", ToastAndroid.SHORT);
       } else {
         setShowCreditAlert(true);
@@ -89,8 +171,8 @@ const InputSelector = ({ navigation, close, currentService, currentProcessingTyp
     }
   
     if (currentProcessingType === "Device" && result) {
-      const folderName = "unsentVideos";
-      const fileName = `${currentService}_${result}_${new Date().getTime()}`;
+      const folderName = "unsent/videos";
+      const fileName = `${currentService}_${result}_${new Date().getTime()}_${Math.random()}`;
 
       await saveVideo(folderName, fileName, video);
     }
@@ -121,6 +203,7 @@ const InputSelector = ({ navigation, close, currentService, currentProcessingTyp
               console.log(response.data);
               setResult(response.data.result);
               setAlertVisible(true);
+              handleNewData(response);
             } else if (response.message == "No credits left") {
               setShowCreditAlert(true);
             } else {
@@ -174,6 +257,7 @@ const InputSelector = ({ navigation, close, currentService, currentProcessingTyp
               console.log(response.data);
               setResult(response.data.result);
               setAlertVisible(true);
+              handleNewData(response);
             } else if (response.message == "No credits left") {
               setShowCreditAlert(true);
             } else {
