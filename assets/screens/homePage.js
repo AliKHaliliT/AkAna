@@ -196,6 +196,8 @@ const HomePage = ({ navigation }) => {
       ToastAndroid.show("No data found to display for today. Showing a default template.", ToastAndroid.SHORT);
       await sendLamenessDetectionDataDefault();
     } else {
+      console.log(analyticsData)
+      console.log("Started loading from device storage")
       const lsDir = await listDir("Lameness Detection");
       if (lsDir !== null) {
         for (const file of lsDir) {
@@ -208,25 +210,35 @@ const HomePage = ({ navigation }) => {
       console.log(analyticsData)
       const lsDir2 = await listDir(`unsent/${Object.keys(descriptions)[currentIndex]}`);
       if (lsDir2 !== null) {
+        console.log("First if")
         for (const file of lsDir2) {
+          console.log("Third if")
           const data = await readJSON(`unsent/${Object.keys(descriptions)[currentIndex]}`, file.split(".")[0]);
           const temp = {...analyticsData};
           temp[file.split(".")[0]] = data;
           setAnalyticsData(temp);
         }
+        console.log(analyticsData)
         if (lsDir2.includes(`${formatDate()}.json`)) {
+          console.log("Fourth if")
           const latestData = await readJSON(`unsent/${Object.keys(descriptions)[currentIndex]}`, formatDate());
           const temp = {...analyticsData};
           temp[formatDate()] = latestData;
           setAnalyticsData(temp);
         } else {
-          setAnalyticsData(lamenessDetectionDataTemplate);
+          console.log("Fifth if")
+          const temp = {...analyticsData};
+          temp[formatDate()] = lamenessDetectionDataTemplate[formatDate()];
           await saveJSON("unsent/Lameness Detection", formatDate(), lamenessDetectionDataTemplate[formatDate()]);
         }
+        console.log(analyticsData)
       } else {
-        setAnalyticsData(lamenessDetectionDataTemplate);
+        console.log("Second if")
+        const temp = {...analyticsData};
+        temp[formatDate()] = lamenessDetectionDataTemplate[formatDate()];
         await saveJSON("unsent/Lameness Detection", formatDate(), lamenessDetectionDataTemplate[formatDate()]);
       }
+      console.log(analyticsData)
       ToastAndroid.show("Something went wrong retrieving the data from the server.", ToastAndroid.SHORT);
     }
   }

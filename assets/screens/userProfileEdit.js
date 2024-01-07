@@ -5,6 +5,8 @@ import loadValueSecure from "../utils/loadValueSecure";
 import deleteAccount from "../api/deleteAccount";
 import deleteValue from "../utils/deleteValue";
 import deleteValueSecure from "../utils/deleteValueSecure";
+import listDir from "../utils/listSortedFilesFromDirectory";
+import RNFetchBlob from "rn-fetch-blob";
 import deleteDirectory from "../utils/deleteDirectoryFromDevice";
 import updateUserCredentials from "../api/updateUserCredentials";
 import saveValueSecure from "../utils/saveValueSecure";
@@ -16,6 +18,7 @@ import LoadingIndicator from "../components/common/activityIndicatorModal";
 import ErrorAlert from "../components/common/errorAlert";
 import ConfirmAlert from "../components/common/confirmAlert";
 import saveValue from "../utils/saveValue";
+
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
@@ -92,7 +95,12 @@ const UserProfileEdit = ({ navigation }) => {
       const response = await deleteAccount({ username_or_email: username, password: password });
   
       if (response.status === 200) {
-        await deleteDirectory("unsent");
+        const lsDir = await listDir(RNFetchBlob.fs.dirs.DocumentDir);
+        if (lsDir !== null && lsDir.length > 0) {
+          await Promise.all(lsDir.map(async (file) => {
+            await deleteDirectory(file);
+          }));
+        }
         await Promise.all([
           deleteValue("firstName"),
           deleteValue("lastName"),

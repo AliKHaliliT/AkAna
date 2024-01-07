@@ -170,12 +170,20 @@ const InputSelector = ({ navigation, close, currentService,
       }
     }
   
-    if (currentProcessingType === "Device" && result) {
-      const folderName = "unsent/videos";
-      const fileName = `${currentService}_${result}_${new Date().getTime()}_${Math.random()}`;
+    // if (currentProcessingType === "Device" && result) {
+    //   const folderName = "unsent/videos";
+    //   const fileName = `${currentService}_${result}_${new Date().getTime()}_${Math.random()}`;
 
-      await saveVideo(folderName, fileName, video);
-    }
+    //   await saveVideo(folderName, fileName, video);
+    // }
+  };
+
+
+  const handleVideoSave = async (video) => {
+    const folderName = "unsent/videos";
+    const fileName = `${currentService}_${result}_${new Date().getTime()}_${Math.random()}`;
+
+    await saveVideo(folderName, fileName, video, verbose=true);
   };
 
 
@@ -211,7 +219,9 @@ const InputSelector = ({ navigation, close, currentService,
             }
           });
         } else if (currentProcessingType === "Device") {
-          handleCredit(response.assets[0].uri);
+          handleCredit(response.assets[0].uri).then(() => {
+            handleVideoSave(response.assets[0].uri);
+          });
         }
       }
     );
@@ -265,7 +275,9 @@ const InputSelector = ({ navigation, close, currentService,
             }
           });
         } else if (currentProcessingType === "Device") {
-          handleCredit(response.assets[0].uri);
+          handleCredit(response.assets[0].uri).then(() => {
+            handleVideoSave(response.assets[0].uri);
+          });
         }
       }
     );
