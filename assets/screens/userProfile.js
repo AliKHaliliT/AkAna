@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dimensions, ToastAndroid, View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Dimensions, ToastAndroid, View, Text, StyleSheet } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import loadValue from "../utils/loadValue";
 import loadValueSecure from "../utils/loadValueSecure";
@@ -9,6 +9,7 @@ import saveValue from "../utils/saveValue";
 import updateRecharged from "../api/updateRecharged";
 import deleteValue from "../utils/deleteValue";
 import listDir from "../utils/listSortedFilesFromDirectory";
+import RNFetchBlob from "rn-fetch-blob";
 import deleteDirectory from "../utils/deleteDirectoryFromDevice";
 import { LinearGradient } from "react-native-linear-gradient";
 import GoBack from "../components/common/goBackButtonWithText";
@@ -170,7 +171,12 @@ const UserProfile = ({ navigation }) => {
   };
 
   const handleLogout = async () => {
-    await deleteDirectory("unsent");
+    const lsDir = await listDir(RNFetchBlob.fs.dirs.DocumentDir);
+    if (lsDir !== null && lsDir.length > 0) {
+      await Promise.all(lsDir.map(async (file) => {
+        await deleteDirectory(file);
+      }));
+    }
     Promise.all([deleteValue("isLoggedIn"), deleteValue("firstName"), deleteValue("lastName"), deleteValue("username"),
                  deleteValue("email"), deleteValue("plan"), deleteValue("credit")]).then(() => {
       navigation.reset({

@@ -354,14 +354,16 @@ const HomePage = ({ navigation }) => {
             />
           </View>
           <ModelCard images={images} descriptions={descriptions} currentIndexState={[currentIndex, setCurrentIndex]}/>
-          {Object.keys(descriptions).length > 0 && Object.keys(analyticsData).length > 0 && analyticsData !== templates[Object.keys(descriptions)[currentIndex]] &&
-          <Analytics
-            data={analyticsData}
-            template={templates[Object.keys(descriptions)[currentIndex]]}
-            onTextInputPress={setKeyboardListener}
-            onTapCloseSuggestions={[onTapCloseSuggestions, setOnTapCloseSuggestions]}
-          />
-          }
+          {analyticsData !== null && analyticsData !== undefined && Object.keys(analyticsData).length > 0 ? 
+            Object.values(analyticsData[(Object.keys(analyticsData)[currentIndex])]).reduce((a, b) => a + b) !== 0 && (
+              <Analytics
+                data={analyticsData}
+                template={templates[Object.keys(descriptions)[currentIndex]]}
+                onTextInputPress={setKeyboardListener}
+                onTapCloseSuggestions={[onTapCloseSuggestions, setOnTapCloseSuggestions]}
+              />
+            )
+          : null}
         </ScrollView>
       </TapGestureHandler>
       {!keyboardListener ? (

@@ -13,21 +13,28 @@ const Analytics = ({ data, template, onTextInputPress, onTapCloseSuggestions }) 
   const [currentSession, setCurrentSession] = useState('');
 
   useEffect(() => {
-
-    // Make a Deep Copy of the template
-    tempObject = {};
-
-    setUserSessions(Object.keys(data))
+    let tempObject = {};
+  
+    setUserSessions(Object.keys(data));
+  
     Object.keys(data).forEach((key) => {
       let tempTemplate = JSON.parse(JSON.stringify(template));
       tempTemplate.forEach((item) => {
         item.value = data[key][item.legendName.toLowerCase()];
       });
+  
+      // Filter out entries with zero values
+      // For demo purposes, the zero values are not filtered out
+      // And the template contains at least a value of one so that the chart is displayed completely
+      // Later on, the template should be zeroed out and the zero values should be filtered out
+      // tempTemplate = tempTemplate.filter((item) => item.value !== 0);
+  
       tempObject[key] = tempTemplate;
     });
+  
     setChartData(tempObject);
     setCurrentSession(Object.keys(data)[0]);
-  }, [data]);
+  }, [data]);  
 
   const processed = chartData[currentSession] ? chartData[currentSession].reduce((total, item) => total + item.value, 0) : 0;
   const healthy = chartData[currentSession] ? chartData[currentSession].find((item) => item.legendName === "Healthy").value : 0;
