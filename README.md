@@ -48,7 +48,7 @@ Note that if you want to use the backend, you need to change the address prefix 
 I developed this application as a component of my master's thesis, with a primary focus on serving as a user interface for a lameness detection system that I designed. My objective was to create an expandable design that would allow others to integrate additional systems and augment its capabilities. Essentially, I established the foundation for an agricultural farmer companion application. The application is accompanied by a backend server called "EtugenEke" that is seamlessly integrated. Every aspect of the application is harmoniously aligned with the backend and functions effectively, except for the detection system, which is currently in a placeholder state. Regarding its name, I selected "AkAna," which, in my native language, translates to "The White Mother." AkAna symbolizes the primordial creator-goddess in Turkic culture, revered as the deity of water and the elder sister of Earth.
 
 ## Backend 
-The backend lives in the sister repository [EtugenEke]().
+The backend lives in the sister repository [EtugenEke](https://github.com/AliKHaliliT/EtugenEke).
 
 ## License
 This work is under an [MIT](https://choosealicense.com/licenses/mit/) License.
