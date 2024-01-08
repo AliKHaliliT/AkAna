@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   ToastAndroid,
@@ -26,7 +26,6 @@ import GradientImagedButton from "./gradintImageButton";
 import LoadingIndicator from "../../common/activityIndicatorModal";
 import ErrorAlert from "../../common/errorAlert";
 import listDir from "../../../utils/listSortedFilesFromDirectory";
-import deleteDirectory from "../../../utils/deleteDirectoryFromDevice";
 
 const responsiveSize =
   (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
@@ -38,13 +37,15 @@ const InputSelector = ({ navigation, close, currentService,
   const [result, setResult] = useState();
   const [alertVisible, setAlertVisible] = useState(false);
   const [showCreditAlert, setShowCreditAlert] = useState(false);
+  const [video, setVideo] = useState(null);
 
-  // For testing purposes
-  React.useEffect(() => {
-    // deleteDirectory("unsent");
-    // console.log(readJSON(`unsent/${currentService}`, formatDate()));
-    // console.log(analyticsData);
-  }, []);
+  useEffect(() => {
+    if (video !== null) {
+      handleVideoSave(video);
+      setVideo(null);
+    }
+  }, [video]);
+
 
   const handleInference = async (video) => {
 
@@ -106,6 +107,7 @@ const InputSelector = ({ navigation, close, currentService,
         await saveValue("credit", String(response.data.data.credit - 1));
         setResult("Healthy");
         setAlertVisible(true);
+        setVideo(video);
         const lsDir = await listDir(`unsent/${currentService}`);
         if (lsDir !== null) {
           if (lsDir.includes(`${formatDate()}.json`)) {
@@ -139,6 +141,7 @@ const InputSelector = ({ navigation, close, currentService,
       if (creditLoaded !== 0) {
         setResult("Healthy");
         setAlertVisible(true);
+        setVideo(video);
         await saveValue("credit", String(creditLoaded - 1));
         const lsDir = await listDir(`unsent/${currentService}`);
         if (lsDir !== null) {
@@ -169,15 +172,7 @@ const InputSelector = ({ navigation, close, currentService,
         setShowCreditAlert(true);
       }
     }
-  
-    // if (currentProcessingType === "Device" && result) {
-    //   const folderName = "unsent/videos";
-    //   const fileName = `${currentService}_${result}_${new Date().getTime()}_${Math.random()}`;
-
-    //   await saveVideo(folderName, fileName, video);
-    // }
   };
-
 
   const handleVideoSave = async (video) => {
     const folderName = "unsent/videos";
@@ -185,7 +180,6 @@ const InputSelector = ({ navigation, close, currentService,
 
     await saveVideo(folderName, fileName, video, verbose=true);
   };
-
 
   const launchCameraHandler = async () => {
 
@@ -219,9 +213,7 @@ const InputSelector = ({ navigation, close, currentService,
             }
           });
         } else if (currentProcessingType === "Device") {
-          handleCredit(response.assets[0].uri).then(() => {
-            handleVideoSave(response.assets[0].uri);
-          });
+          handleCredit(response.assets[0].uri)
         }
       }
     );
@@ -275,9 +267,7 @@ const InputSelector = ({ navigation, close, currentService,
             }
           });
         } else if (currentProcessingType === "Device") {
-          handleCredit(response.assets[0].uri).then(() => {
-            handleVideoSave(response.assets[0].uri);
-          });
+          handleCredit(response.assets[0].uri)
         }
       }
     );

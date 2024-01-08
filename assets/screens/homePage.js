@@ -345,7 +345,7 @@ const HomePage = ({ navigation }) => {
             </React.Fragment>
           ))}
           <View style={{ zIndex: 2 }}>
-            <HeaderHomePage navigation={navigation} headerTitle="AkAna" />
+            <HeaderHomePage navigation={navigation} headerTitle="AkAna" setAnalyticsData={setAnalyticsData}/>
           </View>
           <View style={{ zIndex: 3 }}>
             <ProcessingTypeCard 

@@ -22,7 +22,7 @@ import ConfirmAlert from "../components/common/confirmAlert";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
-const UserProfile = ({ navigation }) => {
+const UserProfile = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
   const [firstName, setFirstName] = useState("Canis");
   const [lastName, setLastName] = useState("Lupus");
@@ -177,6 +177,7 @@ const UserProfile = ({ navigation }) => {
         await deleteDirectory(file);
       }));
     }
+
     Promise.all([deleteValue("isLoggedIn"), deleteValue("firstName"), deleteValue("lastName"), deleteValue("username"),
                  deleteValue("email"), deleteValue("plan"), deleteValue("credit")]).then(() => {
       navigation.reset({

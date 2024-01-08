@@ -6,13 +6,13 @@ import ADIcon from "react-native-vector-icons/AntDesign";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
-const HeaderHomePage = ({ navigation, headerTitle }) => {
+const HeaderHomePage = ({ navigation, headerTitle, setAnalyticsData={setAnalyticsData} }) => {
   const openDrawer = () => {
     navigation.openDrawer();
   };
 
   const openUserProfile = () => {
-    navigation.navigate("UserProfile");
+    navigation.navigate("UserProfile", { setAnalyticsData });
   };
 
   return (
