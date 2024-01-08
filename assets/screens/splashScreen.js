@@ -131,7 +131,7 @@ const SplashScreen = () => {
         volume={1.0}
         muted={false}
         resizeMode="cover"
-        repeat
+        repeat={false}
         style={styles.video}
         onLoad={handleVideoLoad}
       />
