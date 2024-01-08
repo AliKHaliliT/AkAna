@@ -12,16 +12,21 @@ The App contains the following screens:
   <img src="readmeAssets\img\login.png" alt="login" style="width: 200px; margin: 10px;">
   <img src="readmeAssets\img\signUp.png" alt="signUp" style="width: 200px; margin: 10px;">
   <img src="readmeAssets\img\forgotPassword.png" alt="forgotPassword" style="width: 200px; margin: 10px;">
+  <img src="readmeAssets\img\resetPassword.png" alt="home" style="width: 200px; margin: 10px;">
 </div>
 <div align="center">
-  <img src="readmeAssets\img\homePage.png" alt="home" style="width: 200px; margin: 10px;">
-  <img src="readmeAssets\img\userProfile.png" alt="profile" style="width: 200px; margin: 10px;">
-  <img src="readmeAssets\img\about.png" alt="settings" style="width: 200px; margin: 10px;">
+  <img src="readmeAssets\img\homePageTop.png" alt="profile" style="width: 200px; margin: 10px;">
+  <img src="readmeAssets\img\homePageBottom.png" alt="profile" style="width: 200px; margin: 10px;">
+  <img src="readmeAssets\img\tabBarInputSelector.png" alt="settings" style="width: 200px; margin: 10px;">
+  <img src="readmeAssets\img\drawerNavigator.png" alt="settings" style="width: 200px; margin: 10px;">
 </div>
-
-A working demo of the app can be seen below:
-
-https://github.com/AliKHaliliT/AkAna/assets/30647838/17671cac-1eeb-40de-a9b4-abe0be61e872
+<div align="center">
+  <img src="readmeAssets\img\userProfile.png" alt="profile" style="width: 200px; margin: 10px;">
+  <img src="readmeAssets\img\userProfileEdit.png" alt="profile" style="width: 200px; margin: 10px;">
+</div>
+<div align="center">
+  <img src="readmeAssets\img\about.png" alt="profile" style="width: 200px; margin: 10px;">
+</div>
 
 ## Usage
 1. Clone the repository
