@@ -5,6 +5,15 @@ import LinearGradient from "react-native-linear-gradient";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
+/**
+ * Dropdown component for selecting options.
+ *
+ * @param {Object} options - The array of options to display in the dropdown.
+ * @param {Function} onSelect - The function to call when an option is selected.
+ * @param {Function} onTextInputPress - The function to call when the text input is pressed.
+ * @param {Function} onTapCloseSuggestions - The function to call when suggestions are closed.
+ * @returns {JSX.Element} The rendered Dropdown component.
+ */
 const Dropdown = ({ options, onSelect, onTextInputPress, onTapCloseSuggestions}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -21,6 +30,11 @@ const Dropdown = ({ options, onSelect, onTextInputPress, onTapCloseSuggestions})
     filterOptions();
   }, [modalVisible]);
 
+  /**
+   * Handles the input change event.
+   * 
+   * @param {string} text - The new input text value.
+   */
   const handleInputChange = (text) => {
     onTapCloseSuggestions[1](true);
     setSearchText(text);
@@ -32,6 +46,11 @@ const Dropdown = ({ options, onSelect, onTextInputPress, onTapCloseSuggestions})
   
   const maxSuggestions = 3; // Maximum number of suggestions to display
 
+  /**
+   * Filters the options based on the searchText and returns a subset of options.
+   * If searchText is empty, returns the original options.
+   * @returns {Array} The filtered options.
+   */
   const filterOptions = () => {
     let filteredOptions = options;
     if (searchText) {

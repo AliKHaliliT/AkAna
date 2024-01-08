@@ -1,3 +1,7 @@
+/**
+ * Formats the current date into a string with the format "MMM DD YYYY".
+ * @returns {string} The formatted date string.
+ */
 const formatDate = () => {
   const currentDate = new Date();
   const months = [

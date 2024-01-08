@@ -22,6 +22,12 @@ import saveValue from "../utils/saveValue";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
+/**
+ * UserProfileEdit component for editing user profile information.
+ * 
+ * @param {object} navigation - The navigation object for navigating between screens.
+ * @returns {JSX.Element} The rendered UserProfileEdit component.
+ */
 const UserProfileEdit = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [firstName, setFirstName] = useState("Canis");
@@ -37,6 +43,10 @@ const UserProfileEdit = ({ navigation }) => {
   const [retypePasswordTyped, setRetypePasswordTyped] = useState('');
   const [showPasswordAlert, setShowPasswordAlert] = useState(false);
 
+  /**
+   * Retrieves user information from AsyncStorage and updates the state variables accordingly.
+   * @returns {Promise<void>} A promise that resolves when the user information is retrieved and the state variables are updated.
+   */
   const getUserInfoFromAsyncStorage = async () => {
     try {
       const [
@@ -85,6 +95,10 @@ const UserProfileEdit = ({ navigation }) => {
     navigation.navigate("UserProfile");
   };
 
+  /**
+   * Handles the deletion of the user account.
+   * @returns {Promise<void>} A promise that resolves when the account is successfully deleted.
+   */
   const handleDelete = async () => {
     try {
       setShowAccountAlert(false);
@@ -125,6 +139,13 @@ const UserProfileEdit = ({ navigation }) => {
     }
   };  
 
+  /**
+   * Handles the save operation for updating user profile information.
+   * @async
+   * @function handleSave
+   * @returns {Promise<void>}
+   * @throws {Error} If an error occurs during the update process.
+   */
   const handleSave = async () => {
     try {
       setLoading(true);

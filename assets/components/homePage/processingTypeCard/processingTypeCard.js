@@ -5,6 +5,13 @@ import LinearGradient from "react-native-linear-gradient";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
+/**
+ * Represents a processing type card component.
+ * @param {Object} props - The component props.
+ * @param {string} props.selectedButton - The currently selected button.
+ * @param {function} props.setSelectedButton - The function to set the selected button.
+ * @returns {JSX.Element} The processing type card component.
+ */
 const ProcessingTypeCard = ({ selectedButton, setSelectedButton }) => {
   const [blinkAnimation] = useState(new Animated.Value(0));
 
@@ -23,6 +30,9 @@ const ProcessingTypeCard = ({ selectedButton, setSelectedButton }) => {
     }
   }, [selectedButton]);
 
+  /**
+   * Starts the blink animation for the processing type card.
+   */
   const startBlinkAnimation = () => {
     blinkAnimation.setValue(0);
     Animated.loop(

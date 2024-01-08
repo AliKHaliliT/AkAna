@@ -1,3 +1,12 @@
+/**
+ * Generates random positions within a given height and width, based on the dimensions of a rectangle.
+ * @param {number} height - The total height of the area.
+ * @param {number} width - The total width of the area.
+ * @param {number} [rectangleHeight=300] - The height of each rectangle.
+ * @param {number} [rectangleWidth=200] - The width of each rectangle.
+ * @param {number} [pointsPerRectangle=1] - The number of random points to generate within each rectangle.
+ * @returns {Array} An array of objects representing the randomly generated positions, each with 'top' and 'left' properties.
+ */
 const getRandomPosition = (height, width, rectangleHeight = 300, rectangleWidth = 200, pointsPerRectangle = 1) => {
   const maxDivisionsHeight = Math.floor(height / rectangleHeight) + 1;
   const maxDivisionsWidth = Math.floor(width / rectangleWidth) + 1;

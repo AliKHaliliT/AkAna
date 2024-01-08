@@ -6,6 +6,18 @@ import InfoAlert from "./infoAlert";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
+/**
+ * Renders a chart legend component.
+ *
+ * @param {Object} props - The component props.
+ * @param {string} props.firstColor - The color of the first legend item.
+ * @param {string} props.firstText - The text of the first legend item.
+ * @param {string} props.secondColor - The color of the second legend item.
+ * @param {string} props.secondText - The text of the second legend item.
+ * @param {Array} [props.furtherInformationRequired=[]] - An array of legend item texts that require further information.
+ * @param {Array} [props.infoText=['', '']] - An array of information texts corresponding to the legend items.
+ * @returns {JSX.Element} The rendered chart legend component.
+ */
 const ChartLegend = ({ firstColor, firstText, secondColor, secondText, furtherInformationRequired = [], infoText = ['', ''] }) => {
   const [showInfoAlertOne, setShowInfoAlertOne] = useState(false);
   const [showInfoAlertTwo, setShowInfoAlertTwo] = useState(false);

@@ -4,6 +4,12 @@ import Svg, { Circle } from "react-native-svg";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
+/**
+ * Dot component.
+ *
+ * @param {string} color - The color of the dot.
+ * @returns {JSX.Element} The Dot component.
+ */
 const Dot = ({ color }) => {
   return (
     <Svg style={styles.dot}>

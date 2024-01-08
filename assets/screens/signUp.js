@@ -14,6 +14,12 @@ import ErrorAlert from "../components/common/errorAlert";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
+/**
+ * Represents the SignUp component.
+ * 
+ * @param {object} navigation - The navigation object.
+ * @returns {JSX.Element} The SignUp component.
+ */
 const SignUp = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [subscriptionPlans, setSubscriptionPlans] = useState({});
@@ -33,6 +39,10 @@ const SignUp = ({ navigation }) => {
   const [showMultipleAlert, setShowMultipleAlert] = useState(false);
   const [showMultipleAlertText, setShowMultipleAlertText] = useState('');
 
+  /**
+   * Fetches subscription plans from the server.
+   * @returns {Promise<void>} A promise that resolves when the plans are fetched.
+   */
   const fetchSubscriptionPlans = async () => {
     try {
       setLoading(true);
@@ -65,6 +75,9 @@ const SignUp = ({ navigation }) => {
     agreed ? setTermsAgreed(true) : setTermsAgreed(false);
   };
 
+  /**
+   * Handles the press event for displaying plan information.
+   */
   const handleInfoPress = () => {
     setShowPlanInfoAlert(true);
     setSelectedPlanDescription(`${subscriptionPlans[selectedPlan.split(" - ")[0]].description}`);
@@ -74,6 +87,11 @@ const SignUp = ({ navigation }) => {
     // Linking.openURL("your-terms-and-conditions-link");
   };
 
+  /**
+   * Handles the sign-up process.
+   * 
+   * @returns {Promise<void>} A promise that resolves when the sign-up process is completed.
+   */
   const handleSignUp = async () => {
 
     setLoading(true);

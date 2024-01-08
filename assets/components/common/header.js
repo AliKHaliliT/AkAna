@@ -5,6 +5,12 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
+/**
+ * Renders a header component with a menu icon and a title.
+ * @param {object} navigation - The navigation object.
+ * @param {string} headerTitle - The title to be displayed in the header.
+ * @returns {JSX.Element} The rendered header component.
+ */
 const Header = ({ navigation, headerTitle }) => {
   const openDrawer = () => {
     navigation.openDrawer();

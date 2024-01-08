@@ -6,6 +6,17 @@ const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window"
 
 const defaultIconProps = ["arrow-left", responsiveSize / 25, "#ffffff"];
 
+/**
+ * Renders a custom GoBack button with text.
+ *
+ * @param {Object} props - The component props.
+ * @param {string} props.text - The text to display on the button.
+ * @param {function} props.handleBackTo - The function to be called when the button is pressed.
+ * @param {Object} [props.containerStyle=styles.container] - The style object for the container view.
+ * @param {Object} [props.iconProps=defaultIconProps] - The props for the Icon component.
+ * @param {Object} [props.textStyle=styles.text] - The style object for the text component.
+ * @returns {JSX.Element} The rendered GoBack button.
+ */
 const GoBack = ({ text, handleBackTo, containerStyle = styles.container, iconProps = defaultIconProps, textStyle = styles.text }) => {
   return (
     <View style={containerStyle}>

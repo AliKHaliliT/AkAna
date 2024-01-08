@@ -5,6 +5,11 @@ const instance = axios.create({
   timeout: 10000, // Timeout set to 5 seconds
 });
 
+/**
+ * Updates the recharged data.
+ * @param {Object} updateRechargedData - The data to be updated.
+ * @returns {Promise<Object>} - The response from the server or an error message.
+ */
 const updateRecharged = async (updateRechargedData) => {
   try {
     const response = await instance.patch(`${addressPrefix}/actions/update_recharged/`, updateRechargedData);

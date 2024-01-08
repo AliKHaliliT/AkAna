@@ -5,6 +5,11 @@ const instance = axios.create({
   timeout: 10000, // Timeout set to 5 seconds
 });
 
+/**
+ * Performs a sign-up request.
+ * @param {Object} signUpData - The data for the sign-up request.
+ * @returns {Promise<Object>} - A promise that resolves to the response data or rejects with an error.
+ */
 const signUp = async (signUpData) => {
   try {
     const response = await instance.post(`${addressPrefix}/actions/signup/`, signUpData);

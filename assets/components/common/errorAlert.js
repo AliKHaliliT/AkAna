@@ -24,6 +24,16 @@ const ErrorAlert = ({ visible, close, alertTitle, alertText, animationType = "fa
   );
 };
 
+/**
+ * Styles for the errorAlert component.
+ * @typedef {Object} Styles
+ * @property {Object} container - Style for the container.
+ * @property {Object} content - Style for the content.
+ * @property {Object} title - Style for the title.
+ * @property {Object} text - Style for the text.
+ * @property {Object} button - Style for the button.
+ * @property {Object} buttonText - Style for the button text.
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,

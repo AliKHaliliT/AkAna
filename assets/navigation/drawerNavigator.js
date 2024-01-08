@@ -11,6 +11,11 @@ const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window"
 
 const Drawer = createDrawerNavigator();
 
+/**
+ * CustomDrawerContent component.
+ * @param {object} props - The props object.
+ * @returns {JSX.Element} The rendered CustomDrawerContent component.
+ */
 const CustomDrawerContent = (props) => {
   return (
     <LinearGradient
@@ -43,6 +48,11 @@ const CustomDrawerContent = (props) => {
   );
 };
 
+/**
+ * Renders a drawer navigator component.
+ *
+ * @returns {React.Component} The drawer navigator component.
+ */
 const DrawerNavigator = () => {
   return (
     <Drawer.Navigator

@@ -9,6 +9,11 @@ import { AnimatedText } from "../components/splashScreen/fadeInAnimatedText";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
+/**
+ * Renders the splash screen component.
+ *
+ * @returns {JSX.Element} The rendered splash screen component.
+ */
 const SplashScreen = () => {
   const [splashScreenVisible, setSplashScreenVisible] = useState(true);
   const [videoLoaded, setVideoLoaded] = useState(false);
@@ -40,6 +45,12 @@ const SplashScreen = () => {
   const indexRef = useRef(0);
   const rollCountRef = useRef(0);
 
+  /**
+   * Updates the character states based on the given parameters.
+   * @param {Array} states - The array of states.
+   * @param {string} finalString - The final string.
+   * @param {Array} dynamicStyles - The array of dynamic styles.
+   */
   const updateCharacterStates = (states, finalString, dynamicStyles) => {
     const [, setState] = states[indexRef.current][1];
     const finalChar = finalString[indexRef.current];

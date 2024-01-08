@@ -5,6 +5,11 @@ const instance = axios.create({
   timeout: 10000, // Timeout set to 5 seconds
 });
 
+/**
+ * Sends user information data to the server.
+ * @param {Object} userInfoData - The user information data to be sent.
+ * @returns {Promise<Object>} - A promise that resolves to the server response or an error object.
+ */
 const userInfo = async (userInfoData) => {
   try {
     const response = await instance.post(`${addressPrefix}/data/user_info/`, userInfoData);

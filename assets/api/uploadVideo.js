@@ -16,7 +16,7 @@ const uploadVideo = async (credentials, video) => {
   });
 
   formData.append('file', {
-    uri: `file://${video}`,
+    uri: video,
     type: 'video/mp4',
     name: 'video.mp4',
   });

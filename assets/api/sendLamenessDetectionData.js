@@ -5,6 +5,11 @@ const instance = axios.create({
   timeout: 10000, // Timeout set to 5 seconds
 });
 
+/**
+ * Sends user lameness detection data to the server.
+ * @param {Object} sendUserLamenessDetectionDataData - The data to be sent.
+ * @returns {Promise<Object>} - The response from the server.
+ */
 const sendUserLamenessDetectionData = async (sendUserLamenessDetectionDataData) => {
   try {
     const response = await instance.post(`${addressPrefix}/actions/send_user_lameness_detection_data/`, sendUserLamenessDetectionDataData);

@@ -5,6 +5,11 @@ const instance = axios.create({
   timeout: 10000, // Timeout set to 5 seconds
 });
 
+/**
+ * Deletes an account.
+ * @param {Object} deleteAccountData - The data required to delete the account.
+ * @returns {Promise<Object>} - A promise that resolves to the response from the server or an error object.
+ */
 const deleteAccount = async (deleteAccountData) => {
   try {
     const response = await instance.delete(`${addressPrefix}/actions/delete_account/`, { data: deleteAccountData });

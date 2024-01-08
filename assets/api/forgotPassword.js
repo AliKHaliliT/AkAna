@@ -5,6 +5,11 @@ const instance = axios.create({
   timeout: 10000, // Timeout set to 5 seconds
 });
 
+/**
+ * Sends a request to reset the password.
+ * @param {Object} forgotPasswordData - The data required for the password reset.
+ * @returns {Promise<Object>} - The response object containing the result of the request.
+ */
 const forgotPassword = async (forgotPasswordData) => {
   try {
     const response = await instance.post(`${addressPrefix}/actions/forgot_password/`, forgotPasswordData);

@@ -1,3 +1,13 @@
+/**
+ * Represents the template for lameness detection analytics.
+ * @typedef {Object[]} LamenessDetectionTemplate
+ * @property {number} value - The value associated with the template.
+ * @property {string} color - The color associated with the template.
+ * @property {string} gradientCenterColor - The gradient center color associated with the template.
+ * @property {string} legendName - The legend name associated with the template.
+ * @property {boolean} [focused] - Indicates if the template is focused.
+ * @property {string} [infoText] - Additional information about the template.
+ */
 const lamenessDetectionTemplate = [
   {
     value: 999,

@@ -1,3 +1,9 @@
+/**
+ * Deletes a value securely from the keychain.
+ * @param {string} key - The service key associated with the value to be deleted.
+ * @param {boolean} [verbose=false] - Whether to log verbose output.
+ * @returns {Promise<void>} - A promise that resolves when the value is deleted successfully.
+ */
 import * as Keychain from "react-native-keychain";
 
 const deleteValueSecure = async (key, verbose = false) => {

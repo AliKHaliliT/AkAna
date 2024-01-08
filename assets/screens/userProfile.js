@@ -22,6 +22,13 @@ import ConfirmAlert from "../components/common/confirmAlert";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
+/**
+ * Represents the user profile screen.
+ * 
+ * @param {object} navigation - The navigation object.
+ * @param {object} route - The route object.
+ * @returns {JSX.Element} The user profile screen component.
+ */
 const UserProfile = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
   const [firstName, setFirstName] = useState("Canis");
@@ -33,6 +40,10 @@ const UserProfile = ({ navigation, route }) => {
   const [showSyncStatusAlert, setShowSyncStatusAlert] = useState(false);
   const [showMultipleConfirmText, setShowMultipleConfirmText] = useState('');
 
+  /**
+   * Retrieves user information from AsyncStorage and updates the corresponding state variables.
+   * @returns {Promise<void>} A promise that resolves once the user information is retrieved and the state variables are updated.
+   */
   const getUserInfoFromAsyncStorage = async () => {
     const [
       asyncStorageFirstName,
@@ -58,6 +69,10 @@ const UserProfile = ({ navigation, route }) => {
     if (asyncStorageCredit) setCredit(asyncStorageCredit);
   };
   
+  /**
+   * Updates the user information by making API calls and saving the retrieved data.
+   * @returns {Promise<void>} A promise that resolves when the user information is updated.
+   */
   const updateUserInfo = async () => {
     const userPass = await loadValueSecure("userPass");
   
@@ -154,6 +169,11 @@ const UserProfile = ({ navigation, route }) => {
     navigation.navigate("UserProfileEdit");
   }
 
+  /**
+   * Handles the sync status of the user profile.
+   * Checks if there are unsynced files and prompts the user for confirmation before logging out.
+   * @returns {Promise<void>} A promise that resolves when the sync status is handled.
+   */
   const handleSyncStatus = async () => {
     const lsDir = await listDir("unsent");
     if (lsDir !== null) {
@@ -170,6 +190,10 @@ const UserProfile = ({ navigation, route }) => {
     }
   };
 
+  /**
+   * Handles the logout functionality.
+   * Deletes user data from local storage and navigates to the login screen.
+   */
   const handleLogout = async () => {
     const lsDir = await listDir(RNFetchBlob.fs.dirs.DocumentDir);
     if (lsDir !== null && lsDir.length > 0) {

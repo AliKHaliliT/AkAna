@@ -4,6 +4,15 @@ import Icon from "react-native-vector-icons/FontAwesome5";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
+/**
+ * Renders an information alert modal.
+ *
+ * @param {Object} props - The component props.
+ * @param {string} props.title - The title of the information alert.
+ * @param {string} props.infoText - The text content of the information alert.
+ * @param {Function} props.close - The function to close the information alert.
+ * @returns {JSX.Element} The rendered information alert modal.
+ */
 const InfoAlert = ({ title, infoText, close }) => {
   return (
     <Modal

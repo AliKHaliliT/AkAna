@@ -4,6 +4,17 @@ import Icon from "react-native-vector-icons/AntDesign";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
+/**
+ * Renders a welcome text component.
+ *
+ * @param {Object} props - The component props.
+ * @param {string} props.text - The text to be displayed.
+ * @param {Array} props.iconProps - The properties of the icon.
+ * @param {Object} [props.containerStyle=styles.container] - The style object for the container view.
+ * @param {Object} [props.textStyle=styles.text] - The style object for the text component.
+ * @param {React.Component} [props.IconObject=Icon] - The icon component to be used.
+ * @returns {React.Component} The rendered welcome text component.
+ */
 const WelcomeText = ({ text, iconProps, containerStyle=styles.container, textStyle=styles.text, IconObject=Icon}) => {
   return (
     <View style={containerStyle}>

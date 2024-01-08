@@ -6,13 +6,19 @@ import ADIcon from "react-native-vector-icons/AntDesign";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
-const HeaderHomePage = ({ navigation, headerTitle, setAnalyticsData={setAnalyticsData} }) => {
+/**
+ * Represents the header component for the home page.
+ * @param {object} navigation - The navigation object.
+ * @param {string} headerTitle - The title of the header.
+ * @returns {JSX.Element} The rendered header component.
+ */
+const HeaderHomePage = ({ navigation, headerTitle }) => {
   const openDrawer = () => {
     navigation.openDrawer();
   };
 
   const openUserProfile = () => {
-    navigation.navigate("UserProfile", { setAnalyticsData });
+    navigation.navigate("UserProfile");
   };
 
   return (

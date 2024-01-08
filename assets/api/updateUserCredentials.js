@@ -5,6 +5,11 @@ const instance = axios.create({
   timeout: 10000, // Timeout set to 5 seconds
 });
 
+/**
+ * Updates user credentials.
+ * @param {Object} updateUserCredentialsData - The data for updating user credentials.
+ * @returns {Promise<Object>} - The response object.
+ */
 const updateUserCredentials = async (updateUserCredentialsData) => {
   try {
     const response = await instance.patch(`${addressPrefix}/actions/update_user_credentials/`, updateUserCredentialsData);

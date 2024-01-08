@@ -7,6 +7,14 @@ import GradientButton from "../../common/gradientButton";
 const screenWidth = Dimensions.get("window").width;
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
+/**
+ * ModelCard component displays a card with images and descriptions of a model.
+ * @param {Object} props - The component props.
+ * @param {Array} props.images - An array of images to be displayed in the card.
+ * @param {Object} props.descriptions - An object containing descriptions for each image.
+ * @param {Array} props.currentIndexState - An array containing the current index state.
+ * @returns {JSX.Element} The ModelCard component.
+ */
 const ModelCard = ({ images, descriptions, currentIndexState }) => {
   const [currentIndex, setCurrentIndex] = currentIndexState;
   const [expanded, setExpanded] = useState(false);
@@ -15,6 +23,9 @@ const ModelCard = ({ images, descriptions, currentIndexState }) => {
 
   const scrollViewRef = useRef(null);
 
+  /**
+   * Starts the animation of bouncing left and right.
+   */
   const startBouncingLeftRight = () => {
     Animated.loop(
       Animated.sequence([
@@ -34,6 +45,9 @@ const ModelCard = ({ images, descriptions, currentIndexState }) => {
     ).start();
   };
 
+  /**
+   * Starts the bouncing animation in and out.
+   */
   const startBouncingInOut = () => {
     Animated.loop(
       Animated.sequence([
@@ -58,6 +72,10 @@ const ModelCard = ({ images, descriptions, currentIndexState }) => {
     startBouncingInOut();
   }, []);
 
+  /**
+   * Scrolls the images in the carousel by the specified offset.
+   * @param {number} offset - The offset by which to scroll the images.
+   */
   const scroll = (offset) => {
     const newIndex = currentIndex + offset;
     if (newIndex >= 0 && newIndex < images.length) {

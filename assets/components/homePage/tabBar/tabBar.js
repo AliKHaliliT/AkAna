@@ -14,6 +14,16 @@ const yMin = 0;
 const xMax = screenWidth;
 const yMax = tabBarHeight;
 
+/**
+ * TabBar component for the home page.
+ *
+ * @param {object} navigation - The navigation object.
+ * @param {string} currentService - The current service.
+ * @param {string} currentProcessingType - The current processing type.
+ * @param {object} analyticsData - The analytics data.
+ * @param {function} setAnalyticsData - The function to set the analytics data.
+ * @returns {JSX.Element} The TabBar component.
+ */
 const TabBar = ({ navigation, currentService, currentProcessingType, analyticsData={analyticsData}, setAnalyticsData={setAnalyticsData}}) => {
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -40,11 +50,19 @@ const TabBar = ({ navigation, currentService, currentProcessingType, analyticsDa
     return () => animation.stop();
   }, [bounceValue]);
 
+  /**
+   * Represents the translateY value used for animation.
+   * @type {Animated.Value}
+   */
   const translateY = bounceValue.interpolate({
     inputRange: [0, 1],
     outputRange: [0, -7],
   });
 
+  /**
+   * Generates an array of shape points.
+   * @returns {Array} Array of shape points.
+   */
   const generateShapePoints = () => {
     const topMarginPoints = [
       { x: xMin, y: yMin },
@@ -64,6 +82,13 @@ const TabBar = ({ navigation, currentService, currentProcessingType, analyticsDa
 
   const shapePoints = generateShapePoints();
 
+  /**
+   * Generates a line based on the provided data points.
+   *
+   * @function lineGenerator
+   * @param {Array} data - The data points used to generate the line.
+   * @returns {Function} - The generated line function.
+   */
   const lineGenerator = line()
     .x((d) => d.x)
     .y((d) => d.y)

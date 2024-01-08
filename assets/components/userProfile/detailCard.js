@@ -4,6 +4,20 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
+/**
+ * Renders a detail card component.
+ *
+ * @param {Object} props - The component props.
+ * @param {string} props.iconName - The name of the icon.
+ * @param {string} props.title - The title of the detail card.
+ * @param {string} props.description - The description of the detail card.
+ * @param {React.Component} [props.IconComponent=Icon] - The component used for rendering the icon.
+ * @param {Object} [props.containerStyle=styles.container] - The style object for the container view.
+ * @param {Object} [props.iconContainerStyle=styles.iconContainer] - The style object for the icon container view.
+ * @param {Object} [props.iconStyle=styles.iconStyle] - The style object for the icon.
+ * @param {Object} [props.commonTextBoldStyle=styles.commonTextBold] - The style object for the common text bold style.
+ * @returns {React.Component} The rendered detail card component.
+ */
 const DetailCard = ({ iconName, title, description, 
                       IconComponent=Icon, containerStyle=styles.container,
                       iconContainerStyle=styles.iconContainer,

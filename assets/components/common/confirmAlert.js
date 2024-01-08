@@ -4,6 +4,28 @@ import LinearGradient from "react-native-linear-gradient";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
+/**
+ * ConfirmAlert component displays a modal with a confirmation message and buttons.
+ *
+ * @param {Object} props - The component props.
+ * @param {boolean} props.visible - Determines whether the modal is visible or not.
+ * @param {function} props.close - Function to close the modal.
+ * @param {function} props.confirm - Function to handle the confirmation action.
+ * @param {string} props.alertTitle - The title of the confirmation alert.
+ * @param {string} props.alertText - The text of the confirmation alert.
+ * @param {string} [props.animationType="fade"] - The animation type for the modal.
+ * @param {Object} [props.containerStyle=styles.container] - The style object for the container view.
+ * @param {Object} [props.contentStyle=styles.content] - The style object for the content view.
+ * @param {Object} [props.titleStyle=styles.title] - The style object for the title text.
+ * @param {Object} [props.textStyle=styles.text] - The style object for the alert text.
+ * @param {string[]} [props.backgroundColors=["#4cbb17", "#3fa23e"]] - The background colors for the buttons.
+ * @param {Object} [props.buttonContainerStyle=styles.buttonContainer] - The style object for the button container view.
+ * @param {Object} [props.buttonStyle=styles.button] - The style object for the buttons.
+ * @param {Object} [props.buttonTextStyle=styles.buttonText] - The style object for the button text.
+ * @param {string} [props.buttonText0="Cancel"] - The text for the cancel button.
+ * @param {string} [props.buttonText1="Yes"] - The text for the confirm button.
+ * @returns {JSX.Element} The ConfirmAlert component.
+ */
 const ConfirmAlert = ({ visible, close, confirm, alertTitle, alertText, 
                         animationType = "fade", containerStyle = styles.container, 
                         contentStyle = styles.content, titleStyle = styles.title, 

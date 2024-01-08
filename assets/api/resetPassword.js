@@ -5,6 +5,11 @@ const instance = axios.create({
   timeout: 10000, // Timeout set to 5 seconds
 });
 
+/**
+ * Resets the password using the provided reset password data.
+ * @param {Object} resetPasswordData - The data required to reset the password.
+ * @returns {Promise<Object>} - A promise that resolves to the response from the server or an error object.
+ */
 const resetPassword = async (resetPasswordData) => {
   try {
     const response = await instance.patch(`${addressPrefix}/actions/reset_password/`, resetPasswordData);

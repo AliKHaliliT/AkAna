@@ -11,6 +11,11 @@ import UserProfileEdit from "../screens/userProfileEdit";
 
 const Stack = createStackNavigator();
 
+/**
+ * StackNavigator component for navigating between screens.
+ *
+ * @returns {React.Component} The StackNavigator component.
+ */
 const StackNavigator = () => {
   return (
     <Stack.Navigator

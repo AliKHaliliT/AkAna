@@ -7,6 +7,15 @@ import { PieChart } from "react-native-gifted-charts";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
+/**
+ * Analytics component displays data in a chart format and provides various analytics features.
+ *
+ * @param {Object} data - The data used to populate the chart.
+ * @param {Array} template - The template used to define the chart structure.
+ * @param {Function} onTextInputPress - The callback function triggered when the text input is pressed.
+ * @param {Function} onTapCloseSuggestions - The callback function triggered when the close suggestions button is tapped.
+ * @returns {JSX.Element} The rendered Analytics component.
+ */
 const Analytics = ({ data, template, onTextInputPress, onTapCloseSuggestions }) => {
   const [userSessions, setUserSessions] = useState([]);
   const [chartData, setChartData] = useState(template);
@@ -42,6 +51,10 @@ const Analytics = ({ data, template, onTextInputPress, onTapCloseSuggestions }) 
   const qualityState = percentHealthy >= 90 ? "Excellent" : percentHealthy >= 80 ? "Good" : percentHealthy >= 70 ? "Fair" : "Poor";
   
 
+  /**
+   * Renders the chart legend based on the current session's chart data.
+   * @returns {JSX.Element[] | null} The rendered chart legend components or null if there is no chart data.
+   */
   const renderChartLegend = () => {
 
     if (!chartData[currentSession] || !Array.isArray(chartData[currentSession])) {

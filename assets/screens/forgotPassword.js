@@ -11,6 +11,12 @@ import ErrorAlert from '../components/common/errorAlert';
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
+/**
+ * Represents the Forgot Password screen.
+ * 
+ * @param {object} navigation - The navigation object used for screen navigation.
+ * @returns {JSX.Element} The JSX element representing the Forgot Password screen.
+ */
 const ForgotPassword = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [emailOrUsername, setEmailOrUsername] = useState("");
@@ -21,6 +27,12 @@ const ForgotPassword = ({ navigation }) => {
     navigation.navigate(screen);
   };
 
+  /**
+   * Handles the forgot password functionality.
+   * If the email or username is not empty, it sends a request to reset the password.
+   * If the request is successful, it shows a confirmation alert.
+   * If the request fails, it shows an error message.
+   */
   const handleForgotPassword = async () => {
     if (emailOrUsername.trim() !== "") {
       setLoading(true);
@@ -36,7 +48,6 @@ const ForgotPassword = ({ navigation }) => {
     } else {
       setShowFieldsAlert(true);
     }
-    
   };
 
   const handleConfirmed = () => {

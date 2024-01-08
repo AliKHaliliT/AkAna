@@ -5,6 +5,10 @@ const instance = axios.create({
   timeout: 10000, // Timeout set to 5 seconds
 });
 
+/**
+ * Fetches plans from the server.
+ * @returns {Promise} A promise that resolves to the response from the server or an error object.
+ */
 const plans = async () => {
   try {
     const response = await instance.get(`${addressPrefix}/data/plans/`);

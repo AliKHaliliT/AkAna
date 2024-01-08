@@ -30,6 +30,17 @@ import listDir from "../../../utils/listSortedFilesFromDirectory";
 const responsiveSize =
   (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
+/**
+ * Renders a component for selecting input options.
+ *
+ * @param {object} navigation - The navigation object.
+ * @param {function} close - The function to close the component.
+ * @param {string} currentService - The current service.
+ * @param {string} currentProcessingType - The current processing type.
+ * @param {object} analyticsData - The analytics data.
+ * @param {function} setAnalyticsData - The function to set the analytics data.
+ * @returns {JSX.Element} The rendered component.
+ */
 const InputSelector = ({ navigation, close, currentService, 
                         currentProcessingType, analyticsData={analyticsData}, 
                         setAnalyticsData={setAnalyticsData}}) => {
@@ -39,6 +50,18 @@ const InputSelector = ({ navigation, close, currentService,
   const [showCreditAlert, setShowCreditAlert] = useState(false);
   const [video, setVideo] = useState(null);
 
+  /**
+   * Handles the saving of a video.
+   * 
+   * @param {Object} video - The video to be saved.
+   * @returns {Promise<void>} - A promise that resolves when the video is saved.
+   */
+  const handleVideoSave = async (video) => {
+    const folderName = "unsent/videos";
+    const fileName = `${currentService}_${result}_${new Date().getTime()}_${Math.random()}`;
+    await saveVideo(folderName, fileName, video, verbose=true);
+  };
+
   useEffect(() => {
     if (video !== null) {
       handleVideoSave(video);
@@ -47,15 +70,22 @@ const InputSelector = ({ navigation, close, currentService,
   }, [video]);
 
 
+  /**
+   * Handles the inference process for a given video.
+   * @param {string} video - The video to perform inference on.
+   * @returns {Promise} - A promise that resolves with the result of the inference.
+   */
   const handleInference = async (video) => {
-
     setLoading(true);
-
     const { username, password } = await loadValueSecure("userPass");
-
     return await inference({ username_or_email: username, password: password, service_type: currentService }, video);
   };
 
+  /**
+   * Handles the logout functionality.
+   * Clears the stored values related to user authentication and navigates to the login screen.
+   * @returns {Promise<void>} A promise that resolves when the logout process is completed.
+   */
   const handleLogout = async () => {
     setShowCreditAlert(false);
     Promise.all([deleteValue("isLoggedIn"), deleteValue("firstName"), deleteValue("lastName"), deleteValue("username"),
@@ -68,6 +98,11 @@ const InputSelector = ({ navigation, close, currentService,
     );
   };
 
+  /**
+   * Handles new data received from a response.
+   * @param {Object} response - The response object containing the new data.
+   * @returns {Promise<void>} - A promise that resolves when the data is handled.
+   */
   const handleNewData = async (response) => {
     const lsDir = await listDir(`unsent/${currentService}`);
     if (lsDir !== null) {
@@ -95,6 +130,11 @@ const InputSelector = ({ navigation, close, currentService,
     }
   }
 
+  /**
+   * Handles the credit for a video.
+   * @param {Object} video - The video object.
+   * @returns {Promise<void>} - A promise that resolves when the credit is handled.
+   */
   const handleCredit = async (video) => {
     if (await loadValue("credit") === null) {
       const { username, password } = await loadValueSecure("userPass");
@@ -174,13 +214,9 @@ const InputSelector = ({ navigation, close, currentService,
     }
   };
 
-  const handleVideoSave = async (video) => {
-    const folderName = "unsent/videos";
-    const fileName = `${currentService}_${result}_${new Date().getTime()}_${Math.random()}`;
-
-    await saveVideo(folderName, fileName, video, verbose=true);
-  };
-
+  /**
+   * Launches the camera to capture a video and performs different actions based on the current processing type.
+   */
   const launchCameraHandler = async () => {
 
     ImagePicker.launchCamera(
@@ -219,6 +255,10 @@ const InputSelector = ({ navigation, close, currentService,
     );
   };
 
+  /**
+   * Requests camera and storage permissions and launches the camera handler if granted.
+   * @returns {Promise<void>} A promise that resolves when the camera permission is granted and the camera handler is launched.
+   */
   const requestCameraPermission = async () => {
     try {
       const grantedCamera = await PermissionsAndroid.request(
@@ -237,6 +277,9 @@ const InputSelector = ({ navigation, close, currentService,
     }
   };
 
+  /**
+   * Handles the launch of the image library and processes the selected image or video.
+   */
   const launchImageLibraryHandler = () => {
     ImagePicker.launchImageLibrary(
       {
@@ -273,6 +316,10 @@ const InputSelector = ({ navigation, close, currentService,
     );
   };
 
+  /**
+   * Requests permission to access the gallery.
+   * @returns {Promise<void>} A promise that resolves when the permission is granted or rejected.
+   */
   const requestGalleryPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(

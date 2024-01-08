@@ -16,6 +16,12 @@ import ErrorAlert from "../components/common/errorAlert";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
+/**
+ * Represents the Login screen component.
+ * 
+ * @param {object} navigation - The navigation object used for screen navigation.
+ * @returns {JSX.Element} The Login screen component.
+ */
 const Login = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [emailOrUsername, setEmailOrUsername] = useState('');
@@ -23,9 +29,13 @@ const Login = ({ navigation }) => {
   const [rememberMe, setRememberMe] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
 
+  /**
+   * Retrieves the remember me value from storage and sets the email/username and password if remember me is enabled.
+   * @returns {Promise<void>} A promise that resolves when the remember me value is retrieved and the email/username and password are set.
+   */
   const getRememberMe = async () => {
     const rememberMeValue = await loadValue("rememberMe");
-  
+
     if (rememberMeValue === "true") {
       try {
         const userPass = await loadValueSecure("userPass");
@@ -45,29 +55,37 @@ const Login = ({ navigation }) => {
   useEffect(() => {
     setLoading(true);
     getRememberMe();
-  }, []); 
-  
+  }, []);
+
+  /**
+   * Handles the "Remember Me" functionality.
+   * @param {boolean} agreed - Indicates whether the user agreed to remember their login.
+   */
   const handleRememberMe = (agreed) => {
     agreed ? setRememberMe(true) : setRememberMe(false);
   };
-  
+
   const handleNavigation = (screen) => {
     navigation.navigate(screen);
   };
-  
+
+  /**
+   * Handles the login functionality.
+   * @returns {Promise<void>} A promise that resolves when the login process is completed.
+   */
   const handleLogin = async () => {
     setLoading(true);
-  
+
     try {
       const response = await login({ username_or_email: emailOrUsername.trim(), password: password.trim() });
-  
+
       if (response.status === 200 || (emailOrUsername.trim() === "canislupus" && password.trim() === "canislupus")) {
         await Promise.all([
           saveValue("isLoggedIn", "true"),
           saveValue("rememberMe", rememberMe ? "true" : "false"),
           saveValueSecure(emailOrUsername.trim(), password.trim(), "userPass")
         ]);
-  
+
         navigation.reset({
           index: 0,
           routes: [{ name: "DrawerNavigator" }],

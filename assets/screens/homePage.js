@@ -39,6 +39,11 @@ const templates = {"Lameness Detection": lamenessDetectionTemplate};
 
 const positionsTemp = getRandomPosition(screenHeight, screenWidth, 300, 200, backgroundDecorations.length);
 
+/**
+ * Represents the home page component.
+ * @param {Object} navigation - The navigation object.
+ * @returns {JSX.Element} The home page component.
+ */
 const HomePage = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [currentProcessingType, setCurrentProcessingType] = useState("Server");
@@ -53,6 +58,10 @@ const HomePage = ({ navigation }) => {
   const positions = useRef(getRandomPosition(screenHeight, screenWidth, 300, 200, backgroundDecorations.length));
   const rotatations = useRef([...Array(positionsTemp.length)].map(() => `${Math.random() * 360}deg`));
 
+  /**
+   * Synchronizes data with the server.
+   * @returns {Promise<void>} A promise that resolves when the synchronization is complete.
+   */
   const syncWithServer = async () => {
     console.log("-----------------------------------------")
     console.log("syncWithServer")
@@ -101,7 +110,7 @@ const HomePage = ({ navigation }) => {
                   const fileProps = file.split("_");
                   if (fileProps[0] === "Lameness Detection") {
                     const response = await uploadVideo({ username_or_email: username, health_status: fileProps[1] },
-                                                      `${RNFetchBlob.fs.dirs.DocumentDir}/unsent/videos/${file}`);
+                                                      `file://${RNFetchBlob.fs.dirs.DocumentDir}/unsent/videos/${file}`);
                     if (response.status === 200) {
                       await deleteFile(`unsent/${folder}/${file}`);
                     } else {
@@ -117,6 +126,10 @@ const HomePage = ({ navigation }) => {
     }
   };
 
+  /**
+   * Synchronizes the device storage by deleting the "unsent" directory if it is empty.
+   * @returns {Promise<void>} A promise that resolves when the synchronization is complete.
+   */
   const syncDeviceStorage = async () => {
     console.log("-----------------------------------------")
     console.log("syncDeviceStorage")
@@ -139,6 +152,10 @@ const HomePage = ({ navigation }) => {
     }
   };
 
+  /**
+   * Sends lameness detection data to the server.
+   * @returns {Promise<void>} A promise that resolves when the data is sent successfully.
+   */
   const sendLamenessDetectionDataDefault = async () => {
     console.log("-----------------------------------------")
     console.log("sendLamenessDetectionDataDefault")
@@ -174,7 +191,10 @@ const HomePage = ({ navigation }) => {
     }
   };
   
-
+  /**
+   * Retrieves user lameness detection data.
+   * @returns {Promise<void>} A promise that resolves when the data is retrieved.
+   */
   const getUserLamnessDetectionData = async () => {
     console.log("-----------------------------------------")
     console.log("getUserLamnessDetectionData")
@@ -243,6 +263,10 @@ const HomePage = ({ navigation }) => {
     }
   }
 
+  /**
+   * Retrieves data from the server and updates the state with the received data.
+   * @returns {Promise<void>} A promise that resolves when the data retrieval is complete.
+   */
   const getData = async () => {
     console.log("-----------------------------------------")
     console.log("getData")
@@ -297,6 +321,11 @@ const HomePage = ({ navigation }) => {
       .catch(() => setLoading(false));
   }, []));
   
+  /**
+   * Function to handle the refresh action.
+   * It syncs data with the server, device storage, and retrieves new data.
+   * @returns {Promise<void>} A promise that resolves when the refresh action is completed.
+   */
   const onRefresh = async () => {
     setRefreshing(true);
     try {
@@ -345,7 +374,7 @@ const HomePage = ({ navigation }) => {
             </React.Fragment>
           ))}
           <View style={{ zIndex: 2 }}>
-            <HeaderHomePage navigation={navigation} headerTitle="AkAna" setAnalyticsData={setAnalyticsData}/>
+            <HeaderHomePage navigation={navigation} headerTitle="AkAna" />
           </View>
           <View style={{ zIndex: 3 }}>
             <ProcessingTypeCard 

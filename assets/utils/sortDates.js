@@ -1,3 +1,9 @@
+/**
+ * Sorts an array of file names by date.
+ *
+ * @param {string[]} files - The array of file names to be sorted.
+ * @returns {string[]} - The sorted array of file names.
+ */
 const sortFilesByDate = (files) => {
   const getDateFromFileName = (fileName) => {
     const [month, day, year] = fileName.split(' ');

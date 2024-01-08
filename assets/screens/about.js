@@ -5,6 +5,11 @@ import LinearGradient from "react-native-linear-gradient";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
+/**
+ * Renders the About screen.
+ * @param {object} navigation - The navigation object.
+ * @returns {JSX.Element} The rendered About screen.
+ */
 const About = ({ navigation }) => {
   return (
     <LinearGradient
@@ -15,7 +20,7 @@ const About = ({ navigation }) => {
       <View style={styles.content}>
         <Text style={styles.mainTitle}>About AkAna</Text>
         <Text style={styles.mainDescription}>
-          I developed this app as part of my master's thesis, primarily focusing on serving as a user interface for a lameness detection system I created. My aim was to design it to be expandable, allowing others to integrate additional systems and enhance its capabilities. Essentially, I laid the groundwork for an agricultural farmer companion app. Please note, this is merely a demo and the functionalities are not linked yet; it solely serves as a UI. As for the name, I chose "AkAna," which in my mother tongue translates to "The White Mother." AkAna represents the primordial creator-goddess in Turkic culture, revered as the goddess of water and the elder sister of Earth.
+        I developed this application as a component of my master's thesis, with a primary focus on serving as a user interface for a lameness detection system that I designed. My objective was to create an expandable design that would allow others to integrate additional systems and augment its capabilities. Essentially, I established the foundation for an agricultural farmer companion application. The application is accompanied by a backend server called "EtugenEke" that is seamlessly integrated. Every aspect of the application is harmoniously aligned with the backend and functions effectively, except for the detection system, which is currently in a placeholder state. Regarding its name, I selected "AkAna," which, in my native language, translates to "The White Mother." AkAna symbolizes the primordial creator-goddess in Turkic culture, revered as the deity of water and the elder sister of Earth.
         </Text>
         <Text style={styles.footerText}>©2023 AkAna</Text>
       </View>

@@ -1,5 +1,12 @@
 import RNFetchBlob from 'rn-fetch-blob';
 
+/**
+ * Reads a JSON file from the device.
+ * @param {string} folderName - The name of the folder where the JSON file is located.
+ * @param {string} fileName - The name of the JSON file (without the extension).
+ * @param {boolean} [verbose=false] - Optional parameter to enable verbose logging.
+ * @returns {Promise<Object|null>} - A promise that resolves to the parsed JSON object, or null if an error occurs.
+ */
 const readJSON = async (folderName, fileName, verbose = false) => {
   const filePath = `${RNFetchBlob.fs.dirs.DocumentDir}/${folderName}/${fileName}.json`;
 

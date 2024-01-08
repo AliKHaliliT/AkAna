@@ -1,5 +1,11 @@
 import RNFetchBlob from 'rn-fetch-blob';
 
+/**
+ * Deletes a directory from the device.
+ * @param {string} folderName - The name of the directory to be deleted.
+ * @param {boolean} [verbose=false] - Optional. If set to true, logs additional information to the console.
+ * @returns {Promise<void>} - A promise that resolves when the directory is deleted successfully.
+ */
 const deleteDirectory = async (folderName, verbose = false) => {
   const dirToDelete = `${RNFetchBlob.fs.dirs.DocumentDir}/${folderName}`;
 

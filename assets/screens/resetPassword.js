@@ -11,6 +11,13 @@ import ErrorAlert from "../components/common/errorAlert";
 
 const responsiveSize = (Dimensions.get("window").width + Dimensions.get("window").height) / 2;
 
+/**
+ * ResetPassword component for resetting user password.
+ * 
+ * @param {object} navigation - The navigation object for navigating between screens.
+ * @param {object} route - The route object containing the parameters passed to the screen.
+ * @returns {JSX.Element} - The JSX element representing the ResetPassword component.
+ */
 const ResetPassword = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState('');
@@ -27,6 +34,10 @@ const ResetPassword = ({ navigation, route }) => {
     });
   };
 
+  /**
+   * Handles the reset password functionality.
+   * @returns {Promise<void>} A promise that resolves when the reset password process is complete.
+   */
   const handleResetPassword = async () => {
     
 

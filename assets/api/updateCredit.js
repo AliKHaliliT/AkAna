@@ -5,6 +5,11 @@ const instance = axios.create({
   timeout: 10000, // Timeout set to 5 seconds
 });
 
+/**
+ * Updates the credit using the provided data.
+ * @param {Object} updateCreditData - The data to update the credit.
+ * @returns {Promise<Object>} - The response from the server or an error message.
+ */
 const updateCredit = async (updateCreditData) => {
   try {
     const response = await instance.patch(`${addressPrefix}/actions/update_credit/`, updateCreditData);

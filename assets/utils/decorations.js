@@ -1,3 +1,7 @@
+/**
+ * Array of background decoration images.
+ * @type {Array<string>}
+ */
 const backgroundDecorations = [
   require("../img/backgroundDecoration.png"),
   require("../img/backgroundDecoration1.png"),

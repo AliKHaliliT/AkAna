@@ -5,6 +5,11 @@ const instance = axios.create({
   timeout: 10000, // Timeout set to 5 seconds
 });
 
+/**
+ * Performs a login request.
+ * @param {Object} loginData - The login data.
+ * @returns {Promise<Object>} - The response object.
+ */
 const login = async (loginData) => {
   try {
     const response = await instance.post(`${addressPrefix}/actions/login/`, loginData);

@@ -5,6 +5,14 @@ const instance = axios.create({
   timeout: 10000, // Timeout set to 10 seconds
 });
 
+/**
+ * Performs an inference request to the server using the provided credentials and video.
+ * @param {Object} credentials - The credentials object containing the necessary authentication information.
+ * @param {string} credentials.username - The username for authentication.
+ * @param {string} credentials.password - The password for authentication.
+ * @param {string} video - The path or URI of the video file to be used for inference.
+ * @returns {Promise<Object>} - A promise that resolves to the response object from the server.
+ */
 const inference = async (credentials, video) => {
   try {
   const url = `${addressPrefix}/actions/inference/`;

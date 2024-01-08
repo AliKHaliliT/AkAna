@@ -1,5 +1,11 @@
 import RNFetchBlob from 'rn-fetch-blob';
 
+/**
+ * Deletes a file from the device.
+ * @param {string} fileName - The name of the file to be deleted.
+ * @param {boolean} [verbose=false] - Optional. If set to true, logs additional information to the console.
+ * @returns {Promise<void>} - A promise that resolves when the file is deleted successfully or rejects with an error.
+ */
 const deleteFile = async (fileName, verbose = false) => {
   const fileToDelete = `${RNFetchBlob.fs.dirs.DocumentDir}/${fileName}`;
 
