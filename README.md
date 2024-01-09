@@ -5,7 +5,7 @@
 
 An App built using React Native for a part of my thesis.
 
-The visuals, like the logo and icons, were created using [LeonardoAI](https://leonardo.ai). These were then polished and enhanced with [UpscaleMedia](https://upscale.media) and had their backgrounds removed through [RemoveBg](https://remove.bg). Additionally, the [video](assets\video\splash.mp4) on the splash screen was brought to life using [RunwayAI](https://runway.ml).
+The visuals assets, like the logo and icons, were created using [LeonardoAI](https://leonardo.ai). These were then polished and enhanced with [UpscaleMedia](https://upscale.media) and had their backgrounds removed through [RemoveBg](https://remove.bg). Additionally, the [video](assets\video\splash.mp4) on the splash screen was brought to life using [RunwayAI](https://runway.ml).
 
 The app utilizes Deep Linking, enabling it to navigate to the reset password screen when a valid reset link from the backend, EtugenEke, is accessed.
 
