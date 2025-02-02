@@ -1,11 +1,11 @@
 # AkAna
 <p align="center">
-  <img src="assets\img\logo.png" alt="AkAnaLogo" style="width:300px;height:300px;">
+  <img src="assets/img/logo.png" alt="AkAnaLogo" style="width:300px;height:300px;">
 </p>
 
 An App built using React Native for a part of my thesis.
 
-The visuals assets, like the logo and icons, were created using [LeonardoAI](https://leonardo.ai). These were then polished and enhanced with [UpscaleMedia](https://upscale.media) and had their backgrounds removed through [RemoveBg](https://remove.bg). Additionally, the [video](assets\video\splash.mp4) on the splash screen was brought to life using [RunwayAI](https://runway.ml).
+The visuals assets, like the logo and icons, were created using [LeonardoAI](https://leonardo.ai). These were then polished and enhanced with [UpscaleMedia](https://upscale.media) and had their backgrounds removed through [RemoveBg](https://remove.bg). Additionally, the [video](assets/video/splash.mp4) on the splash screen was brought to life using [RunwayAI](https://runway.ml).
 
 The app utilizes Deep Linking, enabling it to navigate to the reset password screen when a valid reset link from the backend, EtugenEke, is accessed.
 
@@ -17,23 +17,23 @@ The code base is modularized and each component is designed to be reusable and e
 
 The App contains the following screens:
 <div align="center">
-  <img src="readmeAssets\img\login.png" alt="login" style="width: 200px; margin: 10px;">
-  <img src="readmeAssets\img\signUp.png" alt="signUp" style="width: 200px; margin: 10px;">
-  <img src="readmeAssets\img\forgotPassword.png" alt="forgotPassword" style="width: 200px; margin: 10px;">
-  <img src="readmeAssets\img\resetPassword.png" alt="home" style="width: 200px; margin: 10px;">
+  <img src="readmeAssets/img/login.png" alt="login" style="width: 200px; margin: 10px;">
+  <img src="readmeAssets/img/signUp.png" alt="signUp" style="width: 200px; margin: 10px;">
+  <img src="readmeAssets/img/forgotPassword.png" alt="forgotPassword" style="width: 200px; margin: 10px;">
+  <img src="readmeAssets/img/resetPassword.png" alt="home" style="width: 200px; margin: 10px;">
 </div>
 <div align="center">
-  <img src="readmeAssets\img\homePageTop.png" alt="profile" style="width: 200px; margin: 10px;">
-  <img src="readmeAssets\img\homePageBottom.png" alt="profile" style="width: 200px; margin: 10px;">
-  <img src="readmeAssets\img\tabBarInputSelector.png" alt="settings" style="width: 200px; margin: 10px;">
-  <img src="readmeAssets\img\drawerNavigator.png" alt="settings" style="width: 200px; margin: 10px;">
+  <img src="readmeAssets/img/homePageTop.png" alt="profile" style="width: 200px; margin: 10px;">
+  <img src="readmeAssets/img/homePageBottom.png" alt="profile" style="width: 200px; margin: 10px;">
+  <img src="readmeAssets/img/tabBarInputSelector.png" alt="settings" style="width: 200px; margin: 10px;">
+  <img src="readmeAssets/img/drawerNavigator.png" alt="settings" style="width: 200px; margin: 10px;">
 </div>
 <div align="center">
-  <img src="readmeAssets\img\userProfile.png" alt="profile" style="width: 200px; margin: 10px;">
-  <img src="readmeAssets\img\userProfileEdit.png" alt="profile" style="width: 200px; margin: 10px;">
+  <img src="readmeAssets/img/userProfile.png" alt="profile" style="width: 200px; margin: 10px;">
+  <img src="readmeAssets/img/userProfileEdit.png" alt="profile" style="width: 200px; margin: 10px;">
 </div>
 <div align="center">
-  <img src="readmeAssets\img\about.png" alt="profile" style="width: 200px; margin: 10px;">
+  <img src="readmeAssets/img/about.png" alt="profile" style="width: 200px; margin: 10px;">
 </div>
 
 ## Usage
@@ -44,7 +44,7 @@ The App contains the following screens:
 2. Run `npm install` to install the dependencies
 3. Run `npx react-native run-android` to run the app on your device
 
-Note that if you want to use the backend, you need to change the address prefix located at `assets\api\tempServerAddress.js` to your designated ip address and port. For example, when running the backend on your local machine, you can set the prefix to `http://yourIpAddress:yourPort`.
+Note that if you want to use the backend, you need to change the address prefix located at `assets/api/tempServerAddress.js` to your designated ip address and port. For example, when running the backend on your local machine, you can set the prefix to `http://yourIpAddress:yourPort`.
 
 In order to browse the app without the backend to get pass the login, you can use the following credentials:
 ```
