@@ -1,6 +1,6 @@
 ### User Defined ###
 # Ignore specified folders
-rawAssets/
+local_util_resources/
 copilotPrompts.txt
 AkAnaKey.jks
 
