@@ -6,11 +6,9 @@
     <img src="https://img.shields.io/github/stars/AliKHaliliT/AkAna" alt="Stars">
     <img src="https://img.shields.io/github/forks/AliKHaliliT/AkAna" alt="Forks">
 </div>
-<br/>
 <p align="center">
   <img src="assets/img/logo.png" alt="AkAnaLogo" style="width:300px;height:300px;">
 </p>
-<br/>
 An App built using React Native for a part of my thesis.
 
 The visuals assets, like the logo and icons, were created using [LeonardoAI](https://leonardo.ai). These were then polished and enhanced with [UpscaleMedia](https://upscale.media) and had their backgrounds removed through [RemoveBg](https://remove.bg). Additionally, the [video](assets/video/splash.mp4) on the splash screen was brought to life using [RunwayAI](https://runway.ml).
