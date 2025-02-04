@@ -3,8 +3,6 @@
     <img src="https://img.shields.io/github/license/AliKHaliliT/AkAna" alt="License">
     <img src="https://img.shields.io/github/last-commit/AliKHaliliT/AkAna" alt="Last Commit">
     <img src="https://img.shields.io/github/issues/AliKHaliliT/AkAna" alt="Open Issues">
-    <img src="https://img.shields.io/github/stars/AliKHaliliT/AkAna" alt="Stars">
-    <img src="https://img.shields.io/github/forks/AliKHaliliT/AkAna" alt="Forks">
 </div>
 <p align="center">
   <img src="assets/img/logo.png" alt="AkAnaLogo" style="width:300px;height:300px;">
